@@ -12,6 +12,7 @@
 | 任務 | 必讀 |
 |------|------|
 | 分層、DDD、Vogen、資料夾、編碼風格 | [docs/CODING-STANDARDS.md](docs/CODING-STANDARDS.md)、`.editorconfig` |
+| 前端（前台 Nuxt 4、後台 Vue 3、共用型別；結構、分層、API 串接、登入、安全、測試、效能） | [docs/FRONTEND.md](docs/FRONTEND.md)、`frontend/.editorconfig` |
 | 程式碼註解、語言 | [docs/COMMENTS.md](docs/COMMENTS.md) |
 | API、狀態碼、分頁、路由 | [docs/API-CONVENTIONS.md](docs/API-CONVENTIONS.md) |
 | 資料表、欄位、migration | [docs/DATABASE-SCHEMA.md](docs/DATABASE-SCHEMA.md) |
@@ -35,7 +36,7 @@
 | 分頁 | `page`／`pageSize`，回應 `items`／`page`／`pageSize`／`totalCount` ＋ Link header；預設 10 筆、上限 100（ADR-007）；原則上一律 offset，有效能需求時再於該規格評估 keyset（2026-10-08 使用者決定） | `limit`、`{data,meta,links}` 信封、預設 20 |
 | 路由 | 資源複數 kebab-case；狀態轉換允許 `POST /{resource}/{id}/{action}`；不做 URL 版本 | 禁止動詞、`/v1/` |
 | 錯誤代碼、速率限制標頭、MFA | 不採用（規格未要求的不新增）；登入端點依來源 IP 限速，每分鐘 20 次、超過回 429（SPEC-004 FR-006b） | 錯誤代碼體系、X-RateLimit-*、MFA |
-| 測試分層 | 單元、整合、功能三層＋驗收（BDD：新規格以 Gherkin `.feature` 描述驗收情境，獨立專案 `TcmClinic.Api.AcceptanceTests`，一個選單一個資料夾、路徑同 `specs/`，2026-10-09）；不設 E2E 層（本專案只涵蓋後端，前端另一團隊負責） | 每條 AC 要 E2E（UDS 測試層級選項 `e2e-testing`） |
+| 測試分層 | 單元、整合、功能三層＋驗收（BDD：新規格以 Gherkin `.feature` 描述驗收情境，獨立專案 `TcmClinic.Api.AcceptanceTests`，一個選單一個資料夾、路徑同 `specs/`，2026-10-09）；前端用 Vitest 做單元與元件測試，瀏覽器層只對少數關鍵流程做 Playwright 冒煙測試，前端不另建 Gherkin 執行層（2026-10-09 使用者決定，docs/FRONTEND.md §8） | 每條 AC 要 E2E（UDS 測試層級選項 `e2e-testing`） |
 | 文件語言與檔名 | 繁中；`docs/` 檔名維持大寫 | 英文、小寫檔名 |
 | 決策紀錄（ADR） | 一個決策一檔 `ADR-NNN-短描述.md`，放在對應規格的資料夾；跨選單的放 `specs/其他/架構決策/`；編號全專案共用，索引在 specs/README.md | 集中在 `docs/adr/` |
 | 規格格式與位置 | 選單分層資料夾內的 `spec.md`（見 specs/README.md） | `proposal.md`、`specs/SPEC-XXX.md` |
@@ -44,9 +45,9 @@
 | 登入工作階段 | JWT Bearer：access token 15 分鐘、前端存記憶體；refresh token 以 HttpOnly Cookie（SameSite=Lax）傳遞、8 小時滑動、可撤銷（2026-10-08 使用者決定，SPEC-004 FR-021、ADR-011） | Cookie SameSite=Strict、閒置 15～30 分鐘 |
 | 資料庫細節 | append-only 日誌表可用邏輯關聯取代外鍵；稽核由 EF Core interceptor 寫入；關鍵字查詢用 `Contains`；停機部署，不強制 expand-contract | 資料庫層一律強制外鍵、trigger 寫稽核、全文檢索、expand-contract |
 | 請求日誌 | 請求完成時記一筆（含 source_ip） | 收到請求時先記一筆 |
-| 安全細節 | 密碼 PBKDF2 即可；SAST 與相依套件掃描在合併前；不要求完整 CSP；秘密輪替與 Vault 不強制；不做全站 IP 層節流（只對登入端點限速）；DAST 暫不執行（無 staging） | Argon2id／bcrypt／scrypt、commit／push 前掃描、完整 CSP、90 天輪替、依使用者限速、staging DAST |
+| 安全細節 | 密碼 PBKDF2 即可；SAST 與相依套件掃描在合併前；後端 API 不要求完整 CSP（前台、後台輸出 HTML 要設，隨部署決定，DEF-023）；秘密輪替與 Vault 不強制；不做全站 IP 層節流（只對登入端點限速）；DAST 暫不執行（無 staging） | Argon2id／bcrypt／scrypt、commit／push 前掃描、完整 CSP、90 天輪替、依使用者限速、staging DAST |
 | 測試細節 | 純接線免測試先行、功能層可批次紅綠；CsCheck 隨機屬性測試（印 seed 可重現）；`/sdd discuss` 取代三方會議；寫不成 Gherkin 的 AC 改用功能或整合測試；功能測試替換驗證但授權真實；功能測試每類別一個資料庫；變異分數不設門檻；不採三路徑、ATDD 簽核、TESTPLAN、共享狀態流程測試、`@ac`（docs/TESTING.md）；覆蓋率人工比對（自動化暫不做，DEF-018） | red-first 無例外、FIRST 不得隨機、Three Amigos、AC 與情境 1:1、不替換安全控制、測試間 rollback、變異分數門檻、門檻 fail-closed |
-| 建置與 CI | Monorepo 的 src、tests 放在 `backend/` 下；尚無可用 CI（`.github/workflows/ci.yml` 已備妥，但公司 GitHub Enterprise 停用 hosted runner，2026-10-08 起於 GitHub 停用此 workflow，恢復用 `gh workflow enable CI`），合併前作者在本機跑 build＋四層測試（含驗收） | 根目錄 src／tests、合併前 CI 綠燈 |
+| 建置與 CI | Monorepo 的 src、tests 放在 `backend/` 下，前端放在 `frontend/`（pnpm workspace，2026-10-09）；有改前端時合併前另跑前端 lint、typecheck、test；尚無可用 CI（`.github/workflows/ci.yml` 已備妥，但公司 GitHub Enterprise 停用 hosted runner，2026-10-08 起於 GitHub 停用此 workflow，恢復用 `gh workflow enable CI`），合併前作者在本機跑 build＋四層測試（含驗收） | 根目錄 src／tests、合併前 CI 綠燈 |
 | Git 細節 | 流程選擇記在 `.github/COMMIT_CONVENTION.md` 與 docs/INFRASTRUCTURE.md（不另建 CONTRIBUTING.md）；scope 用 SPEC 編號或模組名（可中文） | CONTRIBUTING.md、scope 小寫英文、commit 語言全部一致 |
 | 規格維護 | specs/README.md 索引手動維護；延後事項只登記明確延後或待決策者 | 可推導欄位自動生成、依文件結構位置登記延後項 |
 
@@ -71,6 +72,13 @@ dotnet run --project backend/tests/TcmClinic.Api.UnitTests
 dotnet run --project backend/tests/TcmClinic.Api.IntegrationTests
 dotnet run --project backend/tests/TcmClinic.Api.FunctionalTests
 dotnet run --project backend/tests/TcmClinic.Api.AcceptanceTests
+
+# 前端（在 frontend/ 執行；需 Node 24＋pnpm，見 docs/FRONTEND.md §10）
+pnpm install --frozen-lockfile
+pnpm lint; pnpm typecheck; pnpm test
+pnpm dev:site                                                   # 前台 http://localhost:3000
+pnpm dev:admin                                                  # 後台 http://localhost:5173
+pnpm gen:api                                                    # 後端執行中時，由 OpenAPI 重新產生 API 型別
 ```
 
 <!-- UDS:STANDARDS:START -->

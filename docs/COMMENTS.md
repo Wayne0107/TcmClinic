@@ -1,6 +1,6 @@
 # 註解與文件規範（Comments & Documentation）
 
-> 版本 1.1.1｜最後更新 2026-10-09
+> 版本 1.2.0｜最後更新 2026-10-09
 
 > 本檔為憲章原則 V（系統一致性）與 VII（繁體中文）的 **How**。
 > 註解的**語言**一律繁體中文；註解的**結構**依下列分層。
@@ -10,6 +10,8 @@
 必須用繁體中文：規格/計畫/任務、清單與分析報告、使用者文件、git commit 訊息、API 端點 metadata（`Summary`/`Description`/`Responses`）、程式碼註解（`//`、`/// <summary>`、`/* */`）。
 
 維持英文：原始碼識別符（變數、類別、方法名，遵循 Microsoft 命名慣例）、範本佔位符（如 `[FEATURE NAME]`）、需要英文的第三方屬性值（route template、content type）。
+
+前端（TypeScript、Vue）同樣適用：註解用繁體中文、識別字用英文。下方各節的 C# 寫法在前端的對應方式：文件式用 TSDoc（`/** … */`），測試意圖寫在 `it(...)` 的繁中說明與前一行註解（`docs/FRONTEND.md` §4.5、§8.3）。
 
 ## 1. 文件式（Documentation-style）
 

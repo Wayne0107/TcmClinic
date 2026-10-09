@@ -1,8 +1,14 @@
+<!--
+Sync Impact Report（2.1.0 → 2.2.0，MINOR，2026-10-09）
+- 異動：治理範圍由後端擴及前端（前台 Nuxt 4、後台 Vue 3）。原則 III 補充前端分層；Technology Constraints 新增前端條目，測試工具加入 Vitest 與 Playwright。
+- 未變更：七條原則的裁決內容與優先順序。
+- 需同步：docs/FRONTEND.md（新增）、docs/INFRASTRUCTURE.md、docs/TESTING.md、docs/SECURE-CODING.md、docs/DEPENDENCIES.md、docs/PERFORMANCE.md、docs/COMMENTS.md、AGENTS.md、README.md。
+-->
 <!-- 本憲章自 CHB 專案 2.1.0 版沿用，新專案從此版本起算（源專案的 Sync Impact Report 歷史不隨範本保留）。 -->
 
 # Clean Architecture Template Constitution
 
-本憲章定義本 .NET Clean Architecture 專案中，人類與 AI 協作的**最高裁決協議**。
+本憲章定義本專案（.NET Clean Architecture 後端＋Vue／Nuxt 前端）中，人類與 AI 協作的**最高裁決協議**。
 它只回答「我們追求什麼、衝突時聽誰的（What & Why）」；具體「如何實作（How）」
 由 `docs/` 系列文件與工具設定管理，並由本憲章引用。當效率、工具預設行為或個人偏好
 與本憲章衝突時，**以本憲章為最高優先**。
@@ -25,7 +31,8 @@
 
 Clean Architecture 的依賴方向與分層邊界必須嚴格遵守：依賴永遠指向內層，Core 零框架相依，
 內層不得引用外層。禁止引入破壞一致性的平行技術體系。
-**裁決**：當「少一層抽象比較快」與「職責分層清晰」衝突時，一律選分層清晰。How 見 `docs/CODING-STANDARDS.md`。
+前端同樣單向依賴：頁面 → 元件 → composable／store → API 模組 → 不依賴框架的共用型別；元件不得直接呼叫 API。
+**裁決**：當「少一層抽象比較快」與「職責分層清晰」衝突時，一律選分層清晰。How 見 `docs/CODING-STANDARDS.md`、`docs/FRONTEND.md`。
 
 ### IV. 類型安全 > 開發速度（NON-NEGOTIABLE）
 
@@ -63,8 +70,11 @@ How 見 `docs/PERFORMANCE.md`；可觀測性與日誌見 `docs/LOGGING.md`。
 - **主資料庫**：SQL Server。**禁止** MongoDB、Cassandra 等 NoSQL。
   理由：事務一致性需求高、團隊無 NoSQL 運維經驗。
 - **強類型 ID**：Vogen。理由：編譯期類型安全、業界標準、EF Core 整合成熟。
-- **測試**：xUnit、Testcontainers、CsCheck（屬性）、Verify（契約）、NetArchTest（架構）。
-  理由：以機器可驗證的機制守住原則 II／III。
+- **測試**：後端用 xUnit、Testcontainers、CsCheck（屬性）、Verify（契約）、NetArchTest（架構）；
+  前端用 Vitest（單元、元件）、Playwright（少數關鍵流程的冒煙測試）。理由：以機器可驗證的機制守住原則 II／III。
+- **前台**：Nuxt 4（SSR）＋ TypeScript。理由：公開網站靠在地 SEO 取得預約，需要伺服器端渲染；Nuxt 3 已停止維護。
+- **後台**：Vue 3 ＋ Vite（SPA）＋ Vuetify ＋ Pinia ＋ TypeScript。理由：與公司既有的後台前端一致，表單與清單元件齊全。
+- **前端套件管理與 API 契約**：pnpm workspace；API 型別由後端 OpenAPI 產生，禁止手寫平行的 DTO（守住原則 IV）。
 - **日誌**：Serilog（結構化，生產環境須持久化）。理由：客戶自建環境需可追溯的診斷紀錄。
 
 新增外部相依必須說明「解決什麼問題」與「長期成本」，並記錄授權（見治理）。
@@ -98,4 +108,4 @@ UDS 標準（`.standards/`）與 AI 工具的預設規則，僅在本憲章與 `
 - **相依授權**：新增第三方相依須記錄授權（許可式優先；Copyleft／AGPL 須維護者書面核可）。
   How 見 `docs/DEPENDENCIES.md`；Monorepo 結構、Aspire 編排、新專案建立與 CI 見 `docs/INFRASTRUCTURE.md`。
 
-**Version**: 2.1.0 | **Ratified**: 2026-05-24 | **Last Amended**: 2026-10-06
+**Version**: 2.2.0 | **Ratified**: 2026-05-24 | **Last Amended**: 2026-10-09

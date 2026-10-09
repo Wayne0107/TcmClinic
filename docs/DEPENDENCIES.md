@@ -1,6 +1,6 @@
 # 相依、授權與共用元件（Dependencies & Licensing）
 
-> 版本 1.0.0｜最後更新 2026-10-08
+> 版本 1.1.0｜最後更新 2026-10-09
 
 > 本檔為憲章 Governance「相依授權」條款的 **How**，並收錄套件管理與特定共用/工具元件的用法。
 
@@ -8,13 +8,14 @@
 
 - 版本集中於 repo 根的 `Directory.Packages.props`；**個別專案不得**指定套件版本。
 - 每個在此（以及 `.config/dotnet-tools.json`）新增的相依，都必須記錄於 `THIRD-PARTY-NOTICES.md`（見 §2）。
+- 前端（`frontend/`）用 pnpm workspace：相依宣告在各子專案的 `package.json`，實際版本以 `frontend/pnpm-lock.yaml` 為準（`docs/FRONTEND.md` §11）。`package.json` 的直接相依同樣記錄於 `THIRD-PARTY-NOTICES.md`；遞移相依不逐一列出，改以 `pnpm licenses list --prod` 檢查授權是否符合 §2 的政策。
 
 ## 2. 相依與授權治理
 
 ### 清單（THIRD-PARTY-NOTICES.md，MUST）
 
 - repo 根必須維護 `THIRD-PARTY-NOTICES.md`，列出每個第三方相依。
-- 每筆記錄：套件/工具名稱、宣告所在 manifest（`Directory.Packages.props` / `.config/dotnet-tools.json`）、用途、授權（SPDX，如 `MIT`、`Apache-2.0`）、來源 URL。
+- 每筆記錄：套件/工具名稱、宣告所在 manifest（`Directory.Packages.props` / `.config/dotnet-tools.json` / `frontend/<子專案>/package.json`）、用途、授權（SPDX，如 `MIT`、`Apache-2.0`）、來源 URL。
 - 依消費型別分區：**Production**（隨散布/部署產物出貨）vs **Dev/Test/Build-only**（不散布，如測試框架、變異/架構工具、linter）——散布狀態決定實際的姓名標示義務。
 - 清單必須在**同一次**新增/移除/升級相依的變更中更新。缺漏或過期 = 缺陷，須於審查中擋下。
 

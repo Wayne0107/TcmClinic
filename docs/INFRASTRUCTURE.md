@@ -1,13 +1,13 @@
 # 基礎設施與專案結構（Infrastructure）
 
-> 版本 1.6.0｜最後更新 2026-10-09
+> 版本 1.7.0｜最後更新 2026-10-09
 
 > 本檔為憲章原則 III（架構一致性）的結構性 **How**，涵蓋 Monorepo 佈局、Aspire 編排、
 > 新專案建立與 Build/CI。多屬一次性設定。
 
 ## 1. Monorepo 結構
 
-本工作流為後端專屬。儲存庫佈局（前端由另一團隊維護，不在本治理範圍，故不列出）：
+本工作流涵蓋後端與前端（2026-10-09 起，憲章 2.2.0）。儲存庫佈局：
 
 ```
 project-root/
@@ -36,6 +36,11 @@ project-root/
 │   │   ├── {Project}.AcceptanceTests/   # 驗收（BDD），一個選單一個資料夾，路徑同 specs/
 │   │   └── Shared/                      # 多個測試專案共用的檔案，以連結納入
 │   └── .editorconfig
+├── frontend/                  # pnpm workspace（結構見 docs/FRONTEND.md §2）
+│   ├── shared/                # 共用 API 型別（由 OpenAPI 產生）與純函式
+│   ├── site/                  # 前台：Nuxt 4（SSR）
+│   └── admin/                 # 後台：Vue 3 + Vite（SPA）
+├── prototype/                 # 前台設計雛形（靜態 HTML，參考用，不建置）
 ├── THIRD-PARTY-NOTICES.md
 └── README.md
 ```
@@ -46,9 +51,9 @@ project-root/
 - **AspireHost** 是全系統組合根，位於頂層 `apphost/`（與 `backend/` 平行），是「後端程式碼專屬於 backend/」的唯一例外——它是編排而非業務碼，以相對路徑參照後端專案（`../backend/src/...`）。
 - `.slnx` 與 CPM（`Directory.Packages.props`/`Directory.Build.props`）置於 repo 根，讓 solution 涵蓋 `apphost/` 與 `backend/src/`。
 - `{Project}.ServiceDefaults` 留在 `backend/src/`（後端共用，由 Web 參照），不移到 `apphost/`。
-- 共用 API 契約（OpenAPI）可置於 `shared/contracts/` 或由後端端點產生。
-- CI 管線必須用 path filter 避免重建未受影響的部分。
-- 前端（若存在）由另一團隊於獨立資料夾維護，資料夾命名與內部結構不在本工作流治理範圍。
+- 共用 API 契約以後端產生的 OpenAPI 為唯一來源；前端由它產生型別到 `frontend/shared/`（`docs/FRONTEND.md` §5.2），不另外維護契約檔。
+- 前端程式碼專屬於 `frontend/`，不放在 `backend/` 或 repo 根；.NET solution 不包含前端。
+- CI 管線必須用 path filter 避免重建未受影響的部分（`backend/`、`apphost/` 變更跑後端，`frontend/` 變更跑前端）。
 
 ## 2. Aspire 編排
 
@@ -98,10 +103,16 @@ dotnet run --project backend/tests/TcmClinic.Api.UnitTests
 dotnet run --project backend/tests/TcmClinic.Api.IntegrationTests
 dotnet run --project backend/tests/TcmClinic.Api.FunctionalTests
 dotnet run --project backend/tests/TcmClinic.Api.AcceptanceTests
+
+# 前端（在 frontend/ 執行，見 docs/FRONTEND.md §10）
+pnpm install --frozen-lockfile
+pnpm lint
+pnpm typecheck
+pnpm test
 ```
 
 - **共用 git hook**：首次 clone 後執行 `git config core.hooksPath .githooks` 啟用 `.githooks/pre-commit`（commit 前以 gitleaks 掃描秘密，再執行 `uds check`）。gitleaks 以 `winget install Gitleaks.Gitleaks` 安裝；未安裝時 commit 會被擋下。改用 `core.hooksPath` 後 `.git/hooks/` 下的 hook 不再執行，原本 `uds init` 產生的 UDS 檢查已併入共用 hook。
-- 合併前必須通過 build ＋單元、整合、功能、驗收四層測試（目前由作者在本機執行。`.github/workflows/ci.yml` 已備妥，但公司 GitHub Enterprise 停用 hosted runner，執行必定失敗，2026-10-08 起於 GitHub 停用此 workflow；有可用 runner 後以 `gh workflow enable CI` 恢復，改由 CI 執行）。
+- 合併前必須通過 build ＋單元、整合、功能、驗收四層測試；有改到 `frontend/` 時，前端的 `lint`、`typecheck`、`test` 也必須全綠（目前由作者在本機執行。`.github/workflows/ci.yml` 已備妥，但公司 GitHub Enterprise 停用 hosted runner，執行必定失敗，2026-10-08 起於 GitHub 停用此 workflow；有可用 runner 後以 `gh workflow enable CI` 恢復，改由 CI 執行）。
 - CI 建立時必須驗證跨平台建置（Windows、Linux、macOS）。
 - **部署前確認網路架構**（SPEC-004 FR-006b）：登入限速與請求日誌的 `source_ip` 都取 `RemoteIpAddress`。IIS 同程序部署且前面沒有代理時即為用戶端 IP；若 IIS 前另有負載平衡或反向代理，必須設定 `UseForwardedHeaders` 並以 `KnownProxies`／`KnownNetworks` 限定可信任的代理，否則所有用戶端共用一份登入額度，且 `X-Forwarded-For` 可被偽造。
 - **版本號採 SemVer**（`MAJOR.MINOR.PATCH`，2026-10-08 裁決，對齊 UDS）：API 有破壞性變更（移除欄位、改型別、改錯誤語意）升 MAJOR；新增功能升 MINOR；修正升 PATCH。版本號集中設定一處（如 `Directory.Build.props`），建置時一併寫入 git commit sha 與建置時間。

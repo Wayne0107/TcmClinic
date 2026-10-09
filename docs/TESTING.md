@@ -1,8 +1,9 @@
 # 測試規範（Testing）
 
-> 版本 1.2.0｜最後更新 2026-10-09
+> 版本 1.3.0｜最後更新 2026-10-09
 
 > 本檔為憲章原則 II（測試優先，程式碼必須可測試）的 **How**。
+> 本檔以後端為主；前端（Vitest、元件測試、Playwright 冒煙）的層級與寫法見 `docs/FRONTEND.md` §8，TDD 循環、紅燈證據、意圖註解、`@SPEC/@AC` 標記與覆蓋率不得下降的規則前後端相同。
 
 ## 1. TDD 循環（強制）
 
@@ -37,7 +38,7 @@
 
 - 測試專案必須對映其所測試的層：`TcmClinic.Api.UnitTests`、`TcmClinic.Api.IntegrationTests`、`TcmClinic.Api.FunctionalTests`、`TcmClinic.Api.AcceptanceTests`。
 - `TreatWarningsAsErrors` 與 nullable reference types 全域啟用。
-- 各層不設數量比例目標（UDS 6.13 也已棄用 70/20/7/3 金字塔，改用「覆蓋率只升不降」）；驗收以 BDD 情境＋功能測試表達（§4.6）。本專案只涵蓋後端，不設 E2E（瀏覽器）層。
+- 各層不設數量比例目標（UDS 6.13 也已棄用 70/20/7/3 金字塔，改用「覆蓋率只升不降」）；驗收以 BDD 情境＋功能測試表達（§4.6）。瀏覽器層只對少數關鍵流程做 Playwright 冒煙測試，不做每條驗收條件的 E2E（`docs/FRONTEND.md` §8.1，2026-10-09 起）。
 - 驗收（BDD）層自 2026-10-06 起只套用新規格；已完成的規格不回頭補 `.feature`。
 
 ### Mock 邊界

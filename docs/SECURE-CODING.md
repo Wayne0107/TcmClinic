@@ -1,8 +1,9 @@
 # 安全編碼規範（Secure Coding）
 
-> 版本 1.3.0｜最後更新 2026-10-08
+> 版本 1.4.0｜最後更新 2026-10-09
 
 > 本檔為憲章原則 I（安全性 > 一切）的 **How**。目標：讓弱點掃描成為程式碼本已通過的閘門，而非事後補救。
+> 本檔以後端為主；前端的 XSS、token 存放、秘密與安全標頭規則見 `docs/FRONTEND.md` §7。
 
 ## 1. 威脅基線
 
@@ -57,7 +58,7 @@
 
 - **秘密掃描在每次 commit 前執行**（2026-10-08 裁決，對齊 UDS）：以 git pre-commit hook 執行 gitleaks（檢查暫存變更是否夾帶金鑰、密碼、連線字串），掃到就擋下 commit；AI 自動 commit 同樣經過此 hook。理由：分支會 push 到 GitHub，合併前才掃時秘密可能已進入遠端歷史。hook 為進版控的 `.githooks/pre-commit`（啟用方式見 docs/INFRASTRUCTURE.md），找不到 gitleaks 時同樣擋下 commit。
   - 誤判的放行寫在 `.gitleaks.toml`，每條須附理由與追溯編號，且只針對特定規則與路徑（目前只有「測試專案的 generic-api-key」一條）。
-- 合併前，作者必須對受影響堆疊執行本機/開發階段安全掃描：相依套件弱點掃描（`dotnet list package --vulnerable --include-transitive`）+ 變更程式碼的 SAST（2026-10-08 裁決維持合併前執行，不提前到 commit 或 push）。
+- 合併前，作者必須對受影響堆疊執行本機/開發階段安全掃描：相依套件弱點掃描（後端 `dotnet list package --vulnerable --include-transitive`；前端在 `frontend/` 執行 `pnpm audit --prod`）+ 變更程式碼的 SAST（2026-10-08 裁決維持合併前執行，不提前到 commit 或 push）。
 - **High/Critical** 發現必須修復（或升級/替換相依）才能合併；Code Review 為此閘門的執行點（直到 CI 自動化建立）。Medium/Low 須記錄並可排期。
 - 任何抑制/基線忽略必須附書面理由與可追溯單號，禁止無聲抑制。
 
@@ -84,7 +85,7 @@
 |------|-----------|------|
 | MFA | 不提供 | 規格未要求；內部後台 |
 | API 速率限制 | 登入失敗鎖定（同帳號 5 次鎖 15 分鐘，SPEC-004 FR-006a）＋登入端點依來源 IP 限速（每分鐘 20 次、超過回 429 附 Retry-After，FR-006b）；不做全站 IP 層節流 | 2026-10-08 使用者決定登入端點加限速；其他端點不限速 |
-| 完整 CSP 標頭 | 只要求 `X-Frame-Options: DENY` 或 CSP `frame-ancestors`（§6） | 純 JSON API 不輸出 HTML，完整 CSP 效益低 |
+| 完整 CSP 標頭 | 後端 API 只要求 `X-Frame-Options: DENY` 或 CSP `frame-ancestors`（§6）；前台與後台輸出 HTML，正式環境要設定 CSP，由哪一層設定隨部署方式決定（`docs/FRONTEND.md` §7、DEF-023） | 純 JSON API 不輸出 HTML，完整 CSP 效益低 |
 | 密碼雜湊演算法 | PBKDF2（Identity 預設）即可，不限定 Argon2id／bcrypt／scrypt | PBKDF2 為 NIST 認可演算法 |
 | SAST、相依套件掃描時點 | 合併前執行（§8），不提前到 commit 或 push | 合併前即可攔下；每次 commit 執行會拖慢流程 |
 | 登入工作階段 | JWT Bearer：access token 15 分鐘（前端只存記憶體）；refresh token 以 HttpOnly Cookie 傳遞（`SameSite=Lax`、非 Development `Secure`）、8 小時滑動、每次換新輪替、重用偵測、伺服器只存雜湊；簽章金鑰 `Jwt:SigningKey` 由環境提供 | 2026-10-08 使用者決定（SPEC-004 FR-021～FR-021c、ADR-011） |
