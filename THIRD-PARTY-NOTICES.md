@@ -104,7 +104,7 @@ Manifest 對照：
 - 全部為寬鬆授權，可商用、可閉源散布；散布時須保留各套件的版權與授權聲明（MIT/BSD）
   或依 Apache-2.0 第 4 條附上 `NOTICE`（如有）。
 - 直接相依無 copyleft（GPL/LGPL/AGPL/MPL/SSPL）。前端遞移相依的例外（`pnpm licenses list --prod`，查證日 2026-10-09）：
-  - **lightningcss（MPL-2.0）**：Nuxt／Vite 建置時處理 CSS 的工具（經 `@unhead/bundler`），不打包進前台或後台的輸出。MPL-2.0 是檔案層級 copyleft，未修改其原始碼時沒有公開義務。依 `docs/DEPENDENCIES.md` §2 需維護者核可：**待核可**。
+  - **lightningcss（MPL-2.0）**：Nuxt／Vite 建置時處理 CSS 的工具（經 `@unhead/bundler`），不打包進前台或後台的輸出。MPL-2.0 是檔案層級 copyleft，未修改其原始碼時沒有公開義務。依 `docs/DEPENDENCIES.md` §2 需維護者核可：**2026-10-09 維護者核可**（建置期工具、不修改、不散布）。
   - **node-forge（BSD-3-Clause OR GPL-2.0）**：Nitro 開發伺服器（listhen）產生本機 HTTPS 憑證用，選用 BSD-3-Clause。
   - caniuse-lite（CC-BY-4.0，瀏覽器支援資料，建置時使用）與 BlueOak-1.0.0（glob、minimatch 等）都屬寬鬆授權。
 - 授權以查證日 2026-08-26 各專案 GitHub 為準；升級大版本時應重新確認。
