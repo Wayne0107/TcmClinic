@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Testcontainers.MsSql" />
+    <PackageReference Include="CsCheck" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+    <Using Include="TcmClinic.Api.Tests.Shared" />
+  </ItemGroup>
+
+  <!-- 共用一個 SQL Server 容器、每個測試一個專屬資料庫（見檔內說明）。 -->
+  <ItemGroup>
+    <Compile Include="../Shared/TestDatabase.cs" Link="Shared/TestDatabase.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\TcmClinic.Api.Infrastructure\TcmClinic.Api.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\TcmClinic.Api.UseCases\TcmClinic.Api.UseCases.csproj" />
+  </ItemGroup>
+
+</Project>

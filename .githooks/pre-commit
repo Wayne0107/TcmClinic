@@ -1,0 +1,32 @@
+#!/bin/sh
+# 專案共用的 pre-commit hook（docs/SECURE-CODING.md §8、DEF-015）。
+# 啟用方式：git config core.hooksPath .githooks（見 README.md「前置需求」）。
+
+# 1. 秘密掃描：以 gitleaks 檢查暫存變更，掃到秘密或找不到 gitleaks 一律擋下 commit。
+GITLEAKS=$(command -v gitleaks 2>/dev/null)
+if [ -z "$GITLEAKS" ] && [ -n "$LOCALAPPDATA" ]; then
+  # winget 安裝後要重開終端機才讀得到新的 PATH；先直接找安裝位置，讓已開啟的工作階段也能用。
+  for candidate in "$LOCALAPPDATA"/Microsoft/WinGet/Packages/Gitleaks.Gitleaks_*/gitleaks.exe; do
+    [ -f "$candidate" ] && GITLEAKS="$candidate" && break
+  done
+fi
+
+if [ -z "$GITLEAKS" ]; then
+  echo "[秘密掃描] 找不到 gitleaks，已擋下 commit。" >&2
+  echo "  安裝：winget install Gitleaks.Gitleaks（其他平台見 https://github.com/gitleaks/gitleaks）" >&2
+  exit 1
+fi
+
+if ! "$GITLEAKS" git --pre-commit --staged --redact --no-banner --verbose; then
+  echo "[秘密掃描] 暫存變更疑似含有秘密，已擋下 commit。" >&2
+  echo "  請移除秘密後重新 git add；確定是誤判時，依 docs/SECURE-CODING.md §8 附理由加入 .gitleaks.toml 放行。" >&2
+  exit 1
+fi
+
+# 2. UDS 標準檢查（原 uds init 產生的 .git/hooks/pre-commit；只提示，不擋 commit）。
+if command -v uds >/dev/null 2>&1; then
+  echo "Running UDS pre-commit checks..."
+  uds check 2>/dev/null || true
+fi
+
+echo "Pre-commit checks passed"

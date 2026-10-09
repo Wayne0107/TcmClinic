@@ -1,0 +1,61 @@
+﻿# .NET
+bin/
+obj/
+*.user
+*.suo
+*.cache
+packages/
+
+# Node.js
+node_modules/
+dist/
+build/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.swp
+
+# Claude Code local config / skills (not version-controlled)
+.claude/
+
+# 各 AI 產生的指令／context 檔（本機自裝，換 AI 不進 git）
+.github/copilot-instructions.md
+CLAUDE.md
+.gemini/
+.codex/
+
+# 專案規範文件、SDD 暫存 prompt、UDS 標準檔（本機保留，不上傳）
+/docs/
+/sdd-prompts/
+/.standards/
+
+# 本機知識圖資料庫
+.engram/
+
+# Environment
+.env
+.env.*
+!.env.development
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Test & coverage
+coverage/
+TestResults/
+
+# Stryker (mutation testing) generated reports/logs
+StrykerOutput/
+
+# Aspire
+.aspire/
+
+# Reqnroll 由 .feature 產生的 code-behind（建置時重新產生）
+*.feature.cs

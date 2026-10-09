@@ -1,0 +1,16 @@
+﻿{
+  account: String,
+  displayName: String,
+  email: Null,
+  passwordChangedAt: String,
+  passwordExpired: Boolean,
+  passwordRemainingDays: Number,
+  phone: Null,
+  roles: [
+    {
+      code: String,
+      name: String
+    }
+  ],
+  status: String
+}

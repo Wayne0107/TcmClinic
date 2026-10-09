@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="CsCheck" />
+    <PackageReference Include="NetArchTest.Rules" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <!-- 授權處理器（MenuAccessHandler）與架構測試需掃描 Web 組件；Web 為 ASP.NET Core 專案，
+       故一併引用 Microsoft.AspNetCore.App 共享框架以解析 Microsoft.AspNetCore.Authorization 型別。 -->
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\TcmClinic.Api.Core\TcmClinic.Api.Core.csproj" />
+    <ProjectReference Include="..\..\src\TcmClinic.Api.UseCases\TcmClinic.Api.UseCases.csproj" />
+    <ProjectReference Include="..\..\src\TcmClinic.Api.Infrastructure\TcmClinic.Api.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\TcmClinic.Api.Web\TcmClinic.Api.Web.csproj" />
+  </ItemGroup>
+
+</Project>

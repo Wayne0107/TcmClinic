@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!-- 產生 XML 文件供 OpenAPI 讀取 DTO 欄位說明（Scalar 顯示）；未寫註解的 public 型別不視為錯誤 -->
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FastEndpoints" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="FastEndpoints.Swagger" />
+    <PackageReference Include="Scalar.AspNetCore" />
+    <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Serilog.Expressions" />
+    <PackageReference Include="Serilog.Sinks.Console" />
+    <PackageReference Include="Serilog.Sinks.File" />
+    <PackageReference Include="Serilog.Settings.Configuration" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TcmClinic.Api.UseCases\TcmClinic.Api.UseCases.csproj" />
+    <ProjectReference Include="..\TcmClinic.Api.Infrastructure\TcmClinic.Api.Infrastructure.csproj" />
+    <ProjectReference Include="..\TcmClinic.Api.ServiceDefaults\TcmClinic.Api.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+  <!-- 建置時間（SPEC-065）：只在 Release 建置寫入，供 GET /version 回傳；Debug 不寫入，避免每次建置內容都不同而重新編譯。 -->
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+    <AssemblyMetadata Include="BuildTime" Value="$([System.DateTime]::Now.ToString('yyyy-MM-ddTHH:mm:sszzz'))" />
+  </ItemGroup>
+
+</Project>

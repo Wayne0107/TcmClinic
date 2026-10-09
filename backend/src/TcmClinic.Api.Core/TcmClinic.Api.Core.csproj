@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Ardalis.GuardClauses" />
+    <PackageReference Include="Ardalis.Result" />
+    <PackageReference Include="Ardalis.SmartEnum" />
+    <PackageReference Include="Ardalis.Specification" />
+    <PackageReference Include="Mediator.Abstractions" />
+    <PackageReference Include="Vogen" />
+    <PackageReference Include="TreeCollections" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TcmClinic.Api.SharedKernel\TcmClinic.Api.SharedKernel.csproj" />
+  </ItemGroup>
+
+</Project>

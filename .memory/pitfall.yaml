@@ -1,0 +1,71 @@
+- id: MEM-2026-0001
+  insight: 繁中 Gherkin（# language: zh-TW）的 Rule 區塊關鍵字沒有翻譯，要寫英文「Rule:」；寫「規則:」不會報錯，但會被當成上一層的描述文字。
+  category: pitfall
+  confidence: 0.9
+  created_at: 2026-10-06
+  context: 撰寫 backend/tests/TcmClinic.Api.AcceptanceTests/**/*.feature（Reqnroll 3.3.4，內含 Gherkin 35.0.0；2026-10-09 前位於 FunctionalTests/Features/）時，用 Rule 分組場景並各自帶背景。
+  anti_pattern: 第一個「規則:」被吞進 Feature 描述，直到第二個「規則:」後面接「背景:」才在建置時報錯（expected #RuleLine … got '規則: …'），容易誤判成背景寫錯。
+  resolution: 寫「Rule:」；其餘關鍵字照常用繁中（功能、背景、場景、場景大綱、例子、假設、當、那麼、而且）。zh-CN 方言才有「规则」。
+  example:
+    bad: "  規則: 停用的帳號不能登入"
+    good: "  Rule: 停用的帳號不能登入"
+  tags: [gherkin, reqnroll, bdd, zh-TW]
+  applicability:
+    frameworks: [Reqnroll, Gherkin]
+    universal: false
+  validity:
+    type: versioned
+    version_bound: "Gherkin 35.0.0"
+  related: []
+- id: MEM-2026-0002
+  insight: 原始碼資料夾不要取名 Build（或 build、bin、obj 等建置輸出名稱）——根目錄 .gitignore 的「build/」在 Windows（core.ignorecase=true）會不分大小寫排除整個資料夾，新檔不會出現在 git status。
+  category: pitfall
+  confidence: 0.95
+  created_at: 2026-10-08
+  context: SPEC-065 新增 backend/src/TcmClinic.Api.Web/Endpoints/Build/ 放 BuildInfo 與 GetVersionEndpoint。
+  anti_pattern: 本機建置與三層測試全綠、git add -A 也沒報錯，但兩個檔根本沒進 commit；乾淨 clone 會編譯失敗。審查時才以 git check-ignore 發現。
+  resolution: 資料夾改名（如 BuildIdentity）。新增資料夾後以 git status 確認新檔有列出；有疑慮時用 git check-ignore -v <路徑> 查是哪條規則命中。合併前可用 git -c core.longpaths=true clone 到短路徑（如 %TEMP%\c065）重跑建置確認。
+  example:
+    bad: "backend/src/TcmClinic.Api.Web/Endpoints/Build/BuildInfo.cs"
+    good: "backend/src/TcmClinic.Api.Web/Endpoints/BuildIdentity/BuildInfo.cs"
+  tags: [git, gitignore, windows]
+  applicability:
+    universal: true
+  validity:
+    type: permanent
+  related: []
+- id: MEM-2026-0003
+  insight: Reqnroll 的 hook（[BeforeFeature]、[AfterScenario] 等）預設套用到所有 feature；每個步驟類別都要在類別上加 [Scope(Feature = "功能名稱")]，否則新增 feature 時別的類別的工廠與重設動作也會跑。
+  category: pitfall
+  confidence: 0.9
+  created_at: 2026-10-08
+  context: SPEC-065 新增第二個 feature（版本號與建置識別）時，另一個步驟類別未限定範圍的 [BeforeFeature] 也替它啟動一個 CustomWebApplicationFactory，[AfterScenario] 也在每個場景後重設該類別的測試資料。
+  anti_pattern: 以場景標籤篩選 feature hook（[BeforeFeature("SPEC-065")]）不會生效——標籤寫在場景上，不在 feature 上，hook 不執行，步驟取 FeatureContext 時丟 KeyNotFoundException。
+  resolution: 類別層級 [Scope(Feature = …)]（會套用到類別內的 static feature hook）；[AfterFeature] 以 TryGetValue 取工廠再釋放，避免啟動失敗時再丟例外蓋掉真正原因。
+  tags: [reqnroll, bdd, hooks]
+  applicability:
+    frameworks: [Reqnroll]
+    universal: false
+  validity:
+    type: versioned
+    version_bound: "Reqnroll 3.3.4"
+  related: []
+- id: MEM-2026-0004
+  insight: Stryker.NET 5.0.0 在 xUnit v3（Microsoft Testing Platform）專案產生的變異分數不可信——vstest 執行器全判逾時，mtp 執行器會誤判 Killed；看分數前先抽查一個 Killed 變異。
+  category: pitfall
+  confidence: 0.9
+  created_at: 2026-10-08
+  context: 依 2026-10-08 裁決第 21 題試跑變異測試（backend/stryker-config.json，Core＋UnitTests）。
+  anti_pattern: 預設執行器得 98.51%，看似很好，實際 Killed 0、596 個全是 Timeout；加 --test-runner mtp 得 82.48%、Survived 0，也像正常結果，但手動套用其中一個「Killed」變異後測試全過。
+  resolution: 以報告的 status 分布判斷（Killed 為 0 或 Survived 為 0 都可疑），再挑一個 Killed 變異手動套用、直接 dotnet run 單元測試確認；同時做一個必定失敗的對照變異，證明手動流程有效。工具修正前不以分數為依據（DEF-021）。
+  example:
+    bad: "dotnet stryker  # 98.51%，全是 Timeout"
+    good: "看 Killed/Survived/Timeout 分布＋手動套用變異驗證"
+  tags: [stryker, mutation-testing, xunit-v3, mtp]
+  applicability:
+    frameworks: [Stryker.NET, xUnit v3]
+    universal: false
+  validity:
+    type: versioned
+    version_bound: "Stryker.NET 5.0.0"
+  related: []

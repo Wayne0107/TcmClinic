@@ -1,0 +1,13 @@
+# gitleaks 設定（docs/SECURE-CODING.md §8、DEF-015）：沿用 gitleaks 預設規則。
+# 放行須附理由並可追溯（SECURE-CODING §8「禁止無聲抑制」）；每條放行只針對特定規則與路徑。
+
+[extend]
+useDefault = true
+
+# 測試程式中的測試用密碼（如 currentPassword = "…"）會被 generic-api-key 規則誤判。
+# 只放行測試專案的這一條規則；其他偵測器（雲端金鑰、私鑰、token 等）在測試專案照常生效。
+# 追溯：DEF-015（2026-10-08 首次全歷史掃描的 3 筆皆屬此類）。
+[[allowlists]]
+description = "測試專案的測試用密碼（generic-api-key 誤判）"
+targetRules = ["generic-api-key"]
+paths = ['''^backend/tests/''']

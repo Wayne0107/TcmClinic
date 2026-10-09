@@ -1,0 +1,44 @@
+# 2026-10-08 起停用（gh workflow disable CI）：公司 GitHub Enterprise 停用 hosted runner，執行必定失敗；合併前改由作者在本機跑建置與四層測試。
+# 有可用 runner（開放 hosted runner 或自架 self-hosted runner）後以 gh workflow enable CI 恢復。
+# 後端 CI：建置並跑單元、整合、功能、驗收四層測試；合併到 master 前必須全綠（docs/INFRASTRUCTURE.md Git 流程）。
+# 測試以 dotnet run --project 執行（本專案 dotnet test 會失敗）；整合、功能、驗收測試以 Testcontainers 啟動 SQL Server，
+# GitHub 的 ubuntu runner 內建 Docker。
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  # 資料庫存當地時間（DATABASE-SCHEMA 標準欄位），與開發環境時區一致。
+  TZ: Asia/Taipei
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: 建置
+        run: dotnet build TcmClinic.Api.slnx -c Release
+
+      - name: 單元測試
+        run: dotnet run --no-build -c Release --project backend/tests/TcmClinic.Api.UnitTests
+
+      - name: 整合測試
+        run: dotnet run --no-build -c Release --project backend/tests/TcmClinic.Api.IntegrationTests
+
+      - name: 功能測試
+        run: dotnet run --no-build -c Release --project backend/tests/TcmClinic.Api.FunctionalTests
+
+      - name: 驗收測試
+        run: dotnet run --no-build -c Release --project backend/tests/TcmClinic.Api.AcceptanceTests

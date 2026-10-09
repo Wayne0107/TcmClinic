@@ -1,0 +1,18 @@
+﻿{
+  Items: [
+    {
+      Id: Guid_1,
+      Account: admin,
+      DisplayName: 系統管理員,
+      RoleCodes: [
+        SUPERADMIN
+      ],
+      RoleNames: [
+        超級管理員
+      ]
+    }
+  ],
+  Page: 1,
+  PageSize: 20,
+  TotalCount: 1
+}

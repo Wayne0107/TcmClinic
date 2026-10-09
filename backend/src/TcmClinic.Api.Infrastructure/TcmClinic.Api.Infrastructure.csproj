@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" ExcludeAssets="contentFiles" PrivateAssets="all" />
+    <PackageReference Include="Vogen" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TcmClinic.Api.Core\TcmClinic.Api.Core.csproj" />
+    <ProjectReference Include="..\TcmClinic.Api.UseCases\TcmClinic.Api.UseCases.csproj" />
+  </ItemGroup>
+
+</Project>

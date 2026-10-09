@@ -1,0 +1,7 @@
+# Verify（快照測試）產出的檔案必須使用 LF 行尾，否則於 Windows 簽出成 CRLF 時
+# 會擲 VerifiedLineEndingException 導致契約測試失敗。
+*.verified.txt text eol=lf
+*.received.txt text eol=lf
+
+# 共用 git hook 必須用 LF 行尾，CRLF 會讓 shebang 失效。
+.githooks/* text eol=lf

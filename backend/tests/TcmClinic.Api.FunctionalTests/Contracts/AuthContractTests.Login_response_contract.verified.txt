@@ -1,0 +1,10 @@
+﻿{
+  AccessToken: {jwt},
+  TokenType: Bearer,
+  ExpiresIn: 900,
+  Account: admin,
+  DisplayName: 系統管理員,
+  Roles: [
+    SUPERADMIN
+  ]
+}

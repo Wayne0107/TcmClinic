@@ -1,0 +1,19 @@
+{
+  "stryker-config": {
+    "project": "TcmClinic.Api.Core.csproj",
+    "test-projects": [
+      "tests/TcmClinic.Api.UnitTests/TcmClinic.Api.UnitTests.csproj"
+    ],
+    "mutation-level": "Standard",
+    "reporters": [
+      "html",
+      "progress",
+      "cleartext"
+    ],
+    "thresholds": {
+      "high": 80,
+      "low": 60,
+      "break": 0
+    }
+  }
+}

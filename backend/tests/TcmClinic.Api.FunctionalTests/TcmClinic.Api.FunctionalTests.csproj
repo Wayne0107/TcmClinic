@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Testcontainers.MsSql" />
+    <PackageReference Include="Verify.XunitV3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+    <Using Include="TcmClinic.Api.Tests.Shared" />
+  </ItemGroup>
+
+  <!-- 共用一個 SQL Server 容器、每個測試一個專屬資料庫（見檔內說明）；工廠與輔助和驗收測試共用（docs/TESTING.md §4.6）。 -->
+  <ItemGroup>
+    <Compile Include="../Shared/TestDatabase.cs" Link="Shared/TestDatabase.cs" />
+    <Compile Include="../Shared/CustomWebApplicationFactory.cs" Link="Shared/CustomWebApplicationFactory.cs" />
+    <Compile Include="../Shared/AuthWebApplicationFactory.cs" Link="Shared/AuthWebApplicationFactory.cs" />
+    <Compile Include="../Shared/TestAuthHandler.cs" Link="Shared/TestAuthHandler.cs" />
+    <Compile Include="../Shared/ProblemDetailsTestSupport.cs" Link="Shared/ProblemDetailsTestSupport.cs" />
+    <Compile Include="../Shared/MenuRequestTestSupport.cs" Link="Shared/MenuRequestTestSupport.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\TcmClinic.Api.Web\TcmClinic.Api.Web.csproj" />
+  </ItemGroup>
+
+</Project>

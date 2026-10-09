@@ -1,0 +1,24 @@
+﻿[
+  {
+    text: 選單管理,
+    value: /admin/menus
+  },
+  {
+    text: 系統管理,
+    value: system,
+    subMenu: [
+      {
+        text: 角色權限維護,
+        value: rolePermission
+      },
+      {
+        text: 帳號維護,
+        value: accountMaintenance
+      },
+      {
+        text: 個人資料維護,
+        value: personalData
+      }
+    ]
+  }
+]

@@ -1,0 +1,17 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <LangVersion>latest</LangVersion>
+    <!-- 版本號（SemVer，唯一設定處；SPEC-065、docs/INFRASTRUCTURE.md §4）：API 破壞性變更升 MAJOR、新增功能升 MINOR、修正升 PATCH。
+         0.x 表示尚未正式上線；SDK 建置時自動在 InformationalVersion 附上 +<commit sha>。 -->
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+
+  <!-- 測試專案：複製 xunit.runner.json 以套用平行化設定 -->
+  <ItemGroup Condition="'$(IsTestProject)' == 'true'">
+    <None Update="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

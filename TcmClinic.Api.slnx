@@ -1,0 +1,19 @@
+<Solution>
+  <Folder Name="/apphost/">
+    <Project Path="apphost/TcmClinic.Api.AspireHost/TcmClinic.Api.AspireHost.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="backend/src/TcmClinic.Api.Core/TcmClinic.Api.Core.csproj" />
+    <Project Path="backend/src/TcmClinic.Api.Infrastructure/TcmClinic.Api.Infrastructure.csproj" />
+    <Project Path="backend/src/TcmClinic.Api.ServiceDefaults/TcmClinic.Api.ServiceDefaults.csproj" />
+    <Project Path="backend/src/TcmClinic.Api.SharedKernel/TcmClinic.Api.SharedKernel.csproj" />
+    <Project Path="backend/src/TcmClinic.Api.UseCases/TcmClinic.Api.UseCases.csproj" />
+    <Project Path="backend/src/TcmClinic.Api.Web/TcmClinic.Api.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="backend/tests/TcmClinic.Api.AcceptanceTests/TcmClinic.Api.AcceptanceTests.csproj" />
+    <Project Path="backend/tests/TcmClinic.Api.FunctionalTests/TcmClinic.Api.FunctionalTests.csproj" />
+    <Project Path="backend/tests/TcmClinic.Api.IntegrationTests/TcmClinic.Api.IntegrationTests.csproj" />
+    <Project Path="backend/tests/TcmClinic.Api.UnitTests/TcmClinic.Api.UnitTests.csproj" />
+  </Folder>
+</Solution>
