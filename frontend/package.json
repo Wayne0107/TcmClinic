@@ -1,0 +1,23 @@
+{
+  "name": "tcm-clinic-frontend",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.5.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev:site": "pnpm --filter @tcm-clinic/site dev",
+    "dev:admin": "pnpm --filter @tcm-clinic/admin dev",
+    "lint": "pnpm -r --if-present lint",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "pnpm -r --if-present test",
+    "test:coverage": "pnpm -r --if-present test:coverage",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "gen:api": "pnpm --filter @tcm-clinic/shared gen:api"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.9"
+  }
+}

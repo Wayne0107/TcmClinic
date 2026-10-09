@@ -1,6 +1,7 @@
 # 2026-10-08 起停用（gh workflow disable CI）：公司 GitHub Enterprise 停用 hosted runner，執行必定失敗；合併前改由作者在本機跑建置與四層測試。
 # 有可用 runner（開放 hosted runner 或自架 self-hosted runner）後以 gh workflow enable CI 恢復。
-# 後端 CI：建置並跑單元、整合、功能、驗收四層測試；合併到 master 前必須全綠（docs/INFRASTRUCTURE.md Git 流程）。
+# 後端 CI：建置並跑單元、整合、功能、驗收四層測試；前端 CI：格式、lint、型別檢查、測試、相依弱點掃描。
+# 合併到 master 前必須全綠（docs/INFRASTRUCTURE.md Git 流程）。
 # 測試以 dotnet run --project 執行（本專案 dotnet test 會失敗）；整合、功能、驗收測試以 Testcontainers 啟動 SQL Server，
 # GitHub 的 ubuntu runner 內建 Docker。
 name: CI
@@ -42,3 +43,41 @@ jobs:
 
       - name: 驗收測試
         run: dotnet run --no-build -c Release --project backend/tests/TcmClinic.Api.AcceptanceTests
+
+  # 前端 CI：格式、lint、型別檢查、測試（docs/FRONTEND.md §10）。
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: frontend/package.json
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: 安裝
+        run: pnpm install --frozen-lockfile
+
+      - name: 格式
+        run: pnpm format:check
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: 型別檢查
+        run: pnpm typecheck
+
+      - name: 測試
+        run: pnpm test
+
+      - name: 相依弱點掃描
+        run: pnpm audit --prod --audit-level high

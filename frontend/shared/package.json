@@ -1,0 +1,20 @@
+{
+  "name": "@tcm-clinic/shared",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "gen:api": "openapi-typescript http://localhost:5143/swagger/v1/swagger.json -o src/api/schema.d.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "eslint": "^10.12.0",
+    "eslint-config-prettier": "^10.1.8",
+    "openapi-typescript": "^7.13.0",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.71.1"
+  }
+}

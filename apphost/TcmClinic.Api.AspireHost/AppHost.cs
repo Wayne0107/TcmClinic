@@ -24,7 +24,8 @@ builder.AddProject<Projects.TcmClinic_Api_Web>("api")
             Endpoint = context.GetEndpoint("http"),
         }));
 
-// 前端由另一團隊維護，不在本編排內（docs/INFRASTRUCTURE.md §1）。若要一併啟動，把上方的 API 資源存成變數，
-// 再以 AddExecutable 加入前端 dev server，並以 .WithReference(api) 注入後端位址。
+// 前端（frontend/）目前不在本編排內，於 frontend/ 以 pnpm dev:site、pnpm dev:admin 另行啟動，經 /api 代理到
+// 上方 API 的 http 位址（docs/FRONTEND.md §5.1、§10）。若要一併啟動，把 API 資源存成變數，再以 AddExecutable
+// 加入前端 dev server，並以 .WithReference(api) 注入後端位址。
 
 builder.Build().Run();

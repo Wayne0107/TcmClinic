@@ -1,0 +1,6 @@
+# Nuxt 產物
+.nuxt/
+.output/
+.data/
+# 建置與測試產物（node_modules/、dist/、coverage/ 已由根目錄 .gitignore 排除）
+*.tsbuildinfo

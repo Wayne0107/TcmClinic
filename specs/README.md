@@ -126,6 +126,7 @@ SPEC-002～SPEC-065 為範本內建規格的編號（沿用源專案，程式碼
 | DEF-021 | 跨規格（測試工具） | 變異測試無法產生有效分數：Stryker.NET 5.0.0 在 xUnit v3（MTP）下，預設 vstest 執行器全判逾時、`--test-runner mtp` 會誤判 Killed。解除條件：Stryker 修正 MTP 執行器或改用可信的工具；在此之前不以變異分數作為測試有效性的依據（`docs/TESTING.md` §4.4） | 延後（待工具修正） |
 | DEF-022 | SPEC-004 使用者管理與登入 | `SysUserSession` 舊列清除：每次登入新增一筆、已撤銷或逾期的列不刪除（ADR-011「影響」）；筆數明顯影響查詢或儲存時，規劃定期清除（如逾期 90 天以上）並決定是否保留供稽核 | 延後（量大時再規劃） |
 | DEF-023 | 跨規格（前端部署） | 前端正式環境的部署方式：前台 Nuxt SSR 的執行環境（Node 伺服器或其他）、後台靜態檔的託管位置、`/api` 轉發到後端的方式，以及前台與後台的 CSP 等安全標頭由哪一層設定；與 DEF-006 一併決定（`docs/FRONTEND.md` §5.1、§7） | 待決策 |
+| DEF-024 | 跨規格（前端相依弱點） | 2026-10-09 `pnpm audit` 的暫時處置（`frontend/pnpm-workspace.yaml`）：① simple-git 以 override 升到 4.x 修補 Critical，因 `@nuxt/devtools` 3.x 不相容而關閉前台 devtools；② node-forge（GHSA-86w9-cpqp-85rv）、braces（GHSA-vfj7-8cjw-p6xm）尚無修補版，只用於開發伺服器與建置，列入 `auditConfig.ignoreGhsas`。解除條件：Nuxt 改用相容的 devtools 後移除 override 並重新開啟 devtools；兩者發布修補版後移除忽略 | 延後（待上游修補） |
 
 ---
 

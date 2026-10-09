@@ -11,3 +11,15 @@ useDefault = true
 description = "測試專案的測試用密碼（generic-api-key 誤判）"
 targetRules = ["generic-api-key"]
 paths = ['''^backend/tests/''']
+
+# 由後端 OpenAPI 產生的前端型別檔會帶入 API 文件範例。登入／換新 token 的回應範例
+# "eyJhbGciOiJIUzI1NiIs..." 只是 JWT 標頭 {"alg":"HS256", 的開頭加上省略號，不是 token，
+# 會被 generic-api-key 誤判。只放行這個檔案中這個範例字串；其他偵測器與其他值照常生效。
+# 追溯：範例來源 backend/src/TcmClinic.Api.Web/Endpoints/Auth/LoginEndpoint.cs、RefreshEndpoint.cs；
+# 型別產生方式見 docs/FRONTEND.md §5.2（2026-10-09 建立前端骨架時首次出現）。
+[[allowlists]]
+description = "前端產生型別中的 JWT 範例字串（generic-api-key 誤判）"
+targetRules = ["generic-api-key"]
+condition = "AND"
+paths = ['''^frontend/shared/src/api/schema\.d\.ts$''']
+regexes = ['''^eyJhbGciOiJIUzI1NiIs\.\.\.$''']

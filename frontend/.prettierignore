@@ -1,0 +1,6 @@
+pnpm-lock.yaml
+**/dist
+**/.nuxt
+**/.output
+**/coverage
+shared/src/api/schema.d.ts

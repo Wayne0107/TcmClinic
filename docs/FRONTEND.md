@@ -1,6 +1,6 @@
 # 前端規範（Frontend）
 
-> 版本 1.0.0｜最後更新 2026-10-09
+> 版本 1.1.0｜最後更新 2026-10-09
 
 > 本檔為憲章原則 I～VII 在前端（`frontend/`）的 **How**：前台（Nuxt 4）、後台（Vue 3）與共用套件。
 > 後端專屬的規則（Clean Architecture 分層、Vogen、EF Core、xUnit）不適用前端；前端沒有規定的事項，依憲章裁決，再參考 `.standards/`。
@@ -119,7 +119,7 @@ API 模組（api.ts、shared/http）
 
 - 格式以 `frontend/.editorconfig`（2 空格、LF、UTF-8）與 Prettier（`frontend/.prettierrc.json`）為準，ESLint 只負責程式碼品質，不檢查格式。
 - ESLint 用 flat config：前台用 `@nuxt/eslint`，後台用 `eslint-plugin-vue`＋`typescript-eslint`。規則寫在各子專案的 `eslint.config.*`。
-- 提交前 `pnpm lint`、`pnpm typecheck`、`pnpm test` 必須全綠（§10）。
+- 提交前 `pnpm format:check`、`pnpm lint`、`pnpm typecheck`、`pnpm test` 必須全綠（§10）。
 - **禁止提交除錯程式碼**：`console.log`、`debugger` 為 lint 錯誤。
 
 ### 4.5 註解（憲章原則 VII）
@@ -135,8 +135,9 @@ API 模組（api.ts、shared/http）
 
 - 前端一律以相對路徑 `/api/...` 呼叫後端，由代理轉給後端並去掉 `/api` 前綴。後端路由本身沒有 `/api` 前綴，例如 `/api/auth/login` 會轉到 `/auth/login`。
   - 後台開發：Vite dev server 的 `server.proxy`。
-  - 前台：Nitro 的 `routeRules` proxy，SSR 與瀏覽器端共用同一個路徑。
-  - 代理目標預設 `http://localhost:5143`（後端 `launchSettings.json` 的 http 位址），可用環境變數 `API_PROXY_TARGET` 覆寫。
+  - 前台瀏覽器端：Nitro 的 `routeRules` proxy。
+  - 前台 SSR：伺服器端不能用相對路徑，所以直接呼叫 `runtimeConfig.apiBase` 的後端位址（正式環境以 `NUXT_API_BASE` 覆寫）。這部分已經封裝在 `app/plugins/api.ts`，頁面不必區分是在伺服器端還是瀏覽器端。
+  - 代理目標與 `apiBase` 預設都是 `http://localhost:5143`（後端 `launchSettings.json` 的 http 位址），可用環境變數 `API_PROXY_TARGET` 覆寫。
 - 前端與後端維持**同源**（經過代理），所以 refresh token 的 HttpOnly Cookie（`SameSite=Lax`、`Path=/`）會自動帶上，不需要額外設定 CORS。
 - 正式環境的代理與託管方式尚未決定（specs/README.md 延後事項 DEF-023）。
 
@@ -266,6 +267,7 @@ pnpm lint                        # 全部子專案 ESLint
 pnpm typecheck                   # 全部子專案型別檢查
 pnpm test                        # 全部子專案 Vitest
 pnpm test:coverage               # 含覆蓋率
+pnpm format                      # Prettier 格式化（format:check 只檢查不修改）
 pnpm gen:api                     # 由執行中的後端產生 API 型別（§5.2）
 ```
 
@@ -278,6 +280,8 @@ pnpm gen:api                     # 由執行中的後端產生 API 型別（§5.
 - 版本範圍用 `^`，實際版本以 `pnpm-lock.yaml` 為準。安裝一律 `--frozen-lockfile`，不得只改 `package.json` 而不提交 lockfile。
 - 共用的開發工具（Prettier、TypeScript）放在 workspace 根的 `devDependencies`。各子專案的執行期相依放在該子專案。
 - 授權檢查：`pnpm licenses list --prod`。
+- **安裝腳本**：pnpm 預設封鎖套件的安裝腳本，需要時在 `pnpm-workspace.yaml` 的 `allowBuilds` 逐一允許並附理由。
+- **發布時間保護**：pnpm 只安裝已發布一段時間的版本，防範剛被植入惡意程式的新版本。不得把套件加進 `minimumReleaseAgeExclude` 來繞過；要用的版本還太新時，放寬版本下限讓 pnpm 選較舊的版本，或等一段時間再升級。
 
 ## 12. 無障礙與 SEO
 

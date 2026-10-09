@@ -69,3 +69,52 @@
     type: versioned
     version_bound: "Stryker.NET 5.0.0"
   related: []
+- id: MEM-2026-0005
+  insight: Nuxt 4.6 在 pnpm＋Windows 下正式建置（nuxt build）後，每個頁面都回 500「Either manifest or precomputed data must be provided」；nuxt dev 與 Vitest 都正常，只有 .output 會壞。
+  category: pitfall
+  confidence: 0.85
+  created_at: 2026-10-09
+  context: 建立前端骨架 frontend/site（Nuxt 4.6.0、nitropack 2.13.4、pnpm 11.5.0、Node 24、Windows 11），以 node .output/server/index.mjs 做冒煙測試。
+  anti_pattern: Nitro 把 nuxt runtime 外部化到 .output/server/node_modules/nuxt，nuxt/internal/precomputed 依 package exports 對到 dist/runtime/server/precomputed.js 空 stub，而不是建置產物。lint、typecheck、test 全綠也抓不到。
+  resolution: nuxt.config.ts 加 nitro.externals.inline = ['nuxt'] 強制打包；建置後檢查 .output/server/node_modules 不含 nuxt，並實際啟動 .output 打首頁確認 200。
+  example:
+    bad: "nitro: {}  # .output/server/node_modules/nuxt 存在 → SSR 500"
+    good: "nitro: { externals: { inline: ['nuxt'] } }"
+  tags: [nuxt, nitro, pnpm, windows, build]
+  applicability:
+    frameworks: [Nuxt, Nitro]
+    universal: false
+  validity:
+    type: versioned
+    version_bound: "nuxt 4.6.0 / nitropack 2.13.4"
+  related: []
+- id: MEM-2026-0006
+  insight: pnpm 在 node_modules 已存在時常回「Already up to date」，不會套用 pnpm-workspace.yaml 新加的 overrides，連刪掉 pnpm-lock.yaml 也不會重寫；要刪掉各層 node_modules 再 pnpm install。
+  category: pitfall
+  confidence: 0.85
+  created_at: 2026-10-09
+  context: 為修補 pnpm audit 的 simple-git 弱點，在 frontend/pnpm-workspace.yaml 加 overrides 後重裝（pnpm 11.5.0）。
+  anti_pattern: 以為 override 已生效，audit 仍報同樣弱點；刪除 lockfile 後 pnpm 依 node_modules/.pnpm/lock.yaml 判定已最新，根目錄完全沒有 pnpm-lock.yaml，接著 pnpm audit 報 ERR_PNPM_AUDIT_NO_LOCKFILE。
+  resolution: rm -rf node_modules */node_modules 後 pnpm install；用 ls node_modules/.pnpm | grep <套件> 確認實際版本，並確認 pnpm-lock.yaml 有產生。
+  tags: [pnpm, overrides, lockfile]
+  applicability:
+    frameworks: [pnpm]
+    universal: false
+  validity:
+    type: versioned
+    version_bound: "pnpm 11.5.0"
+  related: []
+- id: MEM-2026-0007
+  insight: 用 pnpm overrides 把遞移相依升主版本來修弱點前，要先確認上游的 import 方式；simple-git 4 拿掉 default export，@nuxt/devtools 3.x 的 import Git from 'simple-git' 在模組載入時就失敗，連 nuxt prepare 都跑不起來。
+  category: pitfall
+  confidence: 0.9
+  created_at: 2026-10-09
+  context: pnpm audit 報 simple-git（經 nuxt > @nuxt/devtools 3.4.2）Critical 弱點，修補版只有 4.x。
+  anti_pattern: 只看到呼叫處包在 try/catch 就判斷升版無害，但 import 在模組頂層，錯誤發生在 try/catch 之外。
+  resolution: override 前用 grep 找上游 dist 中所有 import 該套件的寫法並比對新版的 exports；不相容時改為停用使用它的功能（本例關閉 Nuxt devtools），或附理由列入 auditConfig.ignoreGhsas（DEF-024）。
+  tags: [pnpm, overrides, security, nuxt]
+  applicability:
+    universal: true
+  validity:
+    type: permanent
+  related: [MEM-2026-0006]

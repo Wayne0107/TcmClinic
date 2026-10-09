@@ -3,10 +3,10 @@
 <!-- 建立新專案後，把本段改成實際專案的簡介（系統用途、使用者、取代或整合的對象）。 -->
 （專案簡介待填）
 
-本 repo 以 **.NET Clean Architecture** 實作後端 API，以 **.NET Aspire** 編排本機開發環境，並以 **UDS（Universal Dev Standards）規格驅動開發（SDD）** 管理需求與實作。
+本 repo 以 **.NET Clean Architecture** 實作後端 API，前台以 **Nuxt 4**、後台以 **Vue 3** 實作，以 **.NET Aspire** 編排本機開發環境，並以 **UDS（Universal Dev Standards）規格驅動開發（SDD）** 管理需求與實作。
 
 - **文件語言**：繁體中文（憲章第 VII 條；程式碼識別項維持英文）
-- **治理範圍**：後端。前端（若有）由另一團隊維護，不在本流程的規格範圍
+- **治理範圍**：後端與前端（`frontend/`，規範見 [docs/FRONTEND.md](docs/FRONTEND.md)）
 
 ---
 
@@ -34,6 +34,9 @@
 | 日誌與觀測 | Serilog（生產 JSON、依等級保留）、OpenTelemetry、健康檢查 |
 | 編排 | .NET Aspire（SQL Server 容器＋API） |
 | 測試 | xUnit v3、NSubstitute、CsCheck、Testcontainers、Verify、Reqnroll（BDD）、NetArchTest |
+| 前台 | Nuxt 4（SSR）、Vue 3、TypeScript |
+| 後台 | Vue 3＋Vite（SPA）、Vuetify 4、Pinia、Vue Router、TypeScript |
+| 前端共用 | pnpm workspace、openapi-typescript＋openapi-fetch（API 型別由 OpenAPI 產生）、Vitest、ESLint、Prettier |
 
 ## 骨架內建功能
 
@@ -51,6 +54,7 @@ Development 環境的種子：`SUPERADMIN` 角色、`admin` 帳號，以及「�
 | **Docker Desktop** | Aspire 的 SQL Server 容器、整合／功能／驗收測試（Testcontainers）需要 |
 | **AI 工具＋UDS** | 開發流程指令（`/universal-dev-standards:sdd`、`tdd`…）來自 UDS；標準本文已安裝在 `.standards/` |
 | **gitleaks** | 每次 commit 前掃描秘密；`winget install Gitleaks.Gitleaks` |
+| **Node.js 24＋pnpm** | 前端；pnpm 版本見 `frontend/package.json` 的 `packageManager`（可用 `corepack enable` 自動取得） |
 
 首次 clone 後啟用專案共用的 git hook（未安裝 gitleaks 時會擋下 commit）：
 
@@ -89,6 +93,20 @@ dotnet run --project backend/tests/TcmClinic.Api.FunctionalTests -- -class "TcmC
 
 > 後端正在執行時再跑測試會撞到輸出檔鎖定，請加 `--artifacts-path <暫存目錄>`。
 
+### 前端
+
+在 `frontend/` 執行（先用上方指令啟動後端；細節見 [docs/FRONTEND.md](docs/FRONTEND.md) §10）：
+
+```powershell
+pnpm install --frozen-lockfile
+pnpm dev:site      # 前台 http://localhost:3000
+pnpm dev:admin     # 後台 http://localhost:5173
+pnpm lint; pnpm typecheck; pnpm test
+pnpm gen:api       # 後端契約變更後，由 OpenAPI 重新產生 API 型別
+```
+
+前端一律以 `/api/...` 呼叫後端，由 dev server 代理到 `http://localhost:5143`（可用環境變數 `API_PROXY_TARGET` 覆寫）。
+
 ---
 
 ## 開發流程（UDS 規格驅動）
@@ -121,6 +139,11 @@ TcmClinic/
 ├── backend/
 │   ├── src/                       # SharedKernel / Core / UseCases / Infrastructure / Web / ServiceDefaults
 │   └── tests/                     # UnitTests / IntegrationTests / FunctionalTests / AcceptanceTests / Shared
+├── frontend/                      # pnpm workspace
+│   ├── shared/                    # 共用 API 型別（由 OpenAPI 產生）
+│   ├── site/                      # 前台（Nuxt 4）
+│   └── admin/                     # 後台（Vue 3 + Vuetify）
+├── prototype/                     # 前台設計雛形（靜態 HTML，參考用）
 ├── docs/                          # 憲章與實作規範（How）、開發流程
 ├── specs/                         # 功能規格（UDS SDD）與 ADR
 ├── TcmClinic.Api.slnx
@@ -139,6 +162,7 @@ TcmClinic/
 | [docs/CONSTITUTION.md](docs/CONSTITUTION.md) | 專案憲章：衝突時的裁決原則（What） |
 | [docs/WORKFLOW.html](docs/WORKFLOW.html) | 各開發情境的指令、停止點與產出 |
 | [docs/CODING-STANDARDS.md](docs/CODING-STANDARDS.md) | 分層、DDD、Vogen 等編碼規範 |
+| [docs/FRONTEND.md](docs/FRONTEND.md) | 前端規範：結構、分層、API 串接、登入、安全、測試、效能 |
 | [docs/API-CONVENTIONS.md](docs/API-CONVENTIONS.md) | API 回應格式、狀態碼、分頁、路由 |
 | [docs/DATABASE-SCHEMA.md](docs/DATABASE-SCHEMA.md) | 資料表命名、標準欄位、外鍵 |
 | [docs/TESTING.md](docs/TESTING.md) | 測試分層與寫法 |

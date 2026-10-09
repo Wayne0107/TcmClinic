@@ -1,0 +1,26 @@
+packages:
+  - shared
+  - site
+  - admin
+
+# 允許執行安裝腳本的套件（pnpm 預設全部封鎖）。只放廣泛使用、腳本僅用於驗證或取得原生執行檔的套件。
+allowBuilds:
+  esbuild: true # Nuxt 建置使用；腳本驗證平台對應的原生執行檔
+  unrs-resolver: true # ESLint import 解析（@nuxt/eslint）；腳本處理原生 binding 的後備
+
+# 弱點修補（docs/FRONTEND.md §7、docs/SECURE-CODING.md §8）
+overrides:
+  # GHSA-x6jw-m9v5-85vh 等（Critical）：@nuxt/devtools 3.4.2 依賴 simple-git ^3，修補版只有 4.x。
+  # 4.x 拿掉了 default export，devtools 3.x 載入會失敗，所以前台同時關閉 devtools（site/nuxt.config.ts）。
+  # Nuxt 改用相容的 devtools 後，移除本項並重新開啟 devtools（DEF-024）。
+  simple-git: ^4.0.2
+
+# 尚無修補版可升級的弱點：依 docs/SECURE-CODING.md §8 附理由與追溯編號後忽略，有修補版時移除（DEF-024）。
+auditConfig:
+  ignoreGhsas:
+    # node-forge ≤1.4.0 RSA 簽章驗證缺陷（High）。只被 Nitro 開發伺服器（listhen）用來產生本機 HTTPS 憑證，
+    # 不驗證外部簽章、不進正式環境輸出。截至 2026-10-09 npm 上最新版仍是 1.4.0。
+    - GHSA-86w9-cpqp-85rv
+    # braces ≤3.0.3 深層巢狀樣式造成堆疊耗盡（High）。只在 Nitro 建置時展開專案內固定的 glob 樣式，
+    # 不處理使用者輸入。截至 2026-10-09 npm 上最新版仍是 3.0.3。
+    - GHSA-vfj7-8cjw-p6xm
