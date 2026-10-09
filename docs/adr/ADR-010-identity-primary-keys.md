@@ -64,7 +64,7 @@ ADR-005 讓 Vogen 強型別主鍵由程式端計算 `Max(Id)+1`（每種 ID 一�
 
 ## 連結
 
-- 規範：[docs/DATABASE-SCHEMA.md](../../../docs/DATABASE-SCHEMA.md) §4.1、§6；[docs/CODING-STANDARDS.md](../../../docs/CODING-STANDARDS.md) Vogen 規則
-- 延後事項：[specs/README.md](../../README.md) DEF-012
+- 規範：[docs/DATABASE-SCHEMA.md](../DATABASE-SCHEMA.md) §4.1、§6；[docs/CODING-STANDARDS.md](../CODING-STANDARDS.md) Vogen 規則
+- 延後事項：[specs/README.md](../../specs/README.md) DEF-012
 - 程式：`backend/src/TcmClinic.Api.Infrastructure/Data/Migrations/IdentityRebuildSql.cs`、migration `IdentityPrimaryKeys`、`backend/src/TcmClinic.Api.Infrastructure/Data/Config/*Config.cs`
 - 測試：`backend/tests/TcmClinic.Api.IntegrationTests/Data/IdentityPrimaryKeyTests.cs`

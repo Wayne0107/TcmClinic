@@ -1,6 +1,6 @@
 # 安全編碼規範（Secure Coding）
 
-> 版本 1.4.0｜最後更新 2026-10-09
+> 版本 1.4.1｜最後更新 2026-10-09
 
 > 本檔為憲章原則 I（安全性 > 一切）的 **How**。目標：讓弱點掃描成為程式碼本已通過的閘門，而非事後補救。
 > 本檔以後端為主；前端的 XSS、token 存放、秘密與安全標頭規則見 `docs/FRONTEND.md` §7。
@@ -44,7 +44,7 @@
 - 傳輸中資料必須用 TLS/HTTPS。開發環境 HTTPS 重導的例外僅限本機 Aspire DCP proxy，非生產許可。
 - 正式環境必須啟用 HTTPS 重導與 HSTS，並回應安全標頭：`X-Content-Type-Options: nosniff`、`X-Frame-Options: DENY`（或 CSP `frame-ancestors 'none'`）。由程式（`UseHttpsRedirection`／`UseHsts`／中介層）或 IIS 擇一負責，並在 `docs/INFRASTRUCTURE.md` 記錄由哪一層負責；目前尚未決定也未實作（specs/README.md 延後事項 DEF-006）。
 - 密碼必須以現代加鹽雜湊儲存（如 ASP.NET Core Identity 預設、PBKDF2）；明文、未加鹽、快速雜湊儲存禁止。自製加密演算法禁止——使用平台已驗證的原語。
-  - 實作為 `Pbkdf2PasswordHasher`：PBKDF2-HMAC-SHA512、100,000 次迭代（與 ASP.NET Core Identity 預設相同），以 BCL `Rfc2898DeriveBytes` 實作。2026-10-08 前 SPEC-004 依使用者需求採加鹽 SHA-256 的例外已撤銷；既有 SHA-256 雜湊於登入成功時自動轉換，且不變更密碼修改時間（SPEC-004 FR-007a、[ADR-009](../specs/其他/使用者管理與登入/ADR-009-password-hashing-pbkdf2.md)）。
+  - 實作為 `Pbkdf2PasswordHasher`：PBKDF2-HMAC-SHA512、100,000 次迭代（與 ASP.NET Core Identity 預設相同），以 BCL `Rfc2898DeriveBytes` 實作。2026-10-08 前 SPEC-004 依使用者需求採加鹽 SHA-256 的例外已撤銷；既有 SHA-256 雜湊於登入成功時自動轉換，且不變更密碼修改時間（SPEC-004 FR-007a、[ADR-009](adr/ADR-009-password-hashing-pbkdf2.md)）。
 - 密碼強度規則以 Core `PasswordPolicy` 為全系統唯一來源（12～128 碼且同時含大寫、小寫、數字）；任何設定密碼的入口必須經由它（Web 層用 `MustSatisfyPasswordPolicy()`），不得自行撰寫規則，避免各入口規則漂移（個人資料維護 FR-008a）。
 
 ## 7. 日誌中的秘密與個資（MUST）

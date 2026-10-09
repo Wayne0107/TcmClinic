@@ -1,6 +1,6 @@
 # API 慣例（API Conventions）
 
-> 版本 1.5.0｜最後更新 2026-10-08
+> 版本 1.5.1｜最後更新 2026-10-09
 
 > 本檔為憲章原則 V（系統一致性）的 **How**，涵蓋端點結構、文件、回應形狀。
 
@@ -155,7 +155,7 @@ public override async Task<Results<Created<CreateResponse>, ValidationProblem, P
 ## 4. 分頁與效能
 
 - List 端點必須分頁並強制最大頁數上限（預設 100），禁止無界結果集。
-- 每頁筆數：請求的 `pageSize` 宣告為可空（`int?`），不在 request DTO 設初始值（FastEndpoints 只繫結出現的查詢參數，DTO 初始值會在進入 handler 前生效）；未指定、或指定 0 或負數時為 10；指定時依指定值，超過上限以上限為準。handler 統一使用 `PageSizeResolver.Resolve`（`TcmClinic.Api.UseCases.Paging`），不在各清單寫死，也不讀設定檔或資料庫參數。回應與 `Link` 標頭使用實際採用的每頁筆數。依據為 [ADR-007](../specs/其他/架構決策/ADR-007-default-page-size-fixed.md)。
+- 每頁筆數：請求的 `pageSize` 宣告為可空（`int?`），不在 request DTO 設初始值（FastEndpoints 只繫結出現的查詢參數，DTO 初始值會在進入 handler 前生效）；未指定、或指定 0 或負數時為 10；指定時依指定值，超過上限以上限為準。handler 統一使用 `PageSizeResolver.Resolve`（`TcmClinic.Api.UseCases.Paging`），不在各清單寫死，也不讀設定檔或資料庫參數。回應與 `Link` 標頭使用實際採用的每頁筆數。依據為 [ADR-007](adr/ADR-007-default-page-size-fixed.md)。
 - 分頁用兩個 Spec：一個含 Skip/Take 取資料、一個不含以取總數。
 - 效能預算與資料存取細節見 `docs/CODING-STANDARDS.md` 與憲章原則 VI。
 - 回應形狀固定為 `{ items, page, pageSize, totalCount }` ＋ `Link` 標頭；採 offset 分頁，不包 `{ data, meta, links }` 信封，不用 `limit` 參數名。

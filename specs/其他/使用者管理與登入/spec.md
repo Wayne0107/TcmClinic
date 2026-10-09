@@ -22,11 +22,11 @@
 > ⚠️ **被後續規格修改**：
 > - FR-018／FR-019／FR-022（超管守門、防鎖死、超管解救）已由 SPEC-005 整組取代；US2～US5 敘述中的「超級管理員」及 US4 情境 3（引用防鎖死部分）、US5 情境 2、SC-007 保留為歷史紀錄。
 > - FR-013 密碼強度規則自 2026-09-29 起由 SPEC-013 FR-008a 改為 12～128 碼且同時包含大寫、小寫、數字。
-> - 使用者清單 `pageSize` 預設值改取 SPEC-016「查詢列表分頁筆數」（初始 10；2026-10-02 前預設 20）。⚠️ 2026-10-06 SPEC-016 移除該參數，預設改為固定 10（值不變，[ADR-007](../架構決策/ADR-007-default-page-size-fixed.md)）；API 契約內文於 SPEC-016 實作時一併更新。
+> - 使用者清單 `pageSize` 預設值改取 SPEC-016「查詢列表分頁筆數」（初始 10；2026-10-02 前預設 20）。⚠️ 2026-10-06 SPEC-016 移除該參數，預設改為固定 10（值不變，[ADR-007](../../../docs/adr/ADR-007-default-page-size-fixed.md)）；API 契約內文於 SPEC-016 實作時一併更新。
 > - 2026-10-02 起舊後台選單 `/admin/users` 移除，使用者管理改由 `accountMaintenance` 授權。
-> - 2026-10-08 起 FR-007 密碼雜湊由加鹽 SHA-256 改為 PBKDF2，並新增 FR-007a 登入時自動轉換既有雜湊；設計決策 R2 由 [ADR-009](ADR-009-password-hashing-pbkdf2.md) 取代（見「變更（Delta）2026-10-08」）。文中其他提到 SHA-256 之處保留為歷史紀錄。
+> - 2026-10-08 起 FR-007 密碼雜湊由加鹽 SHA-256 改為 PBKDF2，並新增 FR-007a 登入時自動轉換既有雜湊；設計決策 R2 由 [ADR-009](../../../docs/adr/ADR-009-password-hashing-pbkdf2.md) 取代（見「變更（Delta）2026-10-08」）。文中其他提到 SHA-256 之處保留為歷史紀錄。
 > - 2026-10-08 起新增 FR-006b：同一來源 IP 每分鐘超過 20 次登入請求回 429（延後事項 DEF-017）。
-> - 2026-10-08 起登入改用 JWT：access token（15 分鐘）以 `Authorization: Bearer` 傳遞，refresh token（8 小時滑動、可撤銷）以 HttpOnly Cookie 傳遞；設計決策 R1（Cookie 驗證）由 [ADR-011](ADR-011-jwt-bearer-authentication.md) 取代，R8 每請求重驗改在 JWT 驗證後執行。
+> - 2026-10-08 起登入改用 JWT：access token（15 分鐘）以 `Authorization: Bearer` 傳遞，refresh token（8 小時滑動、可撤銷）以 HttpOnly Cookie 傳遞；設計決策 R1（Cookie 驗證）由 [ADR-011](../../../docs/adr/ADR-011-jwt-bearer-authentication.md) 取代，R8 每請求重驗改在 JWT 驗證後執行。
 > - 2026-10-08 起使用者 API 的識別碼（路徑 `{id}`、回應 `id`、請求 `roleIds`）改為 UUIDv7 對外識別碼，不再公開整數主鍵（[SPEC-064](../對外識別碼UUIDv7/spec.md)）。
 
 ## Overview（概述）
@@ -70,7 +70,7 @@
 
 背景：FR-007 原依使用者明示需求採加鹽 SHA-256，並登記為已接受風險（DEF-008）。2026-10-08 開發規範裁決（PRJ-2026-0008）撤銷此例外，改用專案規範允許的 PBKDF2。使用者授權由 AI 直接決定以下細節並修改程式與規格。
 
-- Q: 改用哪個演算法與參數？ → A: **PBKDF2-HMAC-SHA512、100,000 次迭代、16-byte 隨機 salt、32-byte 輸出**，與 ASP.NET Core Identity v3 預設相同；以 .NET 內建 `Rfc2898DeriveBytes.Pbkdf2` 實作，不新增套件（[ADR-009](ADR-009-password-hashing-pbkdf2.md)）。
+- Q: 改用哪個演算法與參數？ → A: **PBKDF2-HMAC-SHA512、100,000 次迭代、16-byte 隨機 salt、32-byte 輸出**，與 ASP.NET Core Identity v3 預設相同；以 .NET 內建 `Rfc2898DeriveBytes.Pbkdf2` 實作，不新增套件（[ADR-009](../../../docs/adr/ADR-009-password-hashing-pbkdf2.md)）。
 - Q: 系統中既有的 SHA-256 雜湊如何轉換？ → A: **登入成功時自動重新雜湊**，不要求使用者重設密碼；轉換前舊雜湊仍可驗證。
 - Q: 自動重新雜湊是否重置密碼效期？ → A: **不重置**。只換雜湊與 salt，`PasswordChangedAt` 不變；使用者沒有真的改密碼，SPEC-013 FR-010/011 的效期不得因此重來。
 - Q: 如何分辨新舊雜湊？ → A: 新格式為 `pbkdf2-sha512$<迭代次數>$<Base64 雜湊>`（65 字元，沿用 `nvarchar(88)`）；沒有此前綴者視為舊 SHA-256。迭代次數低於現行值者，同樣在登入時重新雜湊。資料表結構不變。
@@ -85,7 +85,7 @@
 
 ### Session 2026-10-08（登入改 JWT）
 
-背景：使用者決定登入改用 JWT。token 傳遞方式與效期續期方式由使用者選定，其餘細節授權 AI 決定（[ADR-011](ADR-011-jwt-bearer-authentication.md)）。
+背景：使用者決定登入改用 JWT。token 傳遞方式與效期續期方式由使用者選定，其餘細節授權 AI 決定（[ADR-011](../../../docs/adr/ADR-011-jwt-bearer-authentication.md)）。
 
 - Q: token 怎麼交給前端、前端怎麼保存？ → A: **Bearer 標頭＋前端存記憶體**（使用者選定）。登入回傳 access token，前端放記憶體、每次請求帶 `Authorization: Bearer`；重新整理頁面時以 HttpOnly Cookie 中的 refresh token 換新。XSS 讀不到長效憑證，維持 FR-021 的精神。
 - Q: 效期與續期？ → A: **access token 15 分鐘＋refresh token 8 小時滑動**（使用者選定）。refresh token 存資料庫（只存雜湊）、每次使用即輪替、登出可撤銷，對應原本 Cookie 的 8 小時滑動逾時。
@@ -98,7 +98,7 @@
 
 ### 2026-10-08 登入改 JWT
 
-依 Clarifications Session 2026-10-08（登入改 JWT）與 [ADR-011](ADR-011-jwt-bearer-authentication.md)。
+依 Clarifications Session 2026-10-08（登入改 JWT）與 [ADR-011](../../../docs/adr/ADR-011-jwt-bearer-authentication.md)。
 
 **MODIFIED Requirements**
 
@@ -150,7 +150,7 @@
 - FR-007：由「加鹽之單向雜湊（SHA-256）」改為「加鹽之 PBKDF2（HMAC-SHA512、100,000 次迭代）」。
 - AC-13：驗證對象改為 `Pbkdf2PasswordHasher`，並涵蓋新格式字串與舊 SHA-256 雜湊仍可驗證。
 - 資料模型 `PasswordHash` 欄位說明改為新格式（欄位型別不變）。
-- 設計決策 R2 由 [ADR-009](ADR-009-password-hashing-pbkdf2.md) 取代；原則符合性與 Risks 中「SHA-256 為已知取捨」兩項標為不再適用。
+- 設計決策 R2 由 [ADR-009](../../../docs/adr/ADR-009-password-hashing-pbkdf2.md) 取代；原則符合性與 Risks 中「SHA-256 為已知取捨」兩項標為不再適用。
 
 **ADDED Requirements**
 
@@ -306,7 +306,7 @@ The system SHALL 以軟刪除（保留紀錄）刪除使用者帳號；被刪除
 
 **密碼安全（US1、US3、US4）**
 
-- **FR-007**: 系統 MUST 以「加鹽（salt）之 PBKDF2（HMAC-SHA512、100,000 次迭代）」保存使用者密碼；MUST NOT 以明文或可還原形式儲存密碼。（2026-10-08 修改：原為加鹽 SHA-256，見「變更（Delta）2026-10-08」、[ADR-009](ADR-009-password-hashing-pbkdf2.md)）
+- **FR-007**: 系統 MUST 以「加鹽（salt）之 PBKDF2（HMAC-SHA512、100,000 次迭代）」保存使用者密碼；MUST NOT 以明文或可還原形式儲存密碼。（2026-10-08 修改：原為加鹽 SHA-256，見「變更（Delta）2026-10-08」、[ADR-009](../../../docs/adr/ADR-009-password-hashing-pbkdf2.md)）
 - **FR-007a**（2026-10-08 新增）: 登入驗證成功時，若該帳號儲存的雜湊為舊格式（SHA-256）或迭代次數低於現行值，系統 MUST 以現行參數重新雜湊並保存；MUST NOT 因此變更密碼修改時間（SPEC-013 FR-010/011 的效期照舊計算）。
 - **FR-008**: 每個帳號 MUST 具有各自獨立的 salt；密碼驗證 MUST 以輸入密碼結合該帳號 salt 計算雜湊後與儲存值比對。
 - **FR-009**: 系統於任何清單、明細或紀錄中 MUST NOT 顯示或回傳密碼明文、密碼雜湊或 salt。
@@ -441,7 +441,7 @@ The system SHALL 以軟刪除（保留紀錄）刪除使用者帳號；被刪除
 >
 > AC-12、AC-21 的密碼強度自 SPEC-013 FR-008a（2026-09-29）起為 12～128 碼＋大寫＋小寫＋數字，驗證測試已隨之更新。
 >
-> AC-7 的預設每頁筆數自 SPEC-016 FR-008(b)（2026-10-02）起改取系統參數「查詢列表分頁筆數」；2026-10-06 該參數移除後固定為 10（[ADR-007](../架構決策/ADR-007-default-page-size-fixed.md)）。
+> AC-7 的預設每頁筆數自 SPEC-016 FR-008(b)（2026-10-02）起改取系統參數「查詢列表分頁筆數」；2026-10-06 該參數移除後固定為 10（[ADR-007](../../../docs/adr/ADR-007-default-page-size-fixed.md)）。
 
 ## Technical Design（技術設計）
 
@@ -711,7 +711,7 @@ DTO 中的角色以 `RoleId`（int）指派、以 `roleCodes`/`roleNames` 呈現
 - **對應**: US2、FR-010
 - **Return**: `HandleAsync` + `Send.OkAsync()`；附 GitHub 風格 `Link` 標頭（first/prev/next/last）
 
-**Query 參數**: `?page=1&pageSize=20&keyword=<帳號或使用者名稱>`（`pageSize` 未指定、0 或負數時為 10（[ADR-007](../架構決策/ADR-007-default-page-size-fixed.md)），最大 100，Principle XIV；2026-10-02 前預設 20，2026-10-02～10-06 取系統參數「查詢列表分頁筆數」）
+**Query 參數**: `?page=1&pageSize=20&keyword=<帳號或使用者名稱>`（`pageSize` 未指定、0 或負數時為 10（[ADR-007](../../../docs/adr/ADR-007-default-page-size-fixed.md)），最大 100，Principle XIV；2026-10-02 前預設 20，2026-10-02～10-06 取系統參數「查詢列表分頁筆數」）
 
 **Response 200**:
 ```json
@@ -777,7 +777,7 @@ DTO 中的角色以 `RoleId`（int）指派、以 `roleCodes`/`roleNames` 呈現
 
 > 決策編號 R1～R9 沿用原研究文件，供程式碼註解（如 `research R1`、`research R9`）追溯。
 
-#### R1 驗證與工作階段機制（Cookie vs JWT vs Session）（⚠️ 2026-10-08 由 [ADR-011](ADR-011-jwt-bearer-authentication.md) 取代，改用 JWT Bearer）
+#### R1 驗證與工作階段機制（Cookie vs JWT vs Session）（⚠️ 2026-10-08 由 [ADR-011](../../../docs/adr/ADR-011-jwt-bearer-authentication.md) 取代，改用 JWT Bearer）
 - **決定**：採 **ASP.NET Core Cookie Authentication**（`AddAuthentication().AddCookie(...)`）。登入成功後以 `HttpContext.SignInAsync` 簽發 HttpOnly Cookie，`ClaimsPrincipal` 內含 `ClaimTypes.Name = 帳號（正規化小寫）` 與每個所屬角色的 `ClaimTypes.Role = 角色代碼(RoleCode)`。登出以 `SignOutAsync` 清除 Cookie。
 - **理由**：
   - 正式環境原本**無任何驗證 scheme**（`builder.Services.AddAuthentication()` 為 no-op），導致 002/003 受 `SuperAdminPolicy`（`RequireRole(Role.SuperAdminCode)`）保護之端點在正式環境會 500。本功能為登入入口，正好補上此 scheme，一次讓既有授權政策生效。
@@ -794,7 +794,7 @@ DTO 中的角色以 `RoleId`（int）指派、以 `roleCodes`/`roleNames` 呈現
 
 #### R2 密碼雜湊：加鹽 SHA-256（遵循明示需求）
 
-> ⚠️ **已被取代（2026-10-08）**：改為 PBKDF2，並於登入成功時自動轉換既有雜湊，見 [ADR-009](ADR-009-password-hashing-pbkdf2.md)。以下保留為歷史紀錄。
+> ⚠️ **已被取代（2026-10-08）**：改為 PBKDF2，並於登入成功時自動轉換既有雜湊，見 [ADR-009](../../../docs/adr/ADR-009-password-hashing-pbkdf2.md)。以下保留為歷史紀錄。
 - **決定**：於 Core 定義 `IPasswordHasher`；Infrastructure 以 `Sha256PasswordHasher` 實作：
   - 每次建立／重設密碼時以 `RandomNumberGenerator` 產生 **16 bytes 隨機 salt**。
   - `hash = SHA256(saltBytes ⧺ UTF8(password))`；`PasswordHash`、`PasswordSalt` 皆以 **Base64** 字串儲存。
@@ -879,7 +879,7 @@ DTO 中的角色以 `RoleId`（int）指派、以 `roleCodes`/`roleNames` 呈現
 
 | 取捨 | 為何需要 | 較簡單方案被否原因 |
 |------|---------|-------------------|
-| ~~密碼採 SHA-256+salt（非慢雜湊 KDF）~~ | ~~使用者明確指定的既定需求~~ | 2026-10-08 已改為 PBKDF2，此項不再適用（[ADR-009](ADR-009-password-hashing-pbkdf2.md)） |
+| ~~密碼採 SHA-256+salt（非慢雜湊 KDF）~~ | ~~使用者明確指定的既定需求~~ | 2026-10-08 已改為 PBKDF2，此項不再適用（[ADR-009](../../../docs/adr/ADR-009-password-hashing-pbkdf2.md)） |
 | 登入鎖定以 `IMemoryCache` 追蹤 | 釐清決議「不新增 `SysUser` 欄位」；模板規模單機足夠 | 加 DB 欄位（`FailedCount`/`LockoutEnd`）會擴張使用者明示的欄位集合；分散式快取為 YAGNI（多實例警示記於 R3） |
 | 新增 Cookie 驗證 scheme | 正式環境原無 scheme，`RequireRole` 無法生效（既有 500 caveat）；本功能為登入入口 | JWT 需前端存 token（localStorage → XSS 風險）且手動注入標頭；同套後端+前端下 HttpOnly Cookie 更安全簡單 |
 
@@ -943,7 +943,7 @@ dotnet run --project backend/tests/TcmClinic.Api.UnitTests
 
 ## Risks（風險）
 
-- ~~密碼採快速雜湊 SHA-256（即使加 salt），對強力離線暴力破解的保護弱於慢雜湊 KDF。~~ 2026-10-08 已改為 PBKDF2 並於登入時自動轉換舊雜湊（[ADR-009](ADR-009-password-hashing-pbkdf2.md)）；長期未登入的帳號在下次登入或重設密碼前仍為舊雜湊。
+- ~~密碼採快速雜湊 SHA-256（即使加 salt），對強力離線暴力破解的保護弱於慢雜湊 KDF。~~ 2026-10-08 已改為 PBKDF2 並於登入時自動轉換舊雜湊（[ADR-009](../../../docs/adr/ADR-009-password-hashing-pbkdf2.md)）；長期未登入的帳號在下次登入或重設密碼前仍為舊雜湊。
 - 登入鎖定為行程內狀態：服務重啟即清空、多實例部署下各節點計數獨立（R3）。
 - 每請求重驗多一次 DB 查詢；目前規模可接受，流量放大時需考慮 `ValidationInterval` 與短暫快取（R8）。
 - 登入限速依 `RemoteIpAddress` 分區（FR-006b）：部署架構若在 IIS 前另有負載平衡或反向代理，所有請求的來源 IP 都會是代理位址，全行共用同一份額度（每分鐘 20 次），等於登入癱瘓。部署前必須確認架構；有代理時須設定 `ForwardedHeaders` 並以 `KnownProxies`／`KnownNetworks` 限定可信任的代理，否則 `X-Forwarded-For` 可被偽造而繞過限速（`docs/INFRASTRUCTURE.md`）。
@@ -960,7 +960,7 @@ dotnet run --project backend/tests/TcmClinic.Api.UnitTests
 - **測試數**：初版 UnitTests 29、IntegrationTests 10、FunctionalTests 18、前端 Vitest 10；Phase 9 後 FunctionalTests 33；Phase 11 時全測試 75 個皆帶 DisplayName；2026-09-30 修訂收斂時全套 182 單元＋92 整合＋206 功能綠。
 - **原 Spec Kit 產出**：plan、research、data-model、quickstart、tasks、contracts（auth、users）、checklists（requirements、comprehensive）已併入本檔後移除；原始檔可由 `git show c8e5872:"specs/其他/使用者管理與登入/tasks.md"` 等方式追溯。
 - **TDD 紅燈證據**（2026-10-06 依憲章 2.1.0 補記；紅燈 commit 只含當時會失敗的測試，可用 `git show <commit>` 查看）：2026-10-01 資料表規範對齊修訂的紅燈 commit：`33a090f`（與 SPEC-002 共用，T096）。初版實作沒有單獨提交紅燈 commit，無紀錄可補。
-- **2026-10-08 需求變更（密碼雜湊改 PBKDF2）**：分支 `feature/004-pbkdf2-password`，決策見 [ADR-009](ADR-009-password-hashing-pbkdf2.md)。
+- **2026-10-08 需求變更（密碼雜湊改 PBKDF2）**：分支 `feature/004-pbkdf2-password`，決策見 [ADR-009](../../../docs/adr/ADR-009-password-hashing-pbkdf2.md)。
   - **實作**：新增 `Pbkdf2PasswordHasher`（取代 `Sha256PasswordHasher`，PBKDF2-HMAC-SHA512、100,000 次迭代，雜湊字串帶 `pbkdf2-sha512$` 前綴，舊 SHA-256 雜湊仍可驗證）；`IPasswordHasher.NeedsRehash`；`User.UpgradePasswordHash`（不動 `PasswordChangedAt`）；`LoginHandler` 登入成功後轉換舊雜湊（另取追蹤中的實體只改雜湊欄位，寫入失敗記 `[PASSWORD_REHASH]` Warning、不影響登入）。資料表結構不變，無 migration。
   - **TDD 紅燈證據**（本機驗證，未提交）：先以空殼讓測試可編譯——`UpgradePasswordHash_keeps_password_changed_at`（雜湊未換）、`Hash_uses_pbkdf2_format`、`Needs_rehash_only_for_legacy_or_weaker_hash`、`Legacy_hash_is_upgraded_on_login`（Expected start "pbkdf2-sha512$"）共 4 案失敗。
   - **BDD**：本次變動的 AC-13、AC-31 為雜湊格式與儲存內容，不適合以 Gherkin 描述，照 docs/TESTING.md 以整合與功能測試表達。
@@ -977,7 +977,7 @@ dotnet run --project backend/tests/TcmClinic.Api.UnitTests
   - **測試數**：建置 0 錯誤 0 警告；單元 321、整合 156、功能 322（+3）全綠。
   - **驗證（verify，2026-10-08）**：PASS。AC-32 有程式與測試對應且通過；其餘 AC 隨全套測試通過，無回歸。
   - **合併**：PR #15，squash commit `31f8504`（2026-10-08）；規格狀態維持 Archived。
-- **2026-10-08 需求變更（登入改 JWT）**：分支 `feature/004-jwt-auth`，決策見 [ADR-011](ADR-011-jwt-bearer-authentication.md)。
+- **2026-10-08 需求變更（登入改 JWT）**：分支 `feature/004-jwt-auth`，決策見 [ADR-011](../../../docs/adr/ADR-011-jwt-bearer-authentication.md)。
   - **實作**：Core 新增 `SessionAggregate`（`UserSession` [NotAudited]、`UserSessionPublicId`、`RefreshTokenValue`、`UserSessionByTokenHashSpec`／`ByPublicIdSpec`）；`UserByIdWithRolesSpec`。Infrastructure 新增 `UserSessionConfig` 與 migration `20261008135754_UserSessions`（`SysUserSession`）。UseCases：`LoginHandler` 登入成功時建立 session；新增 `RefreshSessionHandler`（輪替、30 秒寬限、重用即撤銷、帳號失效即撤銷）、`LogoutHandler`、`IsSessionActiveHandler`。Web：`JwtOptions`／`JwtSigningKey`（非 Development 未設定 `Jwt:SigningKey` 即無法啟動）、`AccessTokenIssuer`、`RefreshCookie`；`AuthConfigs` 由 Cookie 改為 JwtBearer，`OnTokenValidated` 檢查 session 並依資料庫重建角色與可見選單；`POST /auth/login` 回傳 token、新增 `POST /auth/refresh`、`POST /auth/logout` 改為匿名。新增套件 `Microsoft.AspNetCore.Authentication.JwtBearer` 10.0.12（MIT，`THIRD-PARTY-NOTICES.md`）。
   - **TDD 紅燈證據**（本機驗證，未提交）：`UserSessionTests` 5 個以會丟 `NotImplementedException` 的空殼失敗；`UserSessionSchemaTests` 在 migration 加入前因模型有未套用變更而失敗；`JwtAuthTests`／`AuthEndpointsTests` 13 個失敗——登入回應沒有 `tokenType`（Expected "Bearer"、Actual null）、沒有 refresh Cookie、未登入登出回 401、沒有 `/auth/refresh`。
   - **既有測試調整**：新增 `AuthTestSupport.PostLoginAsync`（登入後帶 Bearer）；`ProfileTestSupport.LoginAsync`、`MyMenuContractTests`、`MenuClaimsRevalidationTests`、`SessionRevalidationTests`、`LoggingRedactionTests` 改用之；`AuthWebApplicationFactory` 設定固定測試簽章金鑰；登入契約快照加入 `accessToken`（佔位）、`tokenType`、`expiresIn`。

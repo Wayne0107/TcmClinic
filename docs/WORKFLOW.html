@@ -198,7 +198,7 @@ footer { margin-top: 56px; color: var(--muted); font-size: .85rem; border-top: 1
     <li>
       <div class="step-title">撰寫規格 <span class="tag ai">AI 執行</span> <span class="tag stop">停止點</span></div>
       <div class="cmd"><pre>/universal-dev-standards:sdd create</pre><button type="button">複製</button></div>
-      <p class="step-body muted">寫進 <code>specs/&lt;業務&gt;/&lt;作業&gt;/&lt;功能&gt;/spec.md</code>；重要決策另寫 <code>ADR-NNN-短描述.md</code> 放同一個資料夾；同步更新 <code>specs/README.md</code>（狀態、DEF、ADR 索引）。</p>
+      <p class="step-body muted">寫進 <code>specs/&lt;業務&gt;/&lt;作業&gt;/&lt;功能&gt;/spec.md</code>；重要決策另寫 <code>docs/adr/ADR-NNN-短描述.md</code>；同步更新 <code>specs/README.md</code>（狀態、DEF）與 <code>docs/adr/README.md</code>（ADR 索引）。</p>
       <p class="reply">你回覆：<b>確認</b>（或要改的地方）。之後我提示 commit：<code>文件(NNN): 撰寫&lt;功能&gt;規格</code>。</p>
     </li>
     <li>
@@ -337,7 +337,7 @@ footer { margin-top: 56px; color: var(--muted); font-size: .85rem; border-top: 1
   <table>
     <tr><th>情況</th><th>記在哪裡</th><th>誰決定存</th></tr>
     <tr><td>某條規格討論出的答案</td><td>該規格的 Clarifications</td><td>discuss 時你回答即記錄</td></tr>
-    <tr><td>重要的架構或設計決策（有替代方案、影響長遠）</td><td><code>ADR-NNN-短描述.md</code>，放對應規格的資料夾；跨選單的放 <code>specs/其他/架構決策/</code>；索引在 <code>specs/README.md</code></td><td>寫規格時我提議，你核准規格即生效；決策改變時另開新 ADR 取代</td></tr>
+    <tr><td>重要的架構或設計決策（有替代方案、影響長遠）</td><td><code>docs/adr/ADR-NNN-短描述.md</code>；索引在 <code>docs/adr/README.md</code></td><td>寫規格時我提議，你核准規格即生效；決策改變時另開新 ADR 取代</td></tr>
     <tr><td>全專案的約定（「之後都…」「就這樣定」）</td><td><code>.project-context/&lt;主題&gt;.md</code>（PRJ-YYYY-NNNN）</td><td>我提議，<strong>你同意才存</strong></td></tr>
     <tr><td>開發經驗（踩雷、解法、工具用法）</td><td><code>.memory/</code>（MEM-YYYY-NNNN，依類別分檔）</td><td>我提議，<strong>你同意才存</strong></td></tr>
     <tr><td>延後、待決的事項</td><td><code>specs/README.md</code> 延後事項表（DEF-NNN）並寫回規格</td><td>規格撰寫或實作時登記</td></tr>
@@ -386,7 +386,6 @@ footer { margin-top: 56px; color: var(--muted); font-size: .85rem; border-top: 1
   <table>
     <tr><th>項目</th><th>本專案</th><th>原版 UDS</th><th>原因</th></tr>
     <tr><td>規格位置</td><td>選單分層資料夾的 <code>spec.md</code></td><td><code>specs/SPEC-XXX.md</code></td><td>一個選單一份規格，依選單分層好找</td></tr>
-    <tr><td>ADR 位置</td><td>放在對應規格的資料夾</td><td><code>docs/adr/</code></td><td>決策與所屬規格放在一起</td></tr>
     <tr><td>E2E 測試</td><td>不設</td><td>每條驗收條件要 E2E</td><td>本專案只涵蓋後端，前端另一團隊負責</td></tr>
     <tr><td>CHANGELOG</td><td>不維護</td><td>開發時更新 [Unreleased]</td><td>進度記在 <code>specs/README.md</code></td></tr>
     <tr><td><code>docs/</code> 檔名</td><td>大寫（<code>TESTING.md</code>）</td><td>小寫 kebab-case</td><td>避免大量引用改名</td></tr>

@@ -1,6 +1,6 @@
 # 日誌與診斷規範（Logging & Diagnostics）
 
-> 版本 1.3.0｜最後更新 2026-10-08
+> 版本 1.3.1｜最後更新 2026-10-09
 
 > 本檔為憲章原則 I（安全性——秘密/個資遮罩）與 VI（可觀測效能）的 **How**。
 > 每個部署環境都必須產出持久、結構化、可查詢的日誌。日誌是系統在生產環境（如客戶自建 IIS）失常時的主要診斷紀錄。
@@ -19,7 +19,7 @@
 - **生產／自建（IIS 或任何非開發部署）**：日誌必須寫入持久 sink——rolling File sink，因為託管程序無附掛 console，stdout 非可靠紀錄。
   - File sink 必須同時依時間與大小輪替：每日輪替（`RollingInterval.Day`）＋單檔大小上限（`fileSizeLimitBytes`，預設 100 MB）＋`rollOnFileSizeLimit: true`。只設時間輪替時，Serilog 單檔達 1 GB 預設上限後會**靜默停止寫入**。
   - 依等級保留期限（2026-10-08 裁決，對齊 UDS）：`Debug` 7 天、`Information` 30 天、`Warning` 90 天、`Error` 以上 1 年。做法是依最低等級分開寫檔（子 logger 以 `MinimumLevel` 或 filter 區分），各自以 `retainedFileTimeLimit` 控制天數；大小輪替照上一點保留。磁碟容量由部署端監控。
-  - 檔案：`logs/debug-YYYYMMDD.json`（只收 Verbose、Debug）、`info-`（Information 以上）、`warning-`（Warning 以上）、`error-`（Error 以上），設定在 `appsettings.Production.json`，決策見 [ADR-008](../specs/其他/架構決策/ADR-008-production-json-logs-by-level.md)。
+  - 檔案：`logs/debug-YYYYMMDD.json`（只收 Verbose、Debug）、`info-`（Information 以上）、`warning-`（Warning 以上）、`error-`（Error 以上），設定在 `appsettings.Production.json`，決策見 [ADR-008](adr/ADR-008-production-json-logs-by-level.md)。
   - 可另加 Seq、OTLP collector、資料庫等 sink，但本機持久紀錄必須作為基線存在。
 - Sink 與最低層級選擇必須由設定驅動（`ReadFrom.Configuration`），讓維運可透過 `appsettings.{Environment}.json` / 環境變數調整，無需改碼或重部署。
 - 部署必須確保日誌目錄對託管身分（如 IIS app pool identity）可寫；靜默寫入失敗的 sink = 缺陷。

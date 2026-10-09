@@ -23,7 +23,8 @@
 | 專案結構、Aspire、建置、Git 流程 | [docs/INFRASTRUCTURE.md](docs/INFRASTRUCTURE.md) |
 | 新增或升級套件 | [docs/DEPENDENCIES.md](docs/DEPENDENCIES.md)（同次變更更新 `THIRD-PARTY-NOTICES.md`） |
 | 提交訊息（`<繁中類型>(<SPEC 編號或模組>): <繁中主旨>`，如 `新增(058): …`，72 字元內，實作類加 `Refs: SPEC-NNN`） | [.github/COMMIT_CONVENTION.md](.github/COMMIT_CONVENTION.md) |
-| 撰寫或修改規格、ADR | [specs/README.md](specs/README.md)「如何維護」與範例 `specs/其他/開發模式可見全部選單/spec.md` |
+| 撰寫或修改規格 | [specs/README.md](specs/README.md)「如何維護」與範例 `specs/其他/開發模式可見全部選單/spec.md` |
+| 撰寫或修改 ADR | [docs/adr/README.md](docs/adr/README.md)（一律放 `docs/adr/`，索引在此） |
 | 開發流程（各情境要下的指令） | [docs/WORKFLOW.html](docs/WORKFLOW.html) |
 
 ### 已裁決的衝突（照專案做，不採 UDS 預設）
@@ -38,7 +39,6 @@
 | 錯誤代碼、速率限制標頭、MFA | 不採用（規格未要求的不新增）；登入端點依來源 IP 限速，每分鐘 20 次、超過回 429（SPEC-004 FR-006b） | 錯誤代碼體系、X-RateLimit-*、MFA |
 | 測試分層 | 單元、整合、功能三層＋驗收（BDD：新規格以 Gherkin `.feature` 描述驗收情境，獨立專案 `TcmClinic.Api.AcceptanceTests`，一個選單一個資料夾、路徑同 `specs/`，2026-10-09）；前端用 Vitest 做單元與元件測試，瀏覽器層只對少數關鍵流程做 Playwright 冒煙測試，前端不另建 Gherkin 執行層（2026-10-09 使用者決定，docs/FRONTEND.md §8） | 每條 AC 要 E2E（UDS 測試層級選項 `e2e-testing`） |
 | 文件語言與檔名 | 繁中；`docs/` 檔名維持大寫 | 英文、小寫檔名 |
-| 決策紀錄（ADR） | 一個決策一檔 `ADR-NNN-短描述.md`，放在對應規格的資料夾；跨選單的放 `specs/其他/架構決策/`；編號全專案共用，索引在 specs/README.md | 集中在 `docs/adr/` |
 | 規格格式與位置 | 選單分層資料夾內的 `spec.md`（見 specs/README.md） | `proposal.md`、`specs/SPEC-XXX.md` |
 | CHANGELOG、LICENSE | 不維護（進度見 specs/README.md）；`docs/` 規範文件改標示版本標頭（2026-10-08，見 docs/COMMENTS.md §8） | 開發時更新 CHANGELOG、必備 LICENSE |
 | 環境分支 | 允許「只在開發環境開放」的分支（Swagger、CORS、種子、本機不重導 HTTPS） | 禁止環境專屬程式路徑 |
@@ -54,6 +54,8 @@
 > 2026-10-06 改採 UDS 流程：覆蓋率（不得下降）、Mock 邊界兩項現行 UDS 已與專案一致，移出本表；合併策略（squash）、每個 commit 全綠、繁中 commit 類型、`feature/` 分支、專案決策記憶、ADR、規格歸檔（Archived）、BDD 層改照 UDS。
 
 > 2026-10-08 開發規範裁決（74 題，對照與勾選表見 `docs/STANDARDS-COMPARISON.html`、`docs/STANDARDS-DECISIONS.html`）：改採 UDS 12 題——錯誤回應全面 ProblemDetails、Vogen 主鍵改 IDENTITY、金額 `decimal(19,4)`、秘密掃描提前到 commit、生產日誌改 JSON 並依等級保留、變異測試改定期執行、大量資料用 keyset（同日改為原則不用，見分頁列）、撤銷 SHA-256 密碼例外、`docs/` 版本標頭、SemVer 與 `/version`；以上改採項目均已落實於範本骨架（覆蓋率自動化暫不做，DEF-018）。其餘照專案的項目補入上表。
+
+> 2026-10-09 ADR 位置改照 UDS：一律放 `docs/adr/`，索引在 `docs/adr/README.md`（原放在對應規格資料夾與 `specs/其他/架構決策/`），移出本表。
 
 ### AI 行為約定
 - 每個開發階段完成、建置成功且測試全綠後**自動 commit**（2026-10-06 使用者決定，取代 UDS 預設的「只提示、同意才 commit」）；測試未過不得 commit。

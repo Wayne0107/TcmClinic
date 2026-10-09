@@ -5,8 +5,8 @@
 | 狀態 | Accepted |
 | 日期 | 2026-10-08 |
 | 決策者 | Wayne（維護者；授權 AI 直接決定實作細節） |
-| 出處 | 開發規範裁決 2026-10-08（PRJ-2026-0008）第 48 題；[SPEC-004](spec.md) Clarifications Session 2026-10-08、變更（Delta）2026-10-08；specs/README.md 延後事項 DEF-008 |
-| 取代 | [SPEC-004](spec.md) 設計決策 R2（密碼雜湊：加鹽 SHA-256） |
+| 出處 | 開發規範裁決 2026-10-08（PRJ-2026-0008）第 48 題；[SPEC-004](../../specs/其他/使用者管理與登入/spec.md) Clarifications Session 2026-10-08、變更（Delta）2026-10-08；specs/README.md 延後事項 DEF-008 |
+| 取代 | [SPEC-004](../../specs/其他/使用者管理與登入/spec.md) 設計決策 R2（密碼雜湊：加鹽 SHA-256） |
 
 > 📦 本 ADR 隨範本沿用自源專案（CHB），決策本身仍適用於範本。背景、影響與相關連結中提到的舊系統、分行、企業、開狀申請、系統參數等屬源專案業務，相關規格、資料表與 migration 範本已移除；以骨架程式碼與測試為準。
 
@@ -60,7 +60,7 @@ SPEC-004（2026-08）依使用者明示需求，以「每帳號隨機 salt + SHA
 
 ## 連結
 
-- 規格：[SPEC-004](spec.md) FR-007、FR-007a、AC-13、AC-31
-- 規範：[docs/SECURE-CODING.md](../../../docs/SECURE-CODING.md) §6
-- 延後事項：[specs/README.md](../../README.md) DEF-008
+- 規格：[SPEC-004](../../specs/其他/使用者管理與登入/spec.md) FR-007、FR-007a、AC-13、AC-31
+- 規範：[docs/SECURE-CODING.md](../SECURE-CODING.md) §6
+- 延後事項：[specs/README.md](../../specs/README.md) DEF-008
 - 程式：`backend/src/TcmClinic.Api.Infrastructure/Data/Security/Pbkdf2PasswordHasher.cs`、`backend/src/TcmClinic.Api.UseCases/Auth/Login.cs`、`backend/src/TcmClinic.Api.Core/UserAggregate/User.cs`（`UpgradePasswordHash`）

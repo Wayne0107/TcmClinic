@@ -53,6 +53,6 @@
 ## 連結
 
 - SPEC-016 系統參數維護：FR-008(b)（移除）、AC-14、AC-16、API 契約 §3
-- 受影響的規格：[SPEC-004](../使用者管理與登入/spec.md)、SPEC-011、[SPEC-012](../../管理業務/系統管理作業/角色權限維護/spec.md)、SPEC-014、SPEC-059
-- 慣例：[docs/API-CONVENTIONS.md](../../../docs/API-CONVENTIONS.md) §4
+- 受影響的規格：[SPEC-004](../../specs/其他/使用者管理與登入/spec.md)、SPEC-011、[SPEC-012](../../specs/管理業務/系統管理作業/角色權限維護/spec.md)、SPEC-014、SPEC-059
+- 慣例：[docs/API-CONVENTIONS.md](../API-CONVENTIONS.md) §4
 - 程式：`backend/src/TcmClinic.Api.UseCases/Paging/PageSizeResolver.cs`（實作後）

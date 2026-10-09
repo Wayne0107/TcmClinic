@@ -1,6 +1,6 @@
 # 基礎設施與專案結構（Infrastructure）
 
-> 版本 1.7.0｜最後更新 2026-10-09
+> 版本 1.8.0｜最後更新 2026-10-09
 
 > 本檔為憲章原則 III（架構一致性）的結構性 **How**，涵蓋 Monorepo 佈局、Aspire 編排、
 > 新專案建立與 Build/CI。多屬一次性設定。
@@ -15,7 +15,7 @@ project-root/
 ├── .githooks/                # 共用 git hook（gitleaks 秘密掃描、uds check）
 ├── .project-context/         # 專案決策記憶（UDS project-context-memory）
 ├── .memory/                  # 開發者經驗（UDS developer-memory）
-├── docs/                     # 憲章（CONSTITUTION.md）與實作規範（How）
+├── docs/                     # 憲章（CONSTITUTION.md）與實作規範（How）；adr/ 為架構決策紀錄（ADR）
 ├── specs/                    # 功能規格（UDS SDD 格式，依選單分層）
 ├── {Project}.slnx            # solution 涵蓋 apphost/ + backend/src/
 ├── Directory.Build.props      # 共用 MSBuild props（repo 根）

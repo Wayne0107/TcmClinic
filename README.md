@@ -118,7 +118,7 @@ Discuss → Create（寫規格）→ Review → Approve → derive-bdd → Imple
 ```
 
 - 各情境（新功能、修 bug、修改既有規格、重構）要下的指令與停止點見 [docs/WORKFLOW.html](docs/WORKFLOW.html)。
-- 規格依選單分層放在 `specs/<業務>/<作業>/<功能>/spec.md`，跨選單的放 `specs/其他/`；總覽、狀態、延後事項與 ADR 索引見 [specs/README.md](specs/README.md)。
+- 規格依選單分層放在 `specs/<業務>/<作業>/<功能>/spec.md`，跨選單的放 `specs/其他/`；總覽、狀態與延後事項見 [specs/README.md](specs/README.md)。架構決策（ADR）放在 `docs/adr/`，索引見 [docs/adr/README.md](docs/adr/README.md)。
 - 規範優先順序：憲章 > `docs/` > 規格 > `.standards/`；已裁決的衝突與 AI 行為約定見 [AGENTS.md](AGENTS.md)。
 - 提交訊息用繁體中文類型（`新增`、`修正`、`文件`…），實作類加 `Refs: SPEC-NNN`，見 [.github/COMMIT_CONVENTION.md](.github/COMMIT_CONVENTION.md)。
 
@@ -144,8 +144,8 @@ TcmClinic/
 │   ├── site/                      # 前台（Nuxt 4）
 │   └── admin/                     # 後台（Vue 3 + Vuetify）
 ├── prototype/                     # 前台設計雛形（靜態 HTML，參考用）
-├── docs/                          # 憲章與實作規範（How）、開發流程
-├── specs/                         # 功能規格（UDS SDD）與 ADR
+├── docs/                          # 憲章與實作規範（How）、開發流程、架構決策（adr/）
+├── specs/                         # 功能規格（UDS SDD）
 ├── TcmClinic.Api.slnx
 ├── Directory.Build.props          # 共用 MSBuild 設定、版本號
 ├── Directory.Packages.props       # 套件版本集中管理（CPM）
@@ -170,6 +170,7 @@ TcmClinic/
 | [docs/INFRASTRUCTURE.md](docs/INFRASTRUCTURE.md) | Monorepo、Aspire、新專案建立、CI、Git 流程 |
 | [docs/DEPENDENCIES.md](docs/DEPENDENCIES.md) | 套件管理與授權治理 |
 | [docs/LOGGING.md](docs/LOGGING.md)、[docs/PERFORMANCE.md](docs/PERFORMANCE.md)、[docs/COMMENTS.md](docs/COMMENTS.md) | 日誌、效能、註解規範 |
-| [specs/README.md](specs/README.md) | 規格索引、延後事項、ADR 索引 |
+| [specs/README.md](specs/README.md) | 規格索引、延後事項 |
+| [docs/adr/README.md](docs/adr/README.md) | 架構決策紀錄（ADR）索引 |
 | [.github/COMMIT_CONVENTION.md](.github/COMMIT_CONVENTION.md) | 提交訊息規範 |
 | [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) | 第三方授權聲明 |

@@ -70,7 +70,7 @@
 
 ## 連結
 
-- 規範：[docs/LOGGING.md](../../../docs/LOGGING.md) §1～§3
-- 延後事項：[specs/README.md](../../README.md) DEF-014
+- 規範：[docs/LOGGING.md](../LOGGING.md) §1～§3
+- 延後事項：[specs/README.md](../../specs/README.md) DEF-014
 - 程式：`backend/src/TcmClinic.Api.Web/Configurations/LoggerConfigs.cs`、`backend/src/TcmClinic.Api.Web/appsettings.Production.json`
 - 測試：`backend/tests/TcmClinic.Api.FunctionalTests/LoggingFileFormatTests.cs`

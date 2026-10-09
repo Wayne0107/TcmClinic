@@ -1,6 +1,6 @@
 # 資料庫 Schema 規範（Database Schema）
 
-> 版本 1.3.0｜最後更新 2026-10-08
+> 版本 1.3.1｜最後更新 2026-10-09
 
 > 本檔為憲章原則 IV（類型安全）與 III（架構一致性）在資料層的 **How**。
 > 資料表命名（系統表 vs 業務表、`Sys` 前綴）見 §8。
@@ -73,7 +73,7 @@ builder.Property(e => e.Id)
 - Vogen ID 的 `Validate` **不得**限制正負：EF 存檔前會指派負數暫時值，存檔後才回填資料庫配發的號碼。
 - 既有欄位不能以 `ALTER COLUMN` 加上或移除 `IDENTITY`，EF 自動產生的 migration 會失敗；須在 migration 內重建資料表（源專案以 `IdentityRebuildSql` 輔助類別於執行時讀取資料庫目錄處理，需要時可移植）：拆除指進、指出的外鍵 → 依舊表定義建含 `IDENTITY` 的新表 → `SET IDENTITY_INSERT ON` 保留原 Id 搬資料（rowversion 略過、重新產生）→ 刪舊表 → 重建索引、CHECK 約束、說明與外鍵。
 - 從其他系統搬資料需保留原 Id 時，同樣以 `IDENTITY_INSERT` 寫入。
-- 所有 Vogen 主鍵一律 IDENTITY（[ADR-010](../specs/其他/架構決策/ADR-010-identity-primary-keys.md)）；新增實體照上面的設定，`IdentityPrimaryKeyTests` 檢查 Id 為 IDENTITY 且外鍵、索引、說明與模型一致。
+- 所有 Vogen 主鍵一律 IDENTITY（[ADR-010](adr/ADR-010-identity-primary-keys.md)）；新增實體照上面的設定，`IdentityPrimaryKeyTests` 檢查 Id 為 IDENTITY 且外鍵、索引、說明與模型一致。
 
 ### 4.1a 對外識別碼 PublicId（UUIDv7）
 

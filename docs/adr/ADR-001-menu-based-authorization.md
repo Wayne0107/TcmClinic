@@ -5,7 +5,7 @@
 | 狀態 | Accepted |
 | 日期 | 2026-08-31（決策日；2026-10-06 依憲章 2.1.0 補記為 ADR） |
 | 決策者 | Wayne（維護者） |
-| 出處 | [SPEC-005 選單導向授權模型](../選單導向授權模型/spec.md) 設計決策 R1、R2 |
+| 出處 | [SPEC-005 選單導向授權模型](../../specs/其他/選單導向授權模型/spec.md) 設計決策 R1、R2 |
 
 > 📦 本 ADR 隨範本沿用自源專案（CHB），決策本身仍適用於範本。背景、影響與相關連結中提到的舊系統、分行、企業、開狀申請、系統參數等屬源專案業務，相關規格、資料表與 migration 範本已移除；以骨架程式碼與測試為準。
 
@@ -37,6 +37,6 @@
 
 ## 連結
 
-- [SPEC-005 選單導向授權模型](../選單導向授權模型/spec.md)
-- [SPEC-012 角色權限維護](../../管理業務/系統管理作業/角色權限維護/spec.md)（角色 ↔ 可見選單的維護頁）
+- [SPEC-005 選單導向授權模型](../../specs/其他/選單導向授權模型/spec.md)
+- [SPEC-012 角色權限維護](../../specs/管理業務/系統管理作業/角色權限維護/spec.md)（角色 ↔ 可見選單的維護頁）
 - 程式：`backend/src/TcmClinic.Api.Web/Configurations/MenuAccessPolicyProvider.cs`、`backend/src/TcmClinic.Api.Web/Authorization/MenuAccess.cs`

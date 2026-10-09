@@ -20,8 +20,7 @@ specs/
 ├── README.md
 ├── 管理業務/
 │   └── 系統管理作業/（3）
-└── 其他/（9＋架構決策，跨選單的基礎／橫切規格）
-    └── 架構決策/（跨選單的 ADR）
+└── 其他/（9，跨選單的基礎／橫切規格）
 ```
 
 | 規則 | 說明 |
@@ -132,28 +131,7 @@ SPEC-002～SPEC-065 為範本內建規格的編號（沿用源專案，程式碼
 
 ## 架構決策紀錄（ADR）
 
-重要決策照 UDS [adr-standards](../.standards/adr-standards.ai.yaml) 一個決策一檔 `ADR-NNN-短描述.md`：
-
-- **位置**：屬於某選單功能的決策放在該規格的資料夾（與 `spec.md` 同層）；跨選單的決策放 `specs/其他/架構決策/`。
-- **編號**：全專案共用流水號；ADR-001～011 為範本內建（沿用源專案），新決策從 ADR-012 起接續。本表為唯一索引。
-- **不可修改**：決策改變時另開新 ADR 取代舊的，舊 ADR 狀態改為「已取代」並註明取代者。
-- **與規格的關係**：規格的 Technical Design 列出並連結相關 ADR。範本內建規格的「設計決策 R1～Rn」維持在規格內，不搬成 ADR。
-
-| 編號 | 決策 | 位置 | 狀態 | 日期 |
-|------|------|------|------|------|
-| ADR-001 | [選單導向授權：選單可見性＝該頁所有操作的權限](./其他/架構決策/ADR-001-menu-based-authorization.md) | 其他/架構決策 | Accepted | 2026-08-31 |
-| ADR-002 | [跨表關聯一律以 ID 外鍵參照，不用業務代碼](./其他/架構決策/ADR-002-relations-by-id-foreign-key.md) | 其他/架構決策 | Accepted | 2026-09-30 |
-| ADR-003 | [所有資料表一律軟刪除，並具備五個標準欄位](./其他/架構決策/ADR-003-soft-delete-and-standard-columns.md) | 其他/架構決策 | Accepted | 2026-09-30 |
-| ADR-004 | [多人共用維護的資料以 RowVersion 樂觀併發，雙道防線回 409](./其他/架構決策/ADR-004-optimistic-concurrency-rowversion.md) | 其他/架構決策 | Accepted | 2026-09-21 |
-| ADR-005 | [主鍵用 Vogen 強型別 ID，由程式端以 Max+1 產生](./其他/架構決策/ADR-005-vogen-ids-client-generated.md) | 其他/架構決策 | Superseded（ADR-010） | 未記錄（專案初期） |
-| ADR-006 | [使用者操作紀錄 SysUserLog：獨立交易、盡力寫入、成功失敗都記](./其他/架構決策/ADR-006-user-operation-log.md) | 其他/架構決策 | Accepted | 2026-09-29 |
-| ADR-007 | [分頁清單預設每頁筆數固定為 10](./其他/架構決策/ADR-007-default-page-size-fixed.md) | 其他/架構決策 | Accepted | 2026-10-06 |
-| ADR-008 | [生產日誌改 JSON，並依等級分檔保留](./其他/架構決策/ADR-008-production-json-logs-by-level.md) | 其他/架構決策 | Accepted | 2026-10-08 |
-| ADR-009 | [密碼雜湊改 PBKDF2，既有雜湊於登入成功時自動轉換](./其他/使用者管理與登入/ADR-009-password-hashing-pbkdf2.md) | 其他/使用者管理與登入（SPEC-004） | Accepted | 2026-10-08 |
-| ADR-010 | [Vogen 強型別主鍵改由資料庫 IDENTITY 配號](./其他/架構決策/ADR-010-identity-primary-keys.md) | 其他/架構決策 | Accepted | 2026-10-08 |
-| ADR-011 | [登入改用 JWT Bearer（短效 access token＋可撤銷的 refresh token）](./其他/使用者管理與登入/ADR-011-jwt-bearer-authentication.md) | 其他/使用者管理與登入（SPEC-004） | Accepted | 2026-10-08 |
-
-> 全專案的日常約定（每頁筆數、表名前綴、非預期錯誤訊息、開發流程、規範裁決、CI）記在 `.project-context/`（PRJ-2026-0001、0003、0004、0007～0009）。
+ADR 一律放在 [`docs/adr/`](../docs/adr/)，索引與撰寫規則見 [docs/adr/README.md](../docs/adr/README.md)（2026-10-09 起；原放在規格資料夾與 `specs/其他/架構決策/`）。規格的 Technical Design 列出並連結相關 ADR。
 
 ---
 
@@ -168,7 +146,7 @@ SPEC-002～SPEC-065 為範本內建規格的編號（沿用源專案，程式碼
 3. 依序執行 `/universal-dev-standards:sdd discuss`、`create`、`review`、`approve`，在該功能的 `spec.md` 撰寫（空殼沿用標頭的 SPEC-ID）
 4. 核准後執行 `/universal-dev-standards:derive-bdd` 產出 `.feature`，再 `sdd implement`、`sdd verify`；PR 以 squash 合併後 `sdd archive`
 5. 標頭狀態依序推進：Draft → Review → Approved → Implemented → Archived（合併歸檔後改為 Archived）
-6. 更新本檔該列的「狀態」與「相關規格」，並歸入「功能領域對照」；有 ADR 時補進上方 ADR 索引
+6. 更新本檔該列的「狀態」與「相關規格」，並歸入「功能領域對照」；有 ADR 時補進 [docs/adr/README.md](../docs/adr/README.md) 索引
 
 ### 新增規格
 

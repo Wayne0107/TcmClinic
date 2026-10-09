@@ -17,7 +17,7 @@
 
 > **狀態沿革**：Implemented（2026-09-30）；2026-10-02 移除舊後台選單（見 Clarifications Session 2026-10-02）。
 >
-> ⚠️ **部分被 SPEC-016 系統參數維護修改**：角色維護清單預設每頁筆數改取系統參數「查詢列表分頁筆數」（其 FR-008(b)，初始值 10，值不變）。⚠️ 2026-10-06 SPEC-016 移除該參數，預設改為固定 10（值不變，[ADR-007](../../../其他/架構決策/ADR-007-default-page-size-fixed.md)）；API 契約內文於 SPEC-016 實作時一併更新。
+> ⚠️ **部分被 SPEC-016 系統參數維護修改**：角色維護清單預設每頁筆數改取系統參數「查詢列表分頁筆數」（其 FR-008(b)，初始值 10，值不變）。⚠️ 2026-10-06 SPEC-016 移除該參數，預設改為固定 10（值不變，[ADR-007](../../../../docs/adr/ADR-007-default-page-size-fixed.md)）；API 契約內文於 SPEC-016 實作時一併更新。
 >
 > ⚠️ **2026-10-02 舊後台選單移除**：`PUT /roles/{id}` 改由 `rolePermission` 授權、`GET /roles` 改為 `accountMaintenance` 或 `rolePermission` 任一可見即可（見 Clarifications Session 2026-10-02、FR-014）。
 >
@@ -391,7 +391,7 @@ MenuItem 1 ──── * RoleMenuVisibility                  → 可授權葉�
 `GET /roles/maintenance?page={page}&pageSize={pageSize}`
 
 - **用途**：US1 檢視角色清單（含種類、是否已指派、分頁）。
-- **查詢參數**：`page`（預設 1）、`pageSize`（未指定、0 或負數時為 10（[ADR-007](../../../其他/架構決策/ADR-007-default-page-size-fixed.md)；2026-10-02～10-06 取系統參數「查詢列表分頁筆數」），最大 100）。（無搜尋／篩選，釐清 2026-09-21 定案。）
+- **查詢參數**：`page`（預設 1）、`pageSize`（未指定、0 或負數時為 10（[ADR-007](../../../../docs/adr/ADR-007-default-page-size-fixed.md)；2026-10-02～10-06 取系統參數「查詢列表分頁筆數」），最大 100）。（無搜尋／篩選，釐清 2026-09-21 定案。）
 - **200 回應**：
   ```json
   {

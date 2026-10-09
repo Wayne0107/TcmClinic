@@ -20,7 +20,7 @@ created: 2026-10-06
 
 ## Context
 
-清單預設每頁筆數若取自可調整的參數，每個清單都要多一次讀取，行為也隨設定變動、難以測試。2026-10-06 源專案使用者決定改為固定值，決策見 [ADR-007](../specs/其他/架構決策/ADR-007-default-page-size-fixed.md)。
+清單預設每頁筆數若取自可調整的參數，每個清單都要多一次讀取，行為也隨設定變動、難以測試。2026-10-06 源專案使用者決定改為固定值，決策見 [ADR-007](../docs/adr/ADR-007-default-page-size-fixed.md)。
 
 ## Decision/Rule
 
@@ -32,4 +32,4 @@ created: 2026-10-06
 ## Constraint
 
 - 禁止在清單 handler 或 DTO 寫死預設筆數，也禁止改由設定檔或資料庫參數決定每頁筆數。
-- 依據：`docs/API-CONVENTIONS.md` §4、[ADR-007](../specs/其他/架構決策/ADR-007-default-page-size-fixed.md)。
+- 依據：`docs/API-CONVENTIONS.md` §4、[ADR-007](../docs/adr/ADR-007-default-page-size-fixed.md)。

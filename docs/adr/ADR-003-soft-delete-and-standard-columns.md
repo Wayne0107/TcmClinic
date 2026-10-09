@@ -5,7 +5,7 @@
 | 狀態 | Accepted |
 | 日期 | 2026-09-30（全表統一五欄的決策日；軟刪除為更早的既有做法；2026-10-06 依憲章 2.1.0 補記為 ADR） |
 | 決策者 | Wayne（維護者） |
-| 出處 | `docs/DATABASE-SCHEMA.md` §1、§2、§6；[SPEC-013 個人資料維護](../../管理業務/系統管理作業/個人資料維護/spec.md) R8（2026-09-30 修訂） |
+| 出處 | `docs/DATABASE-SCHEMA.md` §1、§2、§6；[SPEC-013 個人資料維護](../../specs/管理業務/系統管理作業/個人資料維護/spec.md) R8（2026-09-30 修訂） |
 
 > 📦 本 ADR 隨範本沿用自源專案（CHB），決策本身仍適用於範本。背景、影響與相關連結中提到的舊系統、分行、企業、開狀申請、系統參數等屬源專案業務，相關規格、資料表與 migration 範本已移除；以骨架程式碼與測試為準。
 
@@ -40,5 +40,5 @@
 ## 連結
 
 - `docs/DATABASE-SCHEMA.md` §1、§2、§6
-- [SPEC-006 資料表異動紀錄](../資料表異動紀錄/spec.md)
+- [SPEC-006 資料表異動紀錄](../../specs/其他/資料表異動紀錄/spec.md)
 - 程式：`backend/src/TcmClinic.Api.SharedKernel/AuditableEntityBase.cs`、`backend/src/TcmClinic.Api.Infrastructure/Data/Interceptors/AuditableEntityInterceptor.cs`

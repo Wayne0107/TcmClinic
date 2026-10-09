@@ -5,8 +5,8 @@
 | 狀態 | Accepted |
 | 日期 | 2026-10-08 |
 | 決策者 | Wayne（維護者；選定 token 傳遞方式、效期續期方式，其餘細節授權 AI 決定） |
-| 出處 | [SPEC-004](spec.md) Clarifications Session 2026-10-08（登入改 JWT）、變更（Delta）2026-10-08 |
-| 取代 | [SPEC-004](spec.md) 設計決策 R1（Cookie 驗證）；FR-021 原「以 HttpOnly Cookie 承載登入工作階段」 |
+| 出處 | [SPEC-004](../../specs/其他/使用者管理與登入/spec.md) Clarifications Session 2026-10-08（登入改 JWT）、變更（Delta）2026-10-08 |
+| 取代 | [SPEC-004](../../specs/其他/使用者管理與登入/spec.md) 設計決策 R1（Cookie 驗證）；FR-021 原「以 HttpOnly Cookie 承載登入工作階段」 |
 
 > 📦 本 ADR 隨範本沿用自源專案（CHB），決策本身仍適用於範本。背景、影響與相關連結中提到的舊系統、分行、企業、開狀申請、系統參數等屬源專案業務，相關規格、資料表與 migration 範本已移除；以骨架程式碼與測試為準。
 
