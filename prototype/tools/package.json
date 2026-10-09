@@ -1,0 +1,11 @@
+{
+  "name": "tcm-prototype-tools",
+  "private": true,
+  "description": "雛形用小工具：把源柔黑體子集嵌入 HTML",
+  "scripts": {
+    "fonts": "node embed-fonts.js ../blush.html"
+  },
+  "dependencies": {
+    "subset-font": "^2.4.0"
+  }
+}

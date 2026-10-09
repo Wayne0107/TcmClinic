@@ -1,0 +1,854 @@
+<title>本然中醫診所</title>
+<meta name="description" content="本然中醫診所位於旺角，由香港註冊中醫師以四診辨證，提供中藥、針灸、推拿及天灸，專注皮膚、婦科、痛症及內科調理。WhatsApp 預約。">
+<!--
+  網站雛形 v0.1（靜態 HTML，首頁）
+  - 診所名稱、醫師、地址、電話、價格均為示範內容
+  - 轉到 ASP.NET Core 時：<title>、meta、canonical、JSON-LD 移到 _Layout.cshtml 的 <head>
+  - 正式頁面 title 建議：本然中醫診所｜旺角註冊中醫・針灸・皮膚及婦科調理
+  - Tailwind 目前用瀏覽器版 CDN 方便預覽；正式版改用 Tailwind CLI 打包，class 可直接沿用
+
+  網址規劃（目前選單先連到首頁區塊）：
+    /about                      /about/doctors            /about/fees          /about/weather
+    /services/herbal-medicine   /services/acupuncture     /services/tuina-cupping
+    /services/tianjiu           /services/online-consultation
+    /conditions/dermatology     /conditions/gynecology    /conditions/pain     /conditions/internal-medicine
+    /conditions/eczema          /conditions/acne ...（個別病症頁）
+    /beauty/facial-acupuncture  /beauty/panda-needling
+    /blog                       /blog/{slug}
+    /clinic-hours
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;500;700&family=Noto+Serif+HK:wght@500;600;700&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.11"></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "MedicalClinic",
+  "name": "本然中醫診所",
+  "description": "旺角香港註冊中醫診所，提供中藥、針灸、推拿及天灸，專注皮膚、婦科、痛症及內科調理。",
+  "url": "https://www.example.com/",
+  "telephone": "+852-0000-0000",
+  "medicalSpecialty": ["Dermatologic", "Gynecologic", "Musculoskeletal"],
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "亞皆老街 00 號 示範商業大廈 12 樓",
+    "addressLocality": "旺角",
+    "addressRegion": "九龍",
+    "addressCountry": "HK"
+  },
+  "openingHoursSpecification": [
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"], "opens": "10:00", "closes": "13:30" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"], "opens": "15:00", "closes": "20:00" }
+  ]
+}
+</script>
+
+<style>
+  /* 設計規範：現代禪風。顏色一律從這裡取用 */
+  :root {
+    --paper:   #F7F4EE;  /* 宣紙米白，全站底色 */
+    --surface: #EEE9DF;  /* 區塊交替底色 */
+    --card:    #FBF9F5;  /* 卡片底色 */
+    --ink:     #2F4A3A;  /* 墨綠，主色 */
+    --moss:    #4F6E5A;  /* 淺墨綠，hover */
+    --wood:    #86663F;  /* 木色，小標與點綴 */
+    --seal:    #A8412F;  /* 印章朱紅，只用在 Logo 印章 */
+    --on-seal: #FBF6EE;
+    --body:    #2B2B28;  /* 內文 */
+    --muted:   #63625C;  /* 次要文字 */
+    --line:    #DDD6C9;  /* 細分隔線 */
+    --on-ink:  #F7F4EE;  /* 墨綠底上的文字 */
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --paper: #131915; --surface: #1A221D; --card: #1E2721;
+      --ink: #B4CDB9; --moss: #8FB09A; --wood: #CDAA80;
+      --seal: #B8513D; --on-seal: #FBF6EE;
+      --body: #E4E0D6; --muted: #A3A097; --line: #2D3731; --on-ink: #131915;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper: #131915; --surface: #1A221D; --card: #1E2721;
+    --ink: #B4CDB9; --moss: #8FB09A; --wood: #CDAA80;
+    --seal: #B8513D; --on-seal: #FBF6EE;
+    --body: #E4E0D6; --muted: #A3A097; --line: #2D3731; --on-ink: #131915;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--paper); color: var(--body); }
+  section[id] { scroll-margin-top: 6rem; }
+  :focus-visible { outline: 2px solid var(--moss); outline-offset: 3px; }
+  .vt { writing-mode: vertical-rl; }
+  .ph {
+    background:
+      repeating-linear-gradient(135deg, transparent 0 11px, color-mix(in srgb, var(--line) 80%, transparent) 11px 12px),
+      var(--card);
+  }
+  [data-state="open"] .dot { background: var(--moss); box-shadow: 0 0 0 4px color-mix(in srgb, var(--moss) 22%, transparent); }
+  tr.is-today td, tr.is-today th { color: var(--ink); font-weight: 600; }
+  .style-nav a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
+  .style-nav a:hover { text-decoration-color: var(--ink); }
+  .style-nav a[aria-current="page"] { font-weight: 700; text-decoration-color: var(--ink); }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition: none !important; }
+  }
+</style>
+
+<style type="text/tailwindcss">
+  @theme inline {
+    --color-paper: var(--paper);
+    --color-surface: var(--surface);
+    --color-card: var(--card);
+    --color-ink: var(--ink);
+    --color-moss: var(--moss);
+    --color-wood: var(--wood);
+    --color-seal: var(--seal);
+    --color-on-seal: var(--on-seal);
+    --color-body: var(--body);
+    --color-muted: var(--muted);
+    --color-line: var(--line);
+    --color-on-ink: var(--on-ink);
+    --font-serif: "Noto Serif HK", "Songti TC", "PMingLiU", serif;
+    --font-sans: "Noto Sans HK", "PingFang HK", "Microsoft JhengHei", sans-serif;
+  }
+  @layer components {
+    .wrap { @apply mx-auto w-full max-w-[1160px] px-5 md:px-8; }
+    .eyebrow { @apply text-xs font-medium tracking-[0.24em] text-wood; }
+    .section-title {
+      @apply mt-4 font-serif text-[1.875rem] leading-[1.35] font-semibold tracking-[0.06em] text-ink md:text-[2.5rem];
+      text-wrap: balance;
+    }
+    .btn-primary { @apply inline-flex items-center gap-2 bg-ink px-6 py-3 text-[15px] tracking-[0.08em] text-on-ink transition-colors hover:bg-moss; }
+    .btn-ghost { @apply inline-flex items-center gap-2 border border-ink px-6 py-3 text-[15px] tracking-[0.08em] text-ink transition-colors hover:bg-ink hover:text-on-ink; }
+    .navlink { @apply block px-3 py-2 tracking-[0.06em] text-body transition-colors hover:text-ink; }
+    .dropdown { @apply invisible absolute left-0 top-full min-w-48 pt-2 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100; }
+    .dropdown ul { @apply border border-line bg-card py-2 shadow-sm; }
+    .dropdown a { @apply block px-5 py-2 text-[15px] text-body hover:bg-surface hover:text-ink; }
+    .text-link { @apply inline-flex items-center gap-2 border-b border-ink pb-0.5 text-[15px] tracking-[0.06em] text-ink hover:border-moss hover:text-moss; }
+  }
+</style>
+
+<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:bg-ink focus:px-4 focus:py-2 focus:text-on-ink">跳至主要內容</a>
+
+<!-- 雛形提示列：正式上線時移除 -->
+<div class="bg-surface text-xs text-muted">
+  <div class="wrap flex flex-wrap items-center justify-between gap-x-6 gap-y-1 py-2">
+    <p>網站雛形：診所名稱、醫師、地址、電話及價格均為示範內容</p>
+    <nav aria-label="風格版本" class="style-nav flex flex-wrap items-center gap-x-3 gap-y-1">
+      <span>風格版本：</span>
+      <a data-style="zen" href="#">現代禪風</a>
+      <a data-style="warm" href="#">溫暖親切</a>
+      <a data-style="oriental" href="#">典雅東方</a>
+      <a data-style="fresh" href="#">清新自然</a>
+      <a data-style="blush" href="#">柔雅粉調</a>
+    </nav>
+  </div>
+</div>
+
+<header class="sticky z-40 border-b border-line bg-paper/90 backdrop-blur" style="top: env(safe-area-inset-top, 0px)">
+  <div class="wrap flex h-16 items-center justify-between gap-6 lg:h-20">
+    <a href="#top" class="flex items-center gap-3" aria-label="本然中醫診所 首頁">
+      <span class="vt grid size-10 place-items-center rounded-[3px] bg-seal font-serif text-[11px] font-semibold leading-none tracking-[0.2em] text-on-seal" aria-hidden="true">本然</span>
+      <span class="font-serif text-lg font-semibold tracking-[0.14em] text-ink">本然中醫診所</span>
+    </a>
+
+    <nav aria-label="主選單" class="hidden lg:block">
+      <ul class="flex items-center text-[15px]">
+        <li class="group relative">
+          <a href="#about" class="navlink">關於本然</a>
+          <div class="dropdown"><ul>
+            <li><a href="#about">診所理念</a></li>
+            <li><a href="#doctors">醫師團隊</a></li>
+            <li><a href="#hours">收費參考</a></li>
+            <li><a href="#hours">惡劣天氣安排</a></li>
+          </ul></div>
+        </li>
+        <li class="group relative">
+          <a href="#services" class="navlink">服務範圍</a>
+          <div class="dropdown"><ul>
+            <li><a href="#services">中藥內服</a></li>
+            <li><a href="#services">針灸治療</a></li>
+            <li><a href="#services">推拿及拔罐</a></li>
+            <li><a href="#services">天灸</a></li>
+            <li><a href="#services">網上視像診症</a></li>
+          </ul></div>
+        </li>
+        <li class="group relative">
+          <a href="#conditions" class="navlink">專項治療</a>
+          <div class="dropdown"><ul>
+            <li><a href="#conditions">皮膚科</a></li>
+            <li><a href="#conditions">婦科</a></li>
+            <li><a href="#conditions">痛症</a></li>
+            <li><a href="#conditions">內科</a></li>
+          </ul></div>
+        </li>
+        <li class="group relative">
+          <a href="#beauty" class="navlink">中醫美容</a>
+          <div class="dropdown"><ul>
+            <li><a href="#beauty">美容針</a></li>
+            <li><a href="#beauty">熊貓針</a></li>
+          </ul></div>
+        </li>
+        <li><a href="#blog" class="navlink">醫師專欄</a></li>
+        <li><a href="#hours" class="navlink">門診及交通</a></li>
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href="https://wa.me/85200000000" data-wa class="btn-primary hidden !px-5 !py-2.5 sm:inline-flex">WhatsApp 預約</a>
+      <button id="menu-btn" type="button" class="inline-flex items-center gap-2 px-2 py-2 text-[15px] tracking-[0.08em] text-ink lg:hidden" aria-expanded="false" aria-controls="mnav">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+        選單
+      </button>
+    </div>
+  </div>
+
+  <!-- 手機版選單 -->
+  <div id="mnav" hidden class="border-t border-line bg-paper lg:hidden">
+    <nav aria-label="手機選單" class="wrap grid gap-6 py-6 text-[15px] sm:grid-cols-2">
+      <div>
+        <p class="eyebrow">關於本然</p>
+        <ul class="mt-2">
+          <li><a href="#about" class="block py-2">診所理念</a></li>
+          <li><a href="#doctors" class="block py-2">醫師團隊</a></li>
+          <li><a href="#hours" class="block py-2">收費參考</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="eyebrow">服務範圍</p>
+        <ul class="mt-2">
+          <li><a href="#services" class="block py-2">中藥、針灸、推拿、天灸</a></li>
+          <li><a href="#services" class="block py-2">網上視像診症</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="eyebrow">專項治療</p>
+        <ul class="mt-2">
+          <li><a href="#conditions" class="block py-2">皮膚科・婦科・痛症・內科</a></li>
+          <li><a href="#beauty" class="block py-2">中醫美容</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="eyebrow">更多</p>
+        <ul class="mt-2">
+          <li><a href="#blog" class="block py-2">醫師專欄</a></li>
+          <li><a href="#hours" class="block py-2">門診時間及交通</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- 主視覺 -->
+  <section id="top" class="overflow-hidden">
+    <div class="wrap grid items-center gap-12 py-16 md:py-24 lg:grid-cols-[1.15fr_0.85fr]">
+      <div>
+        <h1 class="font-serif font-semibold text-ink">
+          <span class="block font-sans text-sm font-medium tracking-[0.24em] text-wood">本然中醫診所 · 旺角</span>
+          <span class="mt-5 block text-[2.5rem] leading-[1.3] tracking-[0.08em] sm:text-5xl lg:text-[3.6rem]">順應本然，<br>調和身心</span>
+        </h1>
+        <p class="mt-7 max-w-[34em] text-[17px] leading-[1.9]">
+          由香港註冊中醫師以望、聞、問、切四診辨證，為每位病人訂立個人化的中藥及針灸方案。診室安靜舒適，讓治療成為一段可以放鬆的時間。
+        </p>
+        <div class="mt-9 flex flex-wrap gap-3">
+          <a href="https://wa.me/85200000000" data-wa class="btn-primary">WhatsApp 預約診症</a>
+          <a href="#hours" class="btn-ghost">門診時間</a>
+        </div>
+        <dl class="mt-10 grid max-w-xl gap-x-8 gap-y-4 border-t border-line pt-6 text-sm sm:grid-cols-2">
+          <div data-open-status>
+            <dt class="text-muted">今日門診</dt>
+            <dd class="mt-1 flex items-center gap-2.5 text-body">
+              <span class="dot inline-block size-2 rounded-full bg-wood" aria-hidden="true"></span>
+              <span data-text class="tabular-nums">星期一至六應診</span>
+            </dd>
+          </div>
+          <div>
+            <dt class="text-muted">交通</dt>
+            <dd class="mt-1 text-body">港鐵旺角站 E2 出口，步行約 3 分鐘</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="mx-auto flex w-full max-w-[460px] items-start gap-4">
+        <div class="relative flex-1">
+          <canvas id="enso" class="block aspect-square w-full" aria-hidden="true"></canvas>
+          <span class="vt absolute bottom-[12%] right-[10%] grid h-14 w-10 place-items-center rounded-[3px] bg-seal font-serif text-[13px] font-semibold tracking-[0.2em] text-on-seal" aria-hidden="true">本然</span>
+        </div>
+        <p class="vt shrink-0 pt-4 font-serif text-lg tracking-[0.5em] text-muted">一人一方　辨證論治</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 關於本然 -->
+  <section id="about" class="border-t border-line">
+    <div class="wrap grid gap-10 py-24 md:py-32 lg:grid-cols-[1fr_1.4fr] lg:gap-16">
+      <div>
+        <p class="eyebrow">關於本然</p>
+        <h2 class="section-title">每一張處方，<br class="hidden md:inline">都從了解你開始</h2>
+      </div>
+      <div>
+        <div class="max-w-[36em] space-y-5 text-[17px] leading-[1.9]">
+          <p>本然中醫診所由三位香港註冊中醫師主理。我們相信身體有自我調節的能力，治療的目的，是找出失衡的原因，幫助身體回到本來的狀態。</p>
+          <p>每次診症，醫師都會預留足夠時間細問作息、飲食與病史，並解釋證型與治療方向，讓你清楚知道自己正在接受甚麼治療。</p>
+        </div>
+        <dl class="mt-12 grid gap-8 border-t border-line pt-8 sm:grid-cols-3">
+          <div>
+            <dt class="font-serif text-lg font-semibold tracking-[0.08em] text-ink">辨證論治</dt>
+            <dd class="mt-2 text-[15px] leading-[1.8] text-muted">同樣是失眠，成因可以是心脾兩虛，也可以是肝火擾心。先辨清證型，再決定用藥。</dd>
+          </div>
+          <div>
+            <dt class="font-serif text-lg font-semibold tracking-[0.08em] text-ink">按進度調方</dt>
+            <dd class="mt-2 text-[15px] leading-[1.8] text-muted">按體質、季節及治療進度調整處方，每次覆診重新評估。</dd>
+          </div>
+          <div>
+            <dt class="font-serif text-lg font-semibold tracking-[0.08em] text-ink">獨立診室</dt>
+            <dd class="mt-2 text-[15px] leading-[1.8] text-muted">每位病人都在獨立診室與醫師詳談，私隱有保障。</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- 專項治療 -->
+  <section id="conditions" class="bg-surface">
+    <div class="wrap py-24 md:py-32">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <p class="eyebrow">專項治療</p>
+          <h2 class="section-title">皮膚、婦科、痛症及內科調理</h2>
+        </div>
+        <p class="max-w-md text-[15px] leading-[1.8] text-muted">按病症分科跟進，由具相關專長的醫師主理。點選病症可查看成因、治療方式及療程。</p>
+      </div>
+
+      <div class="mt-14 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
+        <article class="border-t-2 border-ink pt-6">
+          <h3 class="font-serif text-2xl font-semibold tracking-[0.1em] text-ink">皮膚科</h3>
+          <p class="mt-3 text-[15px] leading-[1.8] text-muted">濕疹、暗瘡等皮膚問題，多與體內濕熱、血燥有關，內服配合外用調理。</p>
+          <ul class="mt-5 text-[15px]">
+            <li><a href="#conditions" class="flex items-center justify-between border-b border-line py-2.5 hover:text-ink">濕疹<span aria-hidden="true">→</span></a></li>
+            <li><a href="#conditions" class="flex items-center justify-between border-b border-line py-2.5 hover:text-ink">暗瘡<span aria-hidden="true">→</span></a></li>
+            <li><a href="#conditions" class="flex items-center justify-between border-b border-line py-2.5 hover:text-ink">蕁麻疹<span aria-hidden="true">→</span></a></li>
+            <li><a href="#conditions" class="flex items-center justify-between border-b border-line py-2.5 hover:text-ink">脫髮<span aria-hidden="true">→</span></a></li>
+          </ul>
+        </article>
+        <article class="border-t-2 border-ink pt-6">
+          <h3 class="font-serif text-2xl font-semibold tracking-[0.1em] text-ink">婦科</h3>
+          <p class="mt-3 text-[15px] leading-[1.8] text-muted">調理月經周期與體質，亦為備孕及產後人士提供跟進。</p>
+          <ul class="mt-5 text-[15px]">
+            <li><a href="#conditions" class="flex items-center justify-between border-b border-line py-2.5 hover:text-ink">月經不調<span aria-hidden="true">→</span></a></li>
+            <li><a href="#conditions" class="flex items-center justify-between border-b border-line py-2.5 hover:text-ink">經痛<span aria-hidden="true">→</span></a></li>
+            <li><a href="#conditions" class="flex items-center justify-between border-b border-line py-2.5 hover:text-ink">備孕調理<span aria-hidden="true">→</span></a></li>
+            <li><a href="#conditions" class="flex items-center justify-between border-b border-line py-2.5 hover:text-ink">更年期<span aria-hidden="true">→</span></a></li>
+          </ul>
+        </article>
+        <article class="border-t-2 border-ink pt-6">
+          <h3 class="font-serif text-2xl font-semibold tracking-[0.1em] text-ink">痛症</h3>
+          <p class="mt-3 text-[15px] leading-[1.8] text-muted">針灸、推拿配合中藥，處理勞損及慢性痛症。</p>
+          <ul class="mt-5 text-[15px]">
+            <li><a href="#conditions" class="flex items-center justify-between border-b border-line py-2.5 hover:text-ink">肩頸痛<span aria-hidden="true">→</span></a></li>
+            <li><a href="#conditions" class="flex items-center justify-between border-b border-line py-2.5 hover:text-ink">腰背痛<span aria-hidden="true">→</span></a></li>
+            <li><a href="#conditions" class="flex items-center justify-between border-b border-line py-2.5 hover:text-ink">網球肘<span aria-hidden="true">→</span></a></li>
+            <li><a href="#conditions" class="flex items-center justify-between border-b border-line py-2.5 hover:text-ink">膝關節痛<span aria-hidden="true">→</span></a></li>
+          </ul>
+        </article>
+        <article class="border-t-2 border-ink pt-6">
+          <h3 class="font-serif text-2xl font-semibold tracking-[0.1em] text-ink">內科</h3>
+          <p class="mt-3 text-[15px] leading-[1.8] text-muted">從臟腑功能入手，改善長期困擾日常生活的問題。</p>
+          <ul class="mt-5 text-[15px]">
+            <li><a href="#conditions" class="flex items-center justify-between border-b border-line py-2.5 hover:text-ink">失眠<span aria-hidden="true">→</span></a></li>
+            <li><a href="#conditions" class="flex items-center justify-between border-b border-line py-2.5 hover:text-ink">腸胃不適<span aria-hidden="true">→</span></a></li>
+            <li><a href="#conditions" class="flex items-center justify-between border-b border-line py-2.5 hover:text-ink">鼻敏感<span aria-hidden="true">→</span></a></li>
+            <li><a href="#conditions" class="flex items-center justify-between border-b border-line py-2.5 hover:text-ink">容易疲倦<span aria-hidden="true">→</span></a></li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 服務範圍 -->
+  <section id="services">
+    <div class="wrap grid gap-12 py-24 md:py-32 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+      <div class="lg:sticky lg:top-32 lg:self-start">
+        <p class="eyebrow">服務範圍</p>
+        <h2 class="section-title">中藥、針灸與外治療法</h2>
+        <p class="mt-5 max-w-sm text-[15px] leading-[1.8] text-muted">醫師會按病情建議合適的治療組合，內服與外治可同日進行。</p>
+        <figure class="ph relative mt-10 hidden aspect-[4/5] max-w-full border border-line lg:block">
+          <figcaption class="absolute bottom-3 left-4 text-xs tracking-[0.1em] text-muted">照片｜診室與藥櫃</figcaption>
+        </figure>
+      </div>
+
+      <ul class="border-t border-line">
+        <li class="grid gap-3 border-b border-line py-8 sm:grid-cols-[9rem_1fr] sm:gap-8">
+          <h3 class="font-serif text-xl font-semibold tracking-[0.08em] text-ink">中藥內服</h3>
+          <div>
+            <p class="leading-[1.85]">按證型開立處方，可選濃縮中藥顆粒或傳統飲片。飲片可代煎，煎好後真空包裝，方便上班人士。</p>
+            <p class="mt-3 text-sm tracking-[0.06em] text-wood">濃縮中藥 · 傳統飲片 · 代煎服務</p>
+          </div>
+        </li>
+        <li class="grid gap-3 border-b border-line py-8 sm:grid-cols-[9rem_1fr] sm:gap-8">
+          <h3 class="font-serif text-xl font-semibold tracking-[0.08em] text-ink">針灸治療</h3>
+          <div>
+            <p class="leading-[1.85]">以毫針刺激穴位，疏通經絡，常用於痛症、失眠、月經不調及面癱，可配合電針或溫針灸。</p>
+            <p class="mt-3 text-sm tracking-[0.06em] text-wood">毫針 · 電針 · 溫針灸</p>
+          </div>
+        </li>
+        <li class="grid gap-3 border-b border-line py-8 sm:grid-cols-[9rem_1fr] sm:gap-8">
+          <h3 class="font-serif text-xl font-semibold tracking-[0.08em] text-ink">推拿及拔罐</h3>
+          <div>
+            <p class="leading-[1.85]">放鬆肌肉筋膜，改善肩頸及腰背僵硬。拔罐適合濕氣重、肌肉勞損的人士。</p>
+            <p class="mt-3 text-sm tracking-[0.06em] text-wood">推拿 · 拔罐 · 刮痧</p>
+          </div>
+        </li>
+        <li class="grid gap-3 border-b border-line py-8 sm:grid-cols-[9rem_1fr] sm:gap-8">
+          <h3 class="font-serif text-xl font-semibold tracking-[0.08em] text-ink">天灸</h3>
+          <div>
+            <p class="leading-[1.85]">冬病夏治。於三伏天及三九天，以溫性藥物貼敷穴位，調理鼻敏感、哮喘及虛寒體質。</p>
+            <p class="mt-3 text-sm tracking-[0.06em] text-wood">三伏天灸 · 三九天灸</p>
+          </div>
+        </li>
+        <li class="grid gap-3 border-b border-line py-8 sm:grid-cols-[9rem_1fr] sm:gap-8">
+          <h3 class="font-serif text-xl font-semibold tracking-[0.08em] text-ink">網上視像診症</h3>
+          <div>
+            <p class="leading-[1.85]">覆診病人可透過視像診症，中藥以速遞送貨上門。首次診症建議親身到診。</p>
+            <p class="mt-3 text-sm tracking-[0.06em] text-wood">視像覆診 · 中藥速遞</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 中醫美容 -->
+  <section id="beauty" class="bg-ink text-on-ink">
+    <div class="wrap grid gap-12 py-24 md:py-28 lg:grid-cols-3 lg:gap-16">
+      <div>
+        <p class="text-xs font-medium tracking-[0.24em] opacity-75">中醫美容</p>
+        <h2 class="mt-4 font-serif text-[1.875rem] leading-[1.35] font-semibold tracking-[0.06em] md:text-[2.5rem]" style="text-wrap: balance">由內而外的<br>調理</h2>
+      </div>
+      <article class="border-t border-on-ink/30 pt-6">
+        <h3 class="font-serif text-xl font-semibold tracking-[0.08em]">美容針（面部針灸）</h3>
+        <p class="mt-3 leading-[1.85] opacity-85">以幼細毫針刺激面部穴位，促進局部氣血運行，配合內服調理膚色暗啞及面部浮腫。一般每星期一次，六至八次為一個療程。</p>
+      </article>
+      <article class="border-t border-on-ink/30 pt-6">
+        <h3 class="font-serif text-xl font-semibold tracking-[0.08em]">熊貓針（眼周針灸）</h3>
+        <p class="mt-3 leading-[1.85] opacity-85">針對黑眼圈及眼袋，於眼周穴位施針，同時按體質調理睡眠與腎氣。</p>
+        <p class="mt-6 text-sm opacity-70">所有療程須先由註冊中醫師評估是否適合，效果因人而異。</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 醫師團隊 -->
+  <section id="doctors">
+    <div class="wrap py-24 md:py-32">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <p class="eyebrow">醫師團隊</p>
+          <h2 class="section-title">香港註冊中醫師</h2>
+        </div>
+        <a href="#doctors" class="text-link">查看醫師詳細資料 <span aria-hidden="true">→</span></a>
+      </div>
+
+      <div class="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <article class="flex flex-col border border-line bg-card p-7">
+          <div class="flex items-center gap-5">
+            <span class="grid size-20 shrink-0 place-items-center rounded-full bg-surface font-serif text-3xl text-ink" aria-hidden="true">陳</span>
+            <div>
+              <h3 class="font-serif text-xl font-semibold tracking-[0.08em] text-ink">陳思雅 醫師</h3>
+              <p class="mt-1 text-sm text-muted">香港註冊中醫</p>
+              <p class="text-xs tabular-nums text-muted">註冊編號 00XXXX</p>
+            </div>
+          </div>
+          <p class="mt-6 text-[15px] leading-[1.8]">香港浸會大學中醫學學士<br>中醫學碩士（中醫皮膚科）</p>
+          <p class="mt-5 text-sm text-muted">專長</p>
+          <p class="mb-6 mt-1 text-[15px] tracking-[0.04em] text-ink">濕疹 · 暗瘡 · 蕁麻疹 · 脫髮</p>
+          <div class="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-line pt-5 text-sm">
+            <span class="text-muted">應診：星期一、三、五</span>
+            <a href="https://wa.me/85200000000" data-wa="你好，我想預約陳思雅醫師。" class="text-ink underline underline-offset-4 hover:text-moss">預約陳醫師</a>
+          </div>
+        </article>
+
+        <article class="flex flex-col border border-line bg-card p-7">
+          <div class="flex items-center gap-5">
+            <span class="grid size-20 shrink-0 place-items-center rounded-full bg-surface font-serif text-3xl text-ink" aria-hidden="true">李</span>
+            <div>
+              <h3 class="font-serif text-xl font-semibold tracking-[0.08em] text-ink">李卓賢 醫師</h3>
+              <p class="mt-1 text-sm text-muted">香港註冊中醫</p>
+              <p class="text-xs tabular-nums text-muted">註冊編號 00XXXX</p>
+            </div>
+          </div>
+          <p class="mt-6 text-[15px] leading-[1.8]">香港中文大學中醫學學士<br>針灸學碩士</p>
+          <p class="mt-5 text-sm text-muted">專長</p>
+          <p class="mb-6 mt-1 text-[15px] tracking-[0.04em] text-ink">痛症 · 運動創傷 · 失眠 · 針灸</p>
+          <div class="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-line pt-5 text-sm">
+            <span class="text-muted">應診：星期一至四</span>
+            <a href="https://wa.me/85200000000" data-wa="你好，我想預約李卓賢醫師。" class="text-ink underline underline-offset-4 hover:text-moss">預約李醫師</a>
+          </div>
+        </article>
+
+        <article class="flex flex-col border border-line bg-card p-7">
+          <div class="flex items-center gap-5">
+            <span class="grid size-20 shrink-0 place-items-center rounded-full bg-surface font-serif text-3xl text-ink" aria-hidden="true">黃</span>
+            <div>
+              <h3 class="font-serif text-xl font-semibold tracking-[0.08em] text-ink">黃詠琳 醫師</h3>
+              <p class="mt-1 text-sm text-muted">香港註冊中醫</p>
+              <p class="text-xs tabular-nums text-muted">註冊編號 00XXXX</p>
+            </div>
+          </div>
+          <p class="mt-6 text-[15px] leading-[1.8]">香港大學中醫全科學士<br>中醫學碩士（中醫婦科）</p>
+          <p class="mt-5 text-sm text-muted">專長</p>
+          <p class="mb-6 mt-1 text-[15px] tracking-[0.04em] text-ink">月經不調 · 備孕調理 · 更年期 · 中醫美容</p>
+          <div class="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-line pt-5 text-sm">
+            <span class="text-muted">應診：星期二、四、六</span>
+            <a href="https://wa.me/85200000000" data-wa="你好，我想預約黃詠琳醫師。" class="text-ink underline underline-offset-4 hover:text-moss">預約黃醫師</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 節氣養生：後台每個節氣更新一次 -->
+  <section id="season" class="bg-surface">
+    <div class="wrap grid items-start gap-12 py-24 md:py-32 lg:grid-cols-[auto_1fr_1fr] lg:gap-16">
+      <div class="flex items-start gap-4 lg:flex-col lg:items-center">
+        <p class="vt font-serif text-6xl font-semibold tracking-[0.3em] text-ink md:text-7xl">秋分</p>
+        <p class="vt text-sm tabular-nums tracking-[0.2em] text-muted">九月廿三 至 十月七日</p>
+      </div>
+
+      <div>
+        <p class="eyebrow">節氣養生</p>
+        <h2 class="section-title">秋燥傷肺，<br>宜潤不宜燥</h2>
+        <div class="mt-6 max-w-[34em] space-y-4 leading-[1.9]">
+          <p>秋分過後，日夜溫差加大，空氣轉乾。燥邪容易傷肺，常見喉嚨乾癢、乾咳、皮膚繃緊，濕疹人士亦較易在這段時間復發。</p>
+          <p>飲食宜多用雪梨、百合、銀耳、南杏等潤肺食材，少吃煎炸及辛辣食物。晚上盡量在十一點前入睡。</p>
+        </div>
+        <p class="mt-8 text-sm text-muted">下一個節氣：寒露（10 月 8 日）</p>
+      </div>
+
+      <article class="border border-line bg-card p-7">
+        <p class="text-xs tracking-[0.2em] text-wood">本週湯水</p>
+        <h3 class="mt-3 font-serif text-2xl font-semibold tracking-[0.08em] text-ink">雪梨南北杏瘦肉湯</h3>
+        <p class="mt-1 text-sm text-muted">三至四人份 · 煲 1.5 小時</p>
+        <dl class="mt-6 grid grid-cols-[1fr_auto] gap-x-6 text-[15px]">
+          <dt class="border-b border-line py-2">雪梨（連皮去芯）</dt><dd class="border-b border-line py-2 text-right tabular-nums">2 個</dd>
+          <dt class="border-b border-line py-2">南杏</dt><dd class="border-b border-line py-2 text-right tabular-nums">20 克</dd>
+          <dt class="border-b border-line py-2">北杏</dt><dd class="border-b border-line py-2 text-right tabular-nums">5 克</dd>
+          <dt class="border-b border-line py-2">瘦肉</dt><dd class="border-b border-line py-2 text-right tabular-nums">300 克</dd>
+          <dt class="border-b border-line py-2">陳皮</dt><dd class="border-b border-line py-2 text-right tabular-nums">1 角</dd>
+          <dt class="border-b border-line py-2">蜜棗</dt><dd class="border-b border-line py-2 text-right tabular-nums">2 粒</dd>
+          <dt class="py-2">清水</dt><dd class="py-2 text-right tabular-nums">2.5 公升</dd>
+        </dl>
+        <p class="mt-5 text-[15px] leading-[1.8]">瘦肉汆水。所有材料放入滾水，大火煮滾後轉小火煲 1.5 小時，下鹽調味。</p>
+        <p class="mt-4 text-sm leading-[1.7] text-muted">北杏有小毒，份量不宜多。脾胃虛寒、容易腹瀉者，飲用前宜先諮詢中醫師。</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 醫師專欄 -->
+  <section id="blog">
+    <div class="wrap py-24 md:py-32">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <p class="eyebrow">醫師專欄</p>
+          <h2 class="section-title">寫給日常生活的中醫知識</h2>
+        </div>
+        <a href="#blog" class="text-link">全部文章 <span aria-hidden="true">→</span></a>
+      </div>
+
+      <div class="mt-14 grid gap-12 md:grid-cols-2 lg:grid-cols-3 lg:gap-10">
+        <article>
+          <a href="#blog" class="group block">
+            <div class="ph relative aspect-[3/2] max-w-full border border-line">
+              <span class="absolute bottom-3 left-4 text-xs tracking-[0.1em] text-muted">文章封面</span>
+            </div>
+            <p class="mt-5 text-xs tabular-nums tracking-[0.16em] text-wood">皮膚科 · 2026 年 9 月 18 日</p>
+            <h3 class="mt-2 font-serif text-xl leading-[1.5] font-semibold tracking-[0.04em] text-ink group-hover:text-moss" style="text-wrap: balance">濕疹反覆發作？從濕熱與血虛兩個方向看</h3>
+            <p class="mt-3 text-[15px] leading-[1.8] text-muted">急性期皮膚紅腫滲液，多屬濕熱；慢性期皮膚乾燥增厚、夜間痕癢加劇，則常見血虛風燥。兩者用藥方向完全不同。</p>
+          </a>
+          <p class="mt-4 text-sm text-body">陳思雅 醫師</p>
+        </article>
+        <article>
+          <a href="#blog" class="group block">
+            <div class="ph relative aspect-[3/2] max-w-full border border-line">
+              <span class="absolute bottom-3 left-4 text-xs tracking-[0.1em] text-muted">文章封面</span>
+            </div>
+            <p class="mt-5 text-xs tabular-nums tracking-[0.16em] text-wood">痛症 · 2026 年 9 月 9 日</p>
+            <h3 class="mt-2 font-serif text-xl leading-[1.5] font-semibold tracking-[0.04em] text-ink group-hover:text-moss" style="text-wrap: balance">長時間使用電腦，肩頸痛如何紓緩？</h3>
+            <p class="mt-3 text-[15px] leading-[1.8] text-muted">三個在辦公室也能做的穴位按壓，以及出現哪些情況應盡快求診。</p>
+          </a>
+          <p class="mt-4 text-sm text-body">李卓賢 醫師</p>
+        </article>
+        <article>
+          <a href="#blog" class="group block">
+            <div class="ph relative aspect-[3/2] max-w-full border border-line">
+              <span class="absolute bottom-3 left-4 text-xs tracking-[0.1em] text-muted">文章封面</span>
+            </div>
+            <p class="mt-5 text-xs tabular-nums tracking-[0.16em] text-wood">婦科 · 2026 年 8 月 28 日</p>
+            <h3 class="mt-2 font-serif text-xl leading-[1.5] font-semibold tracking-[0.04em] text-ink group-hover:text-moss" style="text-wrap: balance">經痛不一定是寒：中醫常見的四種證型</h3>
+            <p class="mt-3 text-[15px] leading-[1.8] text-muted">氣滯血瘀、寒凝血瘀、氣血虛弱、肝腎不足，痛的時間與性質各有不同。</p>
+          </a>
+          <p class="mt-4 text-sm text-body">黃詠琳 醫師</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 初診流程 -->
+  <section id="process" class="border-t border-line">
+    <div class="wrap py-24 md:py-32">
+      <p class="eyebrow">初診流程</p>
+      <h2 class="section-title">第一次來診，會怎樣進行？</h2>
+      <ol class="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-8">
+        <li class="border-t border-line pt-6">
+          <span class="font-serif text-sm tabular-nums tracking-[0.2em] text-wood">01</span>
+          <h3 class="mt-3 font-serif text-lg font-semibold tracking-[0.08em] text-ink">WhatsApp 預約</h3>
+          <p class="mt-2 text-[15px] leading-[1.8] text-muted">告訴我們想看的醫師及時段，職員會回覆確認。</p>
+        </li>
+        <li class="border-t border-line pt-6">
+          <span class="font-serif text-sm tabular-nums tracking-[0.2em] text-wood">02</span>
+          <h3 class="mt-3 font-serif text-lg font-semibold tracking-[0.08em] text-ink">到診登記</h3>
+          <p class="mt-2 text-[15px] leading-[1.8] text-muted">請提早 10 分鐘到達，填寫簡單病歷表。</p>
+        </li>
+        <li class="border-t border-line pt-6">
+          <span class="font-serif text-sm tabular-nums tracking-[0.2em] text-wood">03</span>
+          <h3 class="mt-3 font-serif text-lg font-semibold tracking-[0.08em] text-ink">四診辨證</h3>
+          <p class="mt-2 text-[15px] leading-[1.8] text-muted">醫師以望、聞、問、切了解身體狀況，初診約需 20 至 30 分鐘。</p>
+        </li>
+        <li class="border-t border-line pt-6">
+          <span class="font-serif text-sm tabular-nums tracking-[0.2em] text-wood">04</span>
+          <h3 class="mt-3 font-serif text-lg font-semibold tracking-[0.08em] text-ink">處方與治療</h3>
+          <p class="mt-2 text-[15px] leading-[1.8] text-muted">開立中藥，或即場進行針灸、推拿。</p>
+        </li>
+        <li class="border-t border-line pt-6">
+          <span class="font-serif text-sm tabular-nums tracking-[0.2em] text-wood">05</span>
+          <h3 class="mt-3 font-serif text-lg font-semibold tracking-[0.08em] text-ink">覆診跟進</h3>
+          <p class="mt-2 text-[15px] leading-[1.8] text-muted">一般一至兩星期覆診一次，按進度調整處方。</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 門診時間及交通 -->
+  <section id="hours" class="bg-surface">
+    <div class="wrap grid gap-14 py-24 md:py-32 lg:grid-cols-2 lg:gap-20">
+      <div>
+        <p class="eyebrow">門診及交通</p>
+        <h2 class="section-title">門診時間</h2>
+        <p data-open-status class="mt-5 flex items-center gap-2.5 text-[15px]">
+          <span class="dot inline-block size-2 rounded-full bg-wood" aria-hidden="true"></span>
+          <span data-text class="tabular-nums">星期一至六應診，星期日及公眾假期休息</span>
+        </p>
+        <div class="mt-8 overflow-x-auto">
+          <table class="w-full min-w-[340px] text-left text-[15px] tabular-nums">
+            <thead>
+              <tr class="border-b border-ink text-sm text-muted">
+                <th scope="col" class="py-3 font-normal">日期</th>
+                <th scope="col" class="py-3 font-normal">上午</th>
+                <th scope="col" class="py-3 font-normal">下午</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-line" data-days="Mon,Tue,Wed,Thu,Fri,Sat">
+                <th scope="row" class="py-4 font-normal">星期一至六</th>
+                <td class="py-4">10:00 – 13:30</td>
+                <td class="py-4">15:00 – 20:00</td>
+              </tr>
+              <tr class="border-b border-line" data-days="Sun">
+                <th scope="row" class="py-4 font-normal">星期日及公眾假期</th>
+                <td class="py-4 text-muted" colspan="2">休息</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="mt-12 font-serif text-lg font-semibold tracking-[0.08em] text-ink">收費參考</h3>
+        <dl class="mt-4 grid grid-cols-[1fr_auto] gap-x-6 text-[15px] tabular-nums">
+          <dt class="border-b border-line py-2.5">診金（連兩劑中藥）</dt><dd class="border-b border-line py-2.5 text-right">HK$ 280 起</dd>
+          <dt class="border-b border-line py-2.5">針灸</dt><dd class="border-b border-line py-2.5 text-right">HK$ 350 起</dd>
+          <dt class="border-b border-line py-2.5">推拿</dt><dd class="border-b border-line py-2.5 text-right">HK$ 300 起</dd>
+        </dl>
+        <p class="mt-3 text-sm text-muted">實際收費按處方及療程而定。</p>
+      </div>
+
+      <div class="space-y-10">
+        <div>
+          <h3 class="font-serif text-lg font-semibold tracking-[0.08em] text-ink">地址</h3>
+          <p class="mt-3 text-[17px] leading-[1.8]">九龍旺角亞皆老街 00 號<br>示範商業大廈 12 樓 1201 室</p>
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=%E6%97%BA%E8%A7%92%E4%BA%9E%E7%9A%86%E8%80%81%E8%A1%97" class="text-link mt-4">在 Google 地圖開啟 <span aria-hidden="true">↗</span></a>
+        </div>
+        <div>
+          <h3 class="font-serif text-lg font-semibold tracking-[0.08em] text-ink">交通</h3>
+          <ul class="mt-3 space-y-2 leading-[1.8]">
+            <li>港鐵旺角站 E2 出口，步行約 3 分鐘</li>
+            <li>港鐵太子站 B2 出口，步行約 8 分鐘</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-serif text-lg font-semibold tracking-[0.08em] text-ink">WhatsApp 預約</h3>
+          <p class="mt-3 font-serif text-2xl tabular-nums tracking-[0.1em] text-ink select-all">5000 0000</p>
+          <p class="mt-1 text-sm text-muted">職員於門診時間內回覆</p>
+        </div>
+        <div class="border border-line bg-card p-6">
+          <h3 class="font-serif text-lg font-semibold tracking-[0.08em] text-ink">惡劣天氣安排</h3>
+          <p class="mt-3 text-[15px] leading-[1.8]">八號或以上熱帶氣旋警告信號，或黑色暴雨警告信號生效期間，診所暫停應診。信號除下後兩小時恢復應診，已預約的病人會收到 WhatsApp 通知。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="border-t border-line">
+  <div class="wrap grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
+    <div>
+      <a href="#top" class="flex items-center gap-3">
+        <span class="vt grid size-10 place-items-center rounded-[3px] bg-seal font-serif text-[11px] font-semibold leading-none tracking-[0.2em] text-on-seal" aria-hidden="true">本然</span>
+        <span class="font-serif text-lg font-semibold tracking-[0.14em] text-ink">本然中醫診所</span>
+      </a>
+      <p class="mt-5 max-w-xs text-sm leading-[1.8] text-muted">旺角香港註冊中醫診所。中藥、針灸、推拿及天灸，專注皮膚、婦科、痛症及內科調理。</p>
+    </div>
+    <div>
+      <p class="eyebrow">服務範圍</p>
+      <ul class="mt-4 space-y-2 text-[15px]">
+        <li><a href="#services" class="hover:text-ink">中藥內服</a></li>
+        <li><a href="#services" class="hover:text-ink">針灸治療</a></li>
+        <li><a href="#services" class="hover:text-ink">推拿及拔罐</a></li>
+        <li><a href="#services" class="hover:text-ink">天灸</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="eyebrow">專項治療</p>
+      <ul class="mt-4 space-y-2 text-[15px]">
+        <li><a href="#conditions" class="hover:text-ink">皮膚科</a></li>
+        <li><a href="#conditions" class="hover:text-ink">婦科</a></li>
+        <li><a href="#conditions" class="hover:text-ink">痛症</a></li>
+        <li><a href="#conditions" class="hover:text-ink">內科</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="eyebrow">聯絡</p>
+      <ul class="mt-4 space-y-2 text-[15px]">
+        <li class="tabular-nums">WhatsApp 5000 0000</li>
+        <li>旺角亞皆老街 00 號 12 樓</li>
+        <li class="tabular-nums">一至六 10:00–20:00</li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-line">
+    <div class="wrap flex flex-wrap justify-between gap-x-6 gap-y-2 pt-6 pb-24 text-xs text-muted sm:pb-6">
+      <p>© 2026 本然中醫診所</p>
+      <p>本網站內容僅供參考，不能取代註冊中醫師的診症。</p>
+    </div>
+  </div>
+</footer>
+
+<!-- 浮動 WhatsApp 按鈕 -->
+<a href="https://wa.me/85200000000" data-wa class="fixed right-4 z-50 inline-flex items-center gap-2 rounded-full bg-ink py-3 pl-4 pr-5 text-[15px] tracking-[0.06em] text-on-ink shadow-lg transition-colors hover:bg-moss" style="bottom: calc(16px + env(safe-area-inset-bottom, 0px))">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5l1.3-3.9A8 8 0 1 1 8.6 19L4 19.5z"/></svg>
+  WhatsApp 預約
+</a>
+
+<script>
+  // 風格版本切換（雛形用）
+  const CURRENT_STYLE = 'zen';
+  const STYLE_URLS = { zen: '', warm: '', oriental: '', fresh: '', blush: '' };
+  document.querySelectorAll('[data-style]').forEach(a => {
+    const k = a.dataset.style;
+    if (k === CURRENT_STYLE) { a.setAttribute('aria-current', 'page'); a.removeAttribute('href'); }
+    else if (STYLE_URLS[k]) { a.href = STYLE_URLS[k]; a.target = '_blank'; a.rel = 'noopener'; }
+  });
+
+  // WhatsApp 號碼：正式上線時換成診所號碼（含 852 區號）
+  const WHATSAPP = '85200000000';
+  const WA_DEFAULT = '你好，我想預約診症。';
+  document.querySelectorAll('[data-wa]').forEach(a => {
+    a.href = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(a.dataset.wa || WA_DEFAULT);
+    a.target = '_blank';
+    a.rel = 'noopener';
+  });
+
+  // 手機選單
+  const menuBtn = document.getElementById('menu-btn');
+  const mnav = document.getElementById('mnav');
+  menuBtn.addEventListener('click', () => {
+    const open = mnav.hidden;
+    mnav.hidden = !open;
+    menuBtn.setAttribute('aria-expanded', String(open));
+  });
+  mnav.addEventListener('click', e => {
+    if (e.target.closest('a')) { mnav.hidden = true; menuBtn.setAttribute('aria-expanded', 'false'); }
+  });
+
+  // 今日門診狀態（以香港時間計算，公眾假期未計入）
+  (function () {
+    let parts;
+    try {
+      parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Asia/Hong_Kong', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+      }).formatToParts(new Date());
+    } catch (e) { return; }
+    const get = t => (parts.find(p => p.type === t) || {}).value;
+    const day = get('weekday');
+    const m = Number(get('hour')) * 60 + Number(get('minute'));
+    let open = false, text;
+    if (day === 'Sun') text = '今日休息，星期一 10:00 應診';
+    else if (m < 600) text = '今日 10:00 開始應診';
+    else if (m < 810) { open = true; text = '現正應診，至 13:30'; }
+    else if (m < 900) text = '午休中，15:00 恢復應診';
+    else if (m < 1200) { open = true; text = '現正應診，至 20:00'; }
+    else text = day === 'Sat' ? '今日應診已完結，星期一 10:00 應診' : '今日應診已完結，明日 10:00 應診';
+    document.querySelectorAll('[data-open-status]').forEach(n => {
+      n.dataset.state = open ? 'open' : 'closed';
+      const t = n.querySelector('[data-text]');
+      if (t) t.textContent = text;
+    });
+    document.querySelectorAll('[data-days]').forEach(r => {
+      if (r.dataset.days.split(',').includes(day)) r.classList.add('is-today');
+    });
+  })();
+
+  // 主視覺：水墨圓相（用 canvas 畫筆觸，顏色跟隨主題）
+  const enso = document.getElementById('enso');
+  function drawEnso() {
+    const size = enso.clientWidth;
+    if (!size) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    enso.width = Math.round(size * dpr);
+    enso.height = Math.round(size * dpr);
+    const ctx = enso.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, size, size);
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() || '#2F4A3A';
+
+    let seed = 20260923;
+    const rnd = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+    const cx = size / 2, cy = size / 2, R = size * 0.37, maxW = size * 0.08;
+    const start = Math.PI * 0.62, sweep = Math.PI * 1.82, steps = 520, bristles = 18;
+    const dryAt = Array.from({ length: bristles }, () => 0.5 + rnd() * 0.5);
+
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps, a = start + sweep * t;
+      const press = Math.min(1, t / 0.06);
+      const w = maxW * (0.35 + 0.65 * press) * (1 - 0.8 * Math.pow(t, 2.2));
+      const r = R * (1 + 0.025 * Math.sin(t * 7.3 + 0.4) + 0.012 * Math.sin(t * 19));
+      const nx = Math.cos(a), ny = Math.sin(a);
+      const x = cx + nx * r, y = cy + ny * r;
+      for (let b = 0; b < bristles; b++) {
+        if (t > dryAt[b]) continue;
+        const off = (b / (bristles - 1) - 0.5) * w;
+        ctx.globalAlpha = 0.1 + rnd() * 0.12;
+        ctx.beginPath();
+        ctx.arc(x + nx * off, y + ny * off, (w / bristles) * 1.4 + rnd() * w * 0.04, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+  new ResizeObserver(drawEnso).observe(enso);
+  new MutationObserver(drawEnso).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', drawEnso);
+</script>

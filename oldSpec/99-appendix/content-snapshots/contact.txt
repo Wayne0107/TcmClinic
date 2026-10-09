@@ -1,0 +1,162 @@
+=== HEAD ===
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/photo/logo.jpg" type="image/jpeg">
+<link rel="apple-touch-icon" href="/photo/logo.jpg">
+<title>聯絡我們 | 聖儀堂中醫診所｜觀塘裕民中心地址及預約</title>
+<meta name="description" content="聖儀堂中醫診所聯絡方式：觀塘牛頭角道裕民中心商場地下23B，電話 5512 3132。營業時間星期一至六，上午 10:30–13:30、下午 14:30–19:30，星期日休診。">
+<meta name="keywords" content="聖儀堂聯絡,觀塘中醫地址,中醫預約,中醫電話,裕民中心,潘巧儀">
+<link rel="canonical" href="https://syttcm.com/contact">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="author" content="註冊中醫 潘巧儀">
+<meta name="geo.region" content="HK">
+<meta name="geo.placename" content="觀塘, 藍田, 香港">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_HK">
+<meta property="og:site_name" content="聖儀堂中醫診所">
+<meta property="og:title" content="聯絡我們 | 聖儀堂中醫診所｜觀塘裕民中心地址及預約">
+<meta property="og:description" content="聖儀堂中醫診所聯絡方式：觀塘牛頭角道裕民中心商場地下23B，電話 5512 3132。營業時間星期一至六，上午 10:30–13:30、下午 14:30–19:30，星期日休診。">
+<meta property="og:image" content="https://syttcm.com/imges/about012.jpeg">
+<meta property="og:url" content="https://syttcm.com/contact">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/pages/contact.css?v=1">
+<link rel="stylesheet" href="/assets/css/site.css?v=1">
+=== BODY ===
+<!DOCTYPE html>
+{A:聖儀堂中醫診所SHENG YI TANG TCM -> /}
+{A:首頁 -> /}
+{A:關於我們 -> /about}
+{A:診療服務 ▾ -> /services}
+{A:中醫婦科 -> /gynecology}
+{A:中醫美容 -> /beauty}
+{A:減肥修身 -> /slim}
+{A:特色優勢 -> /#why}
+{A:常見問題 -> /#faq}
+{A:中醫資訊 -> /blog}
+{A:聯絡我們 -> /contact}
+{A:立即預約 -> /contact#booking}
+<!-- HEADER -->
+<!-- BANNER -->
+[H1] 聯絡我們
+{A:首頁 -> /} / 聯絡我們
+<!-- CONTACT INFO -->
+GET IN TOUCH
+[H2] 歡迎與我們聯絡
+無論預約診症或健康諮詢，都歡迎透過以下方式聯絡聖儀堂中醫診所。
+📞
+[H3] 電話
+{A:5512 3132 -> tel:+85255123132}
+💬
+[H3] WhatsApp
+{A:5512 3132 -> https://wa.me/85255123132}
+📍
+[H3] 地址
+觀塘裕民中心
+藍田匯景商場
+🕒
+[H3] 營業時間
+星期一至六應診
+上午 10:30–13:30
+下午 14:30–19:30
+星期日休診
+<!-- BRANCHES WITH MAP -->
+OUR LOCATIONS
+[H2] 分店地址
+觀塘裕民中心、藍田匯景商場，歡迎預約就診。
+<!-- 觀塘診所 -->
+觀塘店
+[H2] 觀塘裕民中心
+📍
+地址 觀塘牛頭角道300-302號裕民中心商場地下23B
+🚇
+交通 港鐵觀塘站 B1 出口，步行約 5 分鐘
+📞
+電話 5512 3132
+🕒
+營業 星期一至六：上午 10:30–13:30｜下午 14:30–19:30
+星期日全日休診
+{A:WhatsApp 預約 -> https://wa.me/85255123132?text=您好，我想預約觀塘裕民中心診症}
+{A:Google 導航 -> https://www.google.com/maps/search/?api=1&query=觀塘牛頭角道300-302號裕民中心}
+<!-- 藍田診所 -->
+藍田店
+[H2] 藍田匯景商場
+📍
+地址 藍田匯景商場
+🚇
+交通 港鐵藍田站，連接匯景商場
+📞
+電話 5512 3132
+🕒
+營業 星期一至六：上午 10:30–13:30｜下午 14:30–19:30
+星期日全日休診
+{A:WhatsApp 預約 -> https://wa.me/85255123132?text=您好，我想預約藍田匯景商場診症}
+{A:Google 導航 -> https://www.google.com/maps/search/?api=1&query=藍田匯景廣場}
+<!-- 診所相片 -->
+GALLERY
+[H2] 診所環境
+點擊相片可放大瀏覽。
+<!-- HOURS -->
+OPENING HOURS
+[H2] 營業時間
+實際時間以各分店公布為準，公眾假期或有調整。
+星期一 至 星期六 上午 10:30 – 13:30｜下午 14:30 – 19:30
+中午休息 13:30 – 14:30
+星期日 全日休診
+預約電話 5512 3132
+＊歡迎預約就診，建議預約前致電 5512 3132 確認。
+<!-- CLINIC VIDEO -->
+CLINIC VIDEO
+[H2] 診所影片
+透過影片率先感受聖儀堂的環境與氛圍。
+您的瀏覽器不支援影片播放。
+<!-- BOOKING FORM (WhatsApp) -->
+APPOINTMENT
+[H2] 網上預約
+填妥下表後，診所會盡快以電話或 WhatsApp 聯絡確認預約。
+網站
+姓名 *
+聯絡電話 *
+選擇分店 *
+請選擇 觀塘裕民中心 藍田匯景商場
+預約日期 *
+預約時段 *
+請選擇 上午 (10:30–13:30) 下午 (14:30–19:30)
+診療項目 *
+請選擇 中醫婦科 婦女不孕不育調理 懷孕安胎 產後調理／產後扎肚 面部經絡理療／中藥面膜 美容針 減肥修身／針灸減肥 腹部暖宮 中醫全科診症
+備註／症狀描述
+我同意診所使用以上資料處理及聯絡此預約。*
+確認提交預約
+送出後診所會以電話或 WhatsApp 聯絡確認，提交並不代表預約已確定。
+<!-- FOOTER -->
+<!-- LIGHTBOX -->
+×
+‹
+›
+[H4] 聖儀堂中醫診所
+由註冊中醫潘巧儀醫師主理，專業中醫婦科及全科，兼理中醫美容與減肥修身。觀塘裕民中心・藍田匯景商場，以辨證論治守護您的身心健康。
+[H4] 快速連結
+{A:首頁 -> /}
+{A:關於我們・醫師資歷 -> /about}
+{A:診療服務一覽 -> /services}
+{A:常見問題 -> /#faq}
+{A:中醫健康資訊 -> /blog}
+{A:聯絡我們・地址交通 -> /contact}
+[H4] 診療範疇
+{A:中醫婦科・不孕不育 -> /gynecology}
+{A:懷孕安胎・產後調理 -> /gynecology#postnatal}
+{A:中醫美容・中藥面膜 -> /beauty}
+{A:面部經絡理療・美容針 -> /beauty#needle}
+{A:減肥修身・茶療減肥 -> /slim}
+{A:中醫全科・皮膚調理 -> /services#general}
+[H4] 聯絡預約
+電話： {A:5512 3132 -> tel:+85255123132}
+{A:WhatsApp 預約 -> https://wa.me/85255123132?text=%E6%82%A8%E5%A5%BD%EF%BC%8C%E6%88%91%E6%83%B3%E9%A0%90%E7%B4%84%E8%81%96%E5%84%80%E5%A0%82%E4%B8%AD%E9%86%AB%E8%A8%BA%E6%89%80%E3%80%82}
+📍 觀塘牛頭角道300-302號裕民中心商場地下23B
+📍 藍田匯景商場
+🕒 星期一至六：上午 10:30–13:30｜下午 14:30–19:30；星期日全日休診
+免責聲明：本網站所載中醫藥資訊僅供健康教育及一般參考之用，並不構成醫療診斷、治療建議或療效保證，亦不能取代註冊中醫師或註冊醫生的面診。療程效果因個人體質、病情及依從性而異。孕婦、哺乳期婦女、慢性病患者及正服用處方藥物者，應於接受任何療程前諮詢註冊中醫師。
+© 2026 聖儀堂中醫診所 SHENG YI TANG TCM. 版權所有。｜觀塘中醫・藍田中醫・中醫婦科・中醫美容・減肥修身
+{A:💬 WhatsApp -> https://wa.me/85255123132?text=%E6%82%A8%E5%A5%BD%EF%BC%8C%E6%88%91%E6%83%B3%E9%A0%90%E7%B4%84%E8%81%96%E5%84%80%E5%A0%82%E4%B8%AD%E9%86%AB%E8%A8%BA%E6%89%80%E3%80%82}

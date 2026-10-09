@@ -1,0 +1,133 @@
+=== HEAD ===
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="/photo/logo.jpg" type="image/jpeg">
+<link rel="apple-touch-icon" href="/photo/logo.jpg">
+<title>中醫健康資訊 Blog｜聖儀堂中醫診所</title>
+<meta name="description" content="聖儀堂中醫診所分享中醫婦科、中醫美容、產後調理、健康養生及減肥修身資訊。">
+<link rel="canonical" href="https://syttcm.com/blog">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="author" content="註冊中醫 潘巧儀">
+<meta name="geo.region" content="HK">
+<meta name="geo.placename" content="觀塘, 藍田, 香港">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_HK">
+<meta property="og:site_name" content="聖儀堂中醫診所">
+<meta property="og:title" content="中醫健康資訊 Blog｜聖儀堂中醫診所">
+<meta property="og:description" content="聖儀堂中醫診所分享中醫婦科、中醫美容、產後調理、健康養生及減肥修身資訊。">
+<meta property="og:image" content="https://syttcm.com/imges/about012.jpeg">
+<meta property="og:url" content="https://syttcm.com/blog">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/pages/home.css?v=1">
+<link rel="stylesheet" href="/assets/css/site.css?v=1">
+<link rel="stylesheet" href="/assets/css/blog.css?v=1">
+=== BODY ===
+<!DOCTYPE html>
+{A:聖儀堂中醫診所SHENG YI TANG TCM -> /}
+{A:首頁 -> /}
+{A:關於我們 -> /about}
+{A:診療服務 ▾ -> /services}
+{A:中醫婦科 -> /gynecology}
+{A:中醫美容 -> /beauty}
+{A:減肥修身 -> /slim}
+{A:特色優勢 -> /#why}
+{A:常見問題 -> /#faq}
+{A:中醫資訊 -> /blog}
+{A:聯絡我們 -> /contact}
+{A:立即預約 -> /contact#booking}
+HEALTH JOURNAL
+[H1] 中醫健康資訊
+分享中醫婦科、美容、養生及體重管理知識。
+{A:首頁 -> /} › 中醫健康資訊
+2026年10月9日
+[H2] 外陰痕癢幾個月又有白斑或傷口：把難開口的皮膚變化說清楚
+外陰長期痕癢、痛、皮膚變白變厚、裂開、出血或有不癒傷口，不應反覆自行當念珠菌。本文提供位置、外觀、質感、時間和功能五組清晰用語，解釋硬化性苔癬、VIN及外陰癌需由醫生面診、取樣與活檢分辨及跟進。 {A:閱讀全文 → -> /blog/persistent-vulvar-itch-lichen-sclerosus-lesion-language-guide}
+2026年10月8日
+[H2] 哺乳期看藍田美容：面部外用品與抱BB接觸要畫兩張圖
+哺乳期想改善暗瘡、色素或乾燥，不只問成分會否進入母乳，也要看嬰兒會否摸到媽媽面上的藥、精油或面膜殘留。本文以餵奶和抱BB接觸圖，整理外用位置、時段、洗手、處方藥與草藥，分清可延期美容及媽媽或嬰兒需先求醫的警號。 {A:閱讀全文 → -> /blog/lam-tin-beauty-breastfeeding-facial-products-baby-contact-map}
+2026年10月7日
+[H2] 藍田網上買餸被換貨，健康餐單就報銷？一場門口拆箱直播
+網上買餸送到藍田，原訂魚柳、菜和無糖飲品可能被換成不同份量或品牌；照餐單硬煮，容易浪費或失去選擇。本文由門口驗收、冷藏次序、換貨標籤及三款備用晚餐，建立不依賴指定產品的減重方法。 {A:閱讀全文 → -> /blog/lam-tin-online-grocery-substitution-healthy-meal-unboxing}
+2026年10月6日
+[H2] 產後發燒究竟來自子宮、傷口、尿道還是乳房？用體溫來源看板求醫
+產後發燒或發冷可以來自子宮內膜、剖腹或會陰傷口、泌尿道、乳房及其他感染，不能只靠惡露或乳房痛自行定位。本文用來源看板整理體溫、局部症狀、分娩病歷和敗血症警號，協助及早求醫接受檢查。 {A:閱讀全文 → -> /blog/postpartum-fever-endometritis-wound-uti-source-board}
+2026年10月5日
+[H2] 美容針由拆封到棄置：一支針的單程登機證應怎樣查
+顧客見到針包裝拆開，只確認了旅程起點；一次性無菌針是否一人一用、皮膚和雙手如何處理、用後是否立即進銳器箱，才是完整路線。本文沿美容針的單程登機證，拆解回套針帽、共用物料、針刺意外與感染警號。 {A:閱讀全文 → -> /blog/cosmetic-acupuncture-single-use-needle-opening-disposal-sharps}
+2026年10月4日
+[H2] 觀塘貨倉焗熱靠涼茶頂住？開工前先做暑熱工具箱會議
+觀塘貨倉、裝卸區或工場未必全程有冷氣，工人用涼茶頂住口渴，可能忽略休息、通風、工作強度與藥物風險。本文用工具箱會議把僱主措施、同伴觀察、補水、主動降溫安排及中暑急救排在草本飲品之前。 {A:閱讀全文 → -> /blog/kwun-tong-warehouse-heat-herbal-tea-toolbox-talk}
+2026年10月3日
+[H2] 產後大便痛、見血或肛門腫物：用廁所三張票根分辨線索
+產後排便又硬又痛，抹紙見血或摸到肛門腫物，未必只是「熱氣」。本文用便形、血跡位置、疼痛時序三張廁所票根，整理便秘、痔瘡與肛裂的不同線索、會陰傷口與藥物因素，以及需要即時求醫的出血、感染和腸道警號。 {A:閱讀全文 → -> /blog/postpartum-painful-bowel-bleeding-piles-fissure-three-receipts}
+2026年10月2日
+[H2] 檸檬汁加中藥面膜會天然美白？日曬後水泡揭開的廚房陷阱
+檸檬、青檸、芹菜或某些植物汁液接觸皮膚後再遇日光，可能造成光毒性皮炎，出現不規則紅痛、水泡和後續色素。本文從廚房調面膜事故還原成分、手部滴痕與日曬時間，說明即時清洗、防曬、求醫及不要再用酸性偏方去色。 {A:閱讀全文 → -> /blog/lemon-juice-herbal-face-mask-phototoxic-burn-risk}
+2026年10月1日
+[H2] 生產後一起身就頭暈心跳快：失血與產後貧血的三高度紀錄
+生產後由床上起身便頭暈、眼前發黑或心跳加快，不宜只怪睡眠不足。本文以躺、坐、站三個高度記下出血、症狀與活動能力，說明血液及鐵儲備評估、鐵劑處理和需要即時求醫的警號，避免反覆站立自測而延誤安全評估。 {A:閱讀全文 → -> /blog/postpartum-dizziness-heart-racing-anemia-three-height-record}
+2026年9月30日
+[H2] 有腹部凸起、胃酸或透不到氣，產後扎肚前先過試身室安全測試
+產後扎肚不是減脂、修補腹直肌或治療疝氣的方法；束得太緊可影響呼吸、胃酸、皮膚及盆底感受。本文以試身室安全測試核對傷口、腹部凸起、深呼吸、坐立如廁、皮膚和活動後反應，說明何時不應使用。 {A:閱讀全文 → -> /blog/postpartum-belly-binding-hernia-reflux-breathing-fitting-test}
+2026年9月29日
+[H2] 益生菌與發酵飲品能養膚嗎？中醫養生別把腸道菌群包成美容保證
+乳酪、益生菌膠囊、康普茶與中藥發酵產品常被連到暗瘡、濕疹和減肥，但菌株、劑量、產品和研究結果不能互換。本文用超市凍櫃標籤核對活菌、糖分、保存、疾病與藥物，說明皮膚問題仍需診斷，也提醒免疫低下者和孕哺期先問醫療團隊。 {A:閱讀全文 → -> /blog/probiotics-fermented-drinks-skin-tcm-wellness-no-beauty-guarantee}
+2026年9月28日
+[H2] 照顧者連飲水都要等，五分鐘休息怎樣不變成另一項功課？
+照顧長者、小朋友或病人時，五分鐘伸展和呼吸常被說得很簡單，實際卻可能連離開房門也不安全。本文由照顧交更、飲水、如廁、進食與睡眠開始，替微休息設定可執行條件，也辨認照顧者耗竭及情緒危機。 {A:閱讀全文 → -> /blog/caregiver-five-minute-break-not-another-task}
+2026年9月27日
+[H2] 會陰切口或撕裂縫針後，坐、去廁所、行路怎樣逐級舒服一點？
+會陰傷口復原不只看線頭是否仍在；痛楚趨勢、紅腫氣味、排尿排便、盆底與肛門控制都要逐級觀察。本文用舒適階梯由清潔止痛、如廁、活動到親密關係，標示感染、傷口裂開及深層撕裂重要安全警號。 {A:閱讀全文 → -> /blog/episiotomy-perineal-tear-postpartum-comfort-ladder}
+2026年9月26日
+[H2] 觀塘午間出汗起熱痱：看中醫前先分皮疹與中暑警號
+觀塘午間步行、倉務或戶外工作後，頸背和胸口出現細小刺痕粒，可能是熱痱；但頭暈、噁心、混亂、昏厥或高體溫屬另一條熱病分流。本文由午飯一程路開始，整理降溫、衣物、皮膚護理、藥物風險與中醫角色。 {A:閱讀全文 → -> /blog/kwun-tong-tcm-heat-rash-versus-heat-illness-lunch-triage}
+2026年9月25日
+[H2] 減重像執屋，不是愈清得快愈好：把肌力列入保留清單
+體重下降時，脂肪與瘦組織未必按理想比例改變，追求愈快愈好可能同時失去肌力。本文用執屋保留清單，把蛋白質、多元飲食、阻力活動、日常功能及恢復逐項貼標，特別提醒長者、慢性病與減重藥使用者。 {A:閱讀全文 → -> /blog/weight-loss-preserve-muscle-strength-protein-resistance-plan}
+{A:1 -> /blog}
+{A:2 -> /blog/page/2}
+{A:3 -> /blog/page/3}
+{A:4 -> /blog/page/4}
+{A:5 -> /blog/page/5}
+{A:6 -> /blog/page/6}
+{A:7 -> /blog/page/7}
+{A:8 -> /blog/page/8}
+{A:9 -> /blog/page/9}
+{A:10 -> /blog/page/10}
+{A:11 -> /blog/page/11}
+{A:12 -> /blog/page/12}
+{A:13 -> /blog/page/13}
+{A:14 -> /blog/page/14}
+{A:15 -> /blog/page/15}
+{A:16 -> /blog/page/16}
+{A:17 -> /blog/page/17}
+{A:18 -> /blog/page/18}
+{A:19 -> /blog/page/19}
+[H4] 聖儀堂中醫診所
+由註冊中醫潘巧儀醫師主理，專業中醫婦科及全科，兼理中醫美容與減肥修身。觀塘裕民中心・藍田匯景商場，以辨證論治守護您的身心健康。
+[H4] 快速連結
+{A:首頁 -> /}
+{A:關於我們・醫師資歷 -> /about}
+{A:診療服務一覽 -> /services}
+{A:常見問題 -> /#faq}
+{A:中醫健康資訊 -> /blog}
+{A:聯絡我們・地址交通 -> /contact}
+[H4] 診療範疇
+{A:中醫婦科・不孕不育 -> /gynecology}
+{A:懷孕安胎・產後調理 -> /gynecology#postnatal}
+{A:中醫美容・中藥面膜 -> /beauty}
+{A:面部經絡理療・美容針 -> /beauty#needle}
+{A:減肥修身・茶療減肥 -> /slim}
+{A:中醫全科・皮膚調理 -> /services#general}
+[H4] 聯絡預約
+電話： {A:5512 3132 -> tel:+85255123132}
+{A:WhatsApp 預約 -> https://wa.me/85255123132?text=%E6%82%A8%E5%A5%BD%EF%BC%8C%E6%88%91%E6%83%B3%E9%A0%90%E7%B4%84%E8%81%96%E5%84%80%E5%A0%82%E4%B8%AD%E9%86%AB%E8%A8%BA%E6%89%80%E3%80%82}
+📍 觀塘牛頭角道300-302號裕民中心商場地下23B
+📍 藍田匯景商場
+🕒 星期一至六：上午 10:30–13:30｜下午 14:30–19:30；星期日全日休診
+免責聲明：本網站所載中醫藥資訊僅供健康教育及一般參考之用，並不構成醫療診斷、治療建議或療效保證，亦不能取代註冊中醫師或註冊醫生的面診。療程效果因個人體質、病情及依從性而異。孕婦、哺乳期婦女、慢性病患者及正服用處方藥物者，應於接受任何療程前諮詢註冊中醫師。
+© 2026 聖儀堂中醫診所 SHENG YI TANG TCM. 版權所有。｜觀塘中醫・藍田中醫・中醫婦科・中醫美容・減肥修身
+{A:💬 WhatsApp -> https://wa.me/85255123132?text=%E6%82%A8%E5%A5%BD%EF%BC%8C%E6%88%91%E6%83%B3%E9%A0%90%E7%B4%84%E8%81%96%E5%84%80%E5%A0%82%E4%B8%AD%E9%86%AB%E8%A8%BA%E6%89%80%E3%80%82}
