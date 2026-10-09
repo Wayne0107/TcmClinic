@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>開發規範裁決表</title>
+<meta name="description" content="已裁決不同與未記錄差異逐題勾選：照專案、改採 UDS 或待討論，結果可複製回報">
+<style>
+:root {
+  --bg: #f7f7f5; --surface: #ffffff; --surface-2: #f0efeb; --text: #1d1d1b; --muted: #5f5e59; --border: #dddcd6;
+  --accent: #2f5d8a; --accent-soft: #e3ecf5; --stop: #a3471b; --stop-soft: #f8e7dd; --ok: #2d6a3e; --ok-soft: #e1f0e4;
+  --opt: #6b5b95; --opt-soft: #ece8f5; --warn: #8a6100; --warn-soft: #f7eed3;
+  --radius: 10px; --shadow: 0 1px 2px rgba(0,0,0,.05), 0 2px 8px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615; --surface: #1f1f1d; --surface-2: #272725; --text: #ecebe6; --muted: #a9a8a1; --border: #3a3936;
+    --accent: #8db8e3; --accent-soft: #233243; --stop: #f0a07a; --stop-soft: #3d2619; --ok: #8fd19f; --ok-soft: #1e3324;
+    --opt: #b9a8e6; --opt-soft: #2c2640; --warn: #e6c46a; --warn-soft: #3a3016; --shadow: none;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161615; --surface: #1f1f1d; --surface-2: #272725; --text: #ecebe6; --muted: #a9a8a1; --border: #3a3936;
+  --accent: #8db8e3; --accent-soft: #233243; --stop: #f0a07a; --stop-soft: #3d2619; --ok: #8fd19f; --ok-soft: #1e3324;
+  --opt: #b9a8e6; --opt-soft: #2c2640; --warn: #e6c46a; --warn-soft: #3a3016; --shadow: none;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.6 "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 16px 80px; }
+header.top { padding: 36px 0 8px; }
+h1 { font-size: 1.8rem; margin: 0 0 6px; }
+h2 { font-size: 1.25rem; margin: 32px 0 10px; }
+p { margin: 6px 0; }
+.lead { color: var(--muted); margin: 0; }
+.meta { color: var(--muted); font-size: .88rem; }
+code { font-family: "Cascadia Code", Consolas, monospace; font-size: .88em; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+a { color: var(--accent); }
+.theme-toggle { float: right; border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 8px; padding: 4px 10px; cursor: pointer; font-size: .85rem; }
+
+.howto { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 16px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); }
+.card h3 { margin: 0 0 6px; font-size: 1rem; }
+.card ol { margin: 0; padding-left: 20px; }
+
+.tag { display: inline-block; border-radius: 6px; padding: 1px 8px; font-size: .76rem; font-weight: 600; white-space: nowrap; }
+.t-已裁決 { background: var(--opt-soft); color: var(--opt); }
+.t-未記錄 { background: var(--stop-soft); color: var(--stop); }
+.t-cat { background: var(--surface-2); color: var(--muted); }
+.lv { display: inline-block; font-size: .72rem; font-weight: 600; border: 1px solid var(--border); border-radius: 4px; padding: 0 5px; color: var(--muted); white-space: nowrap; }
+.lv.必要 { border-color: var(--stop); color: var(--stop); }
+
+.bar { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--border); padding: 10px 0; }
+.progress { height: 6px; background: var(--surface-2); border-radius: 999px; overflow: hidden; margin-bottom: 8px; }
+.progress div { height: 100%; background: var(--accent); width: 0; transition: width .2s; }
+.tally { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .88rem; color: var(--muted); align-items: center; }
+.tally b { color: var(--text); font-variant-numeric: tabular-nums; }
+.tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.tools input[type="search"] { flex: 1 1 200px; min-width: 0; padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font: inherit; }
+.tools select, .tools button { padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font: inherit; cursor: pointer; max-width: 100%; }
+.tools button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+:root[data-theme="dark"] .tools button.primary { color: #10161d; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tools button.primary { color: #10161d; } }
+
+.q { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-top: 12px; box-shadow: var(--shadow); }
+.q.unset { border-left: 4px solid var(--stop); }
+.q-head { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
+.q-head .no { color: var(--muted); font-size: .85rem; font-variant-numeric: tabular-nums; }
+.q-head h3 { margin: 0; font-size: 1.05rem; flex: 1 1 auto; }
+.opts { display: grid; gap: 8px; margin-top: 10px; }
+.opt { display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: start; border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; cursor: pointer; }
+.opt:hover { border-color: var(--accent); }
+.opt input { margin: 4px 0 0; accent-color: var(--accent); width: 16px; height: 16px; }
+.opt.sel { border-color: var(--accent); background: var(--accent-soft); }
+.opt .lbl { font-weight: 700; font-size: .92rem; }
+.opt .lbl .tag { margin-left: 6px; }
+.opt .txt { display: block; margin-top: 2px; }
+.opt .ref { display: block; font-size: .76rem; color: var(--muted); margin-top: 3px; word-break: break-all; }
+.rec-tag { background: var(--ok-soft); color: var(--ok); }
+.cur-tag { background: var(--opt-soft); color: var(--opt); }
+.why { margin-top: 8px; font-size: .88rem; color: var(--muted); }
+.why b { color: var(--ok); }
+.extra { margin-top: 8px; font-size: .85rem; color: var(--muted); }
+.note { margin-top: 8px; width: 100%; padding: 6px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font: inherit; font-size: .9rem; }
+.empty { padding: 24px; text-align: center; color: var(--muted); }
+
+#result { margin-top: 32px; }
+#result textarea { width: 100%; min-height: 260px; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font: 13px/1.5 "Cascadia Code", Consolas, monospace; }
+.status { color: var(--ok); font-size: .88rem; margin-left: 8px; }
+footer { margin-top: 40px; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--border); padding-top: 12px; }
+@media (max-width: 760px) { .bar { position: static; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <button class="theme-toggle" type="button" id="themeToggle">切換深淺色</button>
+  <h1>開發規範裁決表</h1>
+  <p class="lead">逐題決定專案與 UDS 不同的地方要照哪一邊。資料來自 <a href="STANDARDS-COMPARISON.html">開發規範對照</a> 中「已裁決不同」與「未記錄差異」兩類，同一件事重複出現的已合併成一題。</p>
+  <p class="meta">整理日期 2026-10-08 ・ 共 <b id="total">0</b> 題</p>
+  <p class="meta">本頁為源專案（CHB）2026-10-08 的對照與裁決快照，隨範本保留作為現行規範的由來，不再更新。其中提到的舊系統移植、版本號暫不導入、SHA-256 例外等屬當時狀態或源專案背景（「不新增舊系統沒有的功能」「以 reverse 反推舊系統」兩項約定範本已移除），行號引用也可能與現行檔案不符。<b>現行規則以 <code>AGENTS.md</code>「已裁決的衝突」與 <code>docs/</code> 為準。</b></p>
+</header>
+
+<div class="howto">
+  <div class="card">
+    <h3>怎麼填</h3>
+    <ol>
+      <li><span class="tag t-已裁決">已裁決</span> 已預先勾好目前的裁決（照專案），要改才動它</li>
+      <li><span class="tag t-未記錄">未記錄</span> 沒有預設，請逐題選；每題附有 <span class="tag rec-tag">推薦</span> 與理由</li>
+      <li>拿不定的選「待討論」，可在備註寫原因</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h3>填完之後</h3>
+    <ol>
+      <li>按「產生結果」，再按「複製」</li>
+      <li>把文字貼回 Claude 對話，會依結果更新 <code>AGENTS.md</code> 已裁決表與相關 <code>docs/</code></li>
+    </ol>
+    <p class="meta">勾選會自動存在這台電腦的瀏覽器裡，關掉再開還在；換瀏覽器或清除網站資料就會不見。</p>
+  </div>
+</div>
+
+<div class="bar">
+  <div class="progress"><div id="prog"></div></div>
+  <div class="tally">
+    <span>已決定 <b id="nDone">0</b> / <b id="nAll">0</b></span>
+    <span>照專案 <b id="nProject">0</b></span>
+    <span>改採 UDS <b id="nUds">0</b></span>
+    <span>待討論 <b id="nDiscuss">0</b></span>
+    <span>未選 <b id="nUnset">0</b></span>
+    <span>與預設或推薦不同 <b id="nChanged">0</b></span>
+  </div>
+  <div class="tools">
+    <input type="search" id="q" placeholder="搜尋議題或內容…" aria-label="搜尋">
+    <select id="fType" aria-label="類型">
+      <option value="">全部類型</option>
+      <option value="未記錄">只看未記錄差異</option>
+      <option value="已裁決">只看已裁決不同</option>
+    </select>
+    <select id="fState" aria-label="狀態">
+      <option value="">全部狀態</option>
+      <option value="unset">未選</option>
+      <option value="uds">改採 UDS</option>
+      <option value="discuss">待討論</option>
+      <option value="changed">與預設或推薦不同</option>
+    </select>
+    <button type="button" id="applyRec">未選的套用推薦</button>
+    <button type="button" id="resetAll">全部重設</button>
+    <button type="button" class="primary" id="genBtn">產生結果</button>
+  </div>
+</div>
+
+<div id="list"></div>
+
+<section id="result" hidden>
+  <h2>裁決結果 <button type="button" id="copyBtn">複製</button><span class="status" id="copyStatus"></span></h2>
+  <textarea id="resultText" readonly aria-label="裁決結果文字"></textarea>
+</section>
+
+<footer>
+  <p>「照專案」代表維持專案現行規定（衝突時專案優先，憲章 &gt; docs/ &gt; 規格 &gt; .standards/）；「改採 UDS」代表要修改專案規範去對齊 UDS。</p>
+</footer>
+</div>
+
+<script>
+var ITEMS = [{"id":"k19njc9s","title":"404 回應形狀","category":"錯誤處理","type":"未記錄","project":"NotFound 對映為 TypedResults.NotFound()（無 body）","uds":"所有錯誤回應用 RFC 7807（現行版本為 RFC 9457，2023 年取代 7807，格式相容）","level":"必要","refsP":"docs/API-CONVENTIONS.md:113","refsU":"api-design-standards.ai.yaml:177-179","note":"與同檔 :122 自相矛盾；Web 專案未見 AddProblemDetails [推斷]","rec":"uds","recWhy":"專案自己的 API-CONVENTIONS 也要求錯誤一律 ProblemDetails；需先告知前端"},{"id":"kwmxszk","title":"主鍵產生方式","category":"資料庫","type":"未記錄","project":"Vogen ID 不得用 IDENTITY，改用客戶端 Max(Id)+1 ValueGenerator","uds":"內部 ID 用自動遞增；分散式或對外 ID 用 UUIDv7","level":"建議","refsP":"docs/DATABASE-SCHEMA.md:61","refsU":"database-standards.ai.yaml:57","note":"理由是 EF 追蹤 Vogen struct 的技術限制","rec":"project","recWhy":"Vogen 強類型 ID 與 Max+1 是既定架構決策，對齊舊系統"},{"id":"kbssi47","title":"金額型別","category":"資料庫","type":"未記錄","project":"decimal(18,2)，禁 float/double","uds":"DECIMAL(19,4) 或 NUMERIC，禁 FLOAT/DOUBLE","level":"建議","refsP":"docs/DATABASE-SCHEMA.md:183","refsU":"database-standards.ai.yaml:53","note":"精度不同；禁浮點一致","rec":"project","recWhy":"對齊舊系統 decimal(18,2)；UDS 這條只是建議"},{"id":"k1s2feyn","title":"日誌表免資料庫外鍵","category":"資料庫","type":"未記錄","project":"append-only 稽核表可用邏輯關聯（實體名＋Id 字串）取代 FK","uds":"資料約束在資料庫層強制（DB-SCHEMA-001）","level":"必要","refsP":"docs/DATABASE-SCHEMA.md:108","refsU":"database-standards.ai.yaml:178","note":"docs 列為例外，但未標為對 UDS 的裁決","rec":"project","recWhy":"append-only 稽核表加 FK 會讓刪除主檔失敗，邏輯關聯較合理"},{"id":"k1bsc4yg","title":"稽核寫入方式","category":"資料庫","type":"未記錄","project":"稽核由 EF Core interceptor 寫入，不用資料庫 trigger","uds":"用 trigger 寫稽核紀錄（含新舊值、使用者、時間）","level":"建議","refsP":"docs/DATABASE-SCHEMA.md:187","refsU":"database-standards.ai.yaml:163","note":"","rec":"project","recWhy":"interceptor 可單元測試、跟著程式版控；trigger 在 UDS 只是建議"},{"id":"k13efthz","title":"關鍵字模糊查詢","category":"資料庫","type":"未記錄","project":"清單可用 Contains（LIKE '%kw%'），影響效能時再評估全文檢索","uds":"LIKE '%prefix' 列為反模式，改用全文檢索","level":"建議","refsP":"docs/DATABASE-SCHEMA.md:185","refsU":"database-standards.ai.yaml:109","note":"","rec":"project","recWhy":"資料量不大，影響效能時再評估全文檢索（已寫在規範）"},{"id":"k376bb9","title":"CSP","category":"安全","type":"未記錄","project":"只要求 XFO DENY 或 CSP frame-ancestors 擇一","uds":"安全標頭含 CSP","level":"建議","refsP":"docs/SECURE-CODING.md:42","refsU":"security-standards.ai.yaml:39","note":"純 JSON API 影響低 [推斷]","rec":"project","recWhy":"純 JSON API 不輸出 HTML，完整 CSP 效益低；XFO／frame-ancestors 已足夠"},{"id":"keyehhb","title":"密碼雜湊演算法","category":"安全","type":"未記錄","project":"現代加鹽雜湊（Identity 預設、PBKDF2）；禁明文與快速雜湊","uds":"用 Argon2id、bcrypt、scrypt；禁 MD5、未加鹽 SHA-256、明文","level":"必要","refsP":"docs/SECURE-CODING.md:43","refsU":"security-standards.ai.yaml:44-48","note":"PBKDF2 不在 UDS 清單；部署前清單 :116；never 視為必要 [推斷]","rec":"project","recWhy":"PBKDF2 為 NIST 認可且是 ASP.NET Identity 預設，安全性足夠"},{"id":"k1utl7l8","title":"SAST 時點","category":"安全","type":"未記錄","project":"合併前掃描變更程式碼","uds":"commit 前跑 SAST，High 就擋；每個 PR 在 CI 跑","level":"必要","refsP":"docs/SECURE-CODING.md:56","refsU":"security-testing.ai.yaml:149-152","note":"UDS 是 commit 時，專案是合併時；另見 security-standards:95","rec":"project","recWhy":"合併前掃描即可攔下；每次 commit 跑會拖慢自動 commit 流程"},{"id":"k1ck7qou","title":"相依套件弱點掃描時點","category":"安全","type":"未記錄","project":"合併前跑 dotnet list package --vulnerable --include-transitive","uds":"push 前做相依套件稽核，High/Critical 就擋","level":"必要","refsP":"docs/SECURE-CODING.md:56","refsU":"security-testing.ai.yaml:144-147","note":"UDS 是 push 時，專案是合併時","rec":"project","recWhy":"套件只在新增或升級時變動，合併前掃描已涵蓋"},{"id":"k13fua23","title":"秘密掃描時點","category":"安全","type":"未記錄","project":"合併前用 gitleaks 等掃本次變更","uds":"每次 commit 都掃秘密，掃到就擋 commit","level":"必要","refsP":"docs/SECURE-CODING.md:56","refsU":"security-testing.ai.yaml:154-157","note":"自動 commit 再 push 後才掃，秘密可能已進遠端分支","rec":"uds","recWhy":"AI 自動 commit 並 push 到 feature 分支，合併前才掃時秘密可能已上 GitHub"},{"id":"k1frdha8","title":"依等級保留期限","category":"日誌","type":"未記錄","project":"依檔數保留（31 檔），不分等級","uds":"DEBUG 7 天、INFO 30 天、WARN 90 天、ERROR 1 年","level":"建議","refsP":"docs/LOGGING.md:19","refsU":"logging.ai.yaml:270","note":"","rec":"project","recWhy":"客戶環境以檔案保留為主；UDS 這條只是建議"},{"id":"kglloyt","title":"請求日誌","category":"日誌","type":"未記錄","project":"UseSerilogRequestLogging 記 method、path、status、elapsed","uds":"中介層首次收到請求時記 method、path、source_ip、request_id","level":"必要","refsP":"docs/LOGGING.md:9","refsU":"logging.ai.yaml:79","note":"專案沒有 source_ip；在請求完成時才記錄 [推斷]","rec":"project","recWhy":"Serilog 請求日誌已有 TraceId；如需 source_ip 可之後再補"},{"id":"k1rghhiy","title":"各層嚴格度與排除","category":"測試","type":"未記錄","project":"功能層可批次紅綠；DI、migration 等純接線免測試先行","uds":"red-first 未設例外","level":"必要","refsP":"docs/TESTING.md:17-25","refsU":"test-driven-development.ai.yaml:213-216","note":"專案例外未列入裁決表","rec":"project","recWhy":"DI、migration 這類純接線寫失敗測試沒有意義"},{"id":"k8m1udj","title":"FIRST 原則","category":"測試","type":"未記錄","project":"CsCheck 隨機屬性測試為 MUST；整合用 Testcontainers","uds":"遵循 FIRST；Repeatable 說明為無隨機、無外部 I/O","level":"必要","refsP":"docs/TESTING.md:57-66,161","refsU":"testing.ai.yaml:95-98；test-driven-development.ai.yaml:53,245-247","note":"[推斷] :53 為說明非規則；CsCheck 可依 seed 重現","rec":"project","recWhy":"CsCheck 失敗時會印 seed 可重現，不違反 Repeatable 的本意"},{"id":"kw1ww73","title":"三方 Discovery","category":"測試","type":"未記錄","project":"規格核准後直接 derive-bdd，無三方會議","uds":"寫情境前先以 Three Amigos 進行 discovery","level":"必要","refsP":"docs/TESTING.md:142","refsU":"behavior-driven-development.ai.yaml:217-220","note":"sdd discuss 僅部分替代 [推斷]","rec":"project","recWhy":"開發與規格同一人，/sdd 的討論階段已取代三方會議"},{"id":"k1orbhvg","title":"AC 與情境 1:1","category":"測試","type":"未記錄","project":"寫不成 Gherkin 的 AC 改用功能/整合測試並在規格註明","uds":"每條 AC 恰一組情境/測試；數量不符須硬回滾","level":"必要","refsP":"docs/TESTING.md:144","refsU":"forward-derivation-standards.ai.yaml:188-190,200-202","note":"BDD 標準:205 稱一條 AC 可多情境，UDS 自身不一致","rec":"project","recWhy":"非 HTTP 行為寫不成 Gherkin，強制 1:1 會產生空殼情境"},{"id":"k1w0u3kw","title":"覆蓋率基準量測","category":"測試","type":"未記錄","project":"coverlet.console 三層合併，基準表在 docs；低於基準須說明原因","uds":"基準存 .coverage-baseline.json，PR 自動比對","level":"建議","refsP":"docs/TESTING.md:108-134","refsU":"full-coverage-testing.ai.yaml:41-45","note":"「須說明原因」比憲章「未下降」寬鬆","rec":"project","recWhy":"沒有 CI 無法 PR 自動比對；建 CI 時再改"},{"id":"k6ggocy","title":"不 mock 安全控制","category":"測試","type":"未記錄","project":"功能測試以 TestAuthHandler 替換驗證，授權真實；登入另以真實 Cookie 測","uds":"涉驗證/授權不得 mock，用真實使用者與 token","level":"必要","refsP":"docs/TESTING.md:45","refsU":"mock-boundary.ai.yaml:316-321","note":"AGENTS.md 註記 Mock 邊界一致，但驗證替換未明文裁決","rec":"project","recWhy":"授權是真實的，登入流程另有真實測試；替換驗證只為指定身分"},{"id":"k2jvbuu","title":"資料庫隔離","category":"測試","type":"未記錄","project":"整合每測試一個新 DB；功能每類別一個新 DB","uds":"使用測試資料庫，測試間 rollback 或 truncate","level":"必要","refsP":"docs/TESTING.md:161","refsU":"options/integration-testing.ai.yaml:38-41","note":"功能測試類別內不重置 [推斷]","rec":"project","recWhy":"功能測試每類別一個 DB 是速度與隔離的折衷，類別內測試不互相依賴"},{"id":"kpqm0ab","title":"變異測試執行時機","category":"測試","type":"未記錄","project":"宜在 CI 定期或合併前執行","uds":"不得放 commit hook 或每個 PR 的 CI","level":"必要","refsP":"docs/TESTING.md:97","refsU":"mutation-testing.ai.yaml:240-244","note":"「合併前」即每個 PR [推斷]","rec":"uds","recWhy":"改成定期或發版前跑即可；每個 PR 都跑太慢，只需改一行文件"},{"id":"k1sv2lyc","title":"測試接上自動執行","category":"測試","type":"未記錄","project":"尚未建立 CI，由作者本機執行","uds":"測試須接 CI、hook 或排程，且有執行紀錄","level":"必要","refsP":"docs/INFRASTRUCTURE.md:97","refsU":"test-governance.ai.yaml:188-195","note":"僅記為現況，未裁決","rec":"project","recWhy":"目前沒有 CI；建 CI 時一併處理"},{"id":"kmmuwwz","title":"門檻 fail-closed","category":"測試","type":"未記錄","project":"覆蓋率人工比對、低於基準說明原因；Stryker break 0","uds":"門檻檢查須用工具旗標，未達標時非零結束","level":"必要","refsP":"docs/TESTING.md:106,133","refsU":"test-governance.ai.yaml:200-207","note":"","rec":"project","recWhy":"沒有 CI 就沒有自動門檻可擋；建 CI 時一併處理"},{"id":"k1xtyd0f","title":"Monorepo 目錄結構","category":"基礎設施與建置","type":"未記錄","project":"src、tests 放在 backend/ 下；apphost/ 與 backend/ 平行；slnx 與 CPM 放根目錄","uds":"根目錄須有 src、tests、docs（physical_spec）","level":"必要","refsP":"docs/INFRASTRUCTURE.md:8-45","refsU":"project-structure.ai.yaml:110-113","note":"根目錄沒有 src/、tests/","rec":"project","recWhy":"backend/ 結構已定案，搬到根目錄只有成本沒有效益"},{"id":"k1iqoaif","title":"合併前 CI 綠燈","category":"基礎設施與建置","type":"未記錄","project":"還沒有 CI，由作者在本機跑 build＋三層測試","uds":"合併到 main 前 CI 狀態必須綠燈（無 priority）","level":"建議","refsP":"docs/INFRASTRUCTURE.md:97","refsU":"options/github-flow.ai.yaml:44-47","note":"","rec":"project","recWhy":"目前沒有 CI；UDS 這條也無 priority。等建 CI 時再改"},{"id":"kwm919l","title":"流程選擇記在 CONTRIBUTING.md","category":"Git 與提交","type":"未記錄","project":"寫在 COMMIT_CONVENTION.md；沒有 CONTRIBUTING.md；採 GitHub Flow＋squash，寫在 INFRASTRUCTURE.md §5","uds":"選定一種 commit 語言，寫在 CONTRIBUTING.md；選定一種工作流程，寫在 CONTRIBUTING.md","level":"必要","refsP":".github/COMMIT_CONVENTION.md:5、docs/INFRASTRUCTURE.md:101-107","refsU":"commit-message.ai.yaml:69-72、git-workflow.ai.yaml:43-46","note":"只差記錄位置","rec":"project","recWhy":"內容已有，只差檔名位置；多一個檔案反而分散"},{"id":"k9ywldq","title":"commit 語言一致","category":"Git 與提交","type":"未記錄","project":"之前用英文類型的歷史不回改（git log 中英混用）","uds":"所有 commit 用同一種語言","level":"必要","refsP":".github/COMMIT_CONVENTION.md:5","refsU":"commit-message.ai.yaml:73-76","note":"","rec":"project","recWhy":"新 commit 已統一繁中；舊歷史改寫會破壞 git 歷史"},{"id":"kdw3fbw","title":"scope 格式","category":"Git 與提交","type":"未記錄","project":"scope 用 SPEC 編號（059）或模組名（web、流程）","uds":"scope 小寫英文（^[a-z][a-z0-9-]*$）","level":"必要","refsP":".github/COMMIT_CONVENTION.md:24","refsU":"commit-message.ai.yaml:82-86","note":"繁中選項 :82-85 允許中文 scope；數字開頭仍過不了","rec":"project","recWhy":"UDS 自己的繁中選項允許中文 scope；SPEC 編號 scope 最好追溯"},{"id":"k1wlg2cl","title":"規格索引手動維護","category":"規格與 ADR","type":"未記錄","project":"手動更新索引的狀態與相關規格欄","uds":"能從規格標記推導的欄位一律生成，不得手寫","level":"必要","refsP":"specs/README.md:344","refsU":"open-work-tracking.ai.yaml:133-135","note":"[推斷] 視索引是否算開放工作承載庫","rec":"project","recWhy":"要自動生成得另寫腳本；目前規格數量手動維護可負擔"},{"id":"kgitiqu","title":"延後事項判定範圍","category":"規格與 ADR","type":"未記錄","project":"只登記明確延後或待決策；範圍語句與 Assumptions 不登記","uds":"依結構位置判定：未納入段落、open questions、待確認的 assumptions","level":"必要","refsP":"specs/README.md:293","refsU":"deferred-item-exit.ai.yaml:164-166","note":"結構錨點見 :101","rec":"project","recWhy":"依結構全收會把大量範圍說明也登記成 DEF，雜訊太多"},{"id":"k13hn40p","title":"路由中的動詞","category":"API 設計","type":"已裁決","project":"狀態轉換允許 POST /{resource}/{id}/{action}；/auth/login 等非資源操作","uds":"URL 不得使用動詞","level":"必要","refsP":"docs/API-CONVENTIONS.md:157","refsU":"api-design-standards.ai.yaml:172","note":"AGENTS.md:36"},{"id":"k161o0wp","title":"API 版本","category":"API 設計","type":"已裁決","project":"不做 URL 版本：前後端同步部署","uds":"以 URL 路徑 /v1/ 做版本並維護生命週期","level":"建議","refsP":"docs/API-CONVENTIONS.md:158","refsU":"api-design-standards.ai.yaml:180-182","note":"REST-004 只是 warning；AGENTS.md:36"},{"id":"kp6ri6j","title":"分頁參數與回應形狀","category":"API 設計","type":"已裁決","project":"page/pageSize；回應 {items,page,pageSize,totalCount}＋Link；不用 limit 與信封","uds":"offset 用 page/limit/totalCount/totalPages；成功回應 {data,meta,links}","level":"建議","refsP":"docs/API-CONVENTIONS.md:152","refsU":"api-design-standards.ai.yaml:93-95","note":"信封只出現在 quick_reference（:201）；AGENTS.md:35"},{"id":"k88pxtu","title":"分頁預設與上限","category":"API 設計","type":"已裁決","project":"清單必須分頁、禁止無界結果；預設 10、上限 100","uds":"offset 預設 20、上限 100","level":"建議","refsP":"docs/API-CONVENTIONS.md:148-149","refsU":"api-design-standards.ai.yaml:90","note":"ADR-007；上限相同，預設不同"},{"id":"k1h0plz","title":"分頁策略（offset／keyset）","category":"API 設計","type":"已裁決","project":"一律 offset 分頁；page/pageSize offset 分頁（API-CONVENTIONS §4）","uds":"大量或即時資料用 cursor／keyset，簡單清單用 offset；大量資料避免 offset，API 優先用 keyset","level":"建議","refsP":"docs/API-CONVENTIONS.md:152、docs/DATABASE-SCHEMA.md:116","refsU":"api-design-standards.ai.yaml:190-191、database-standards.ai.yaml:102","note":"REST-006 是 info；AGENTS.md:35"},{"id":"k1qd4hug","title":"速率限制回應標頭","category":"API 設計","type":"已裁決","project":"不採用速率限制回應標頭；不採用速率限制標頭（舊系統沒有的不新增）","uds":"所有回應帶 X-RateLimit-Limit/Remaining/Reset；429 時帶 Retry-After；登入 5 次/15 分；已驗證 1000 次/時；未驗證 100 次/時","level":"建議","refsP":"docs/API-CONVENTIONS.md:159","refsU":"api-design-standards.ai.yaml:186-188、performance-standards.ai.yaml:81","note":"REST-005 只是 warning；AGENTS.md:37；出自 AGENTS.md 裁決表，只提到標頭"},{"id":"k1378705","title":"驗證與業務規則失敗的狀態碼","category":"錯誤處理","type":"已裁決","project":"欄位驗證失敗回 400 ValidationProblem；不採用 422；業務規則違反（含重複鍵）回 400 ValidationProblem","uds":"驗證錯誤回 422；BIZ 類錯誤對映 422","level":"必要","refsP":"docs/API-CONVENTIONS.md:120、docs/API-CONVENTIONS.md:93","refsU":"api-design-standards.ai.yaml:174-176、error-codes.ai.yaml:93-102","note":"AGENTS.md:34；另見 :120；AGENTS.md:34"},{"id":"k1did8ou","title":"錯誤代碼體系","category":"錯誤處理","type":"已裁決","project":"不採用錯誤代碼體系；若要導入須另開規格全面處理；不採用錯誤代碼體系","uds":"錯誤代碼用 PREFIX_CATEGORY_NUMBER；分為 VAL/BIZ/SYS/NET/AUTH；結構必含 code、message；錯誤代碼全應用唯一；記錄原因、解法、範例；集中登錄（recommended）","level":"必要","refsP":"docs/API-CONVENTIONS.md:159","refsU":"error-codes.ai.yaml:77-91、error-codes.ai.yaml:104-122","note":"結構見 error-codes:65-68；AGENTS.md:37；AGENTS.md:37"},{"id":"k14rbv1f","title":"標準欄位","category":"資料庫","type":"已裁決","project":"所有表一律五欄 CreateDate/CreateUser/ModifyDate/ModifyUser/Removed，含系統表與日誌表","uds":"每表必有 id、created_at、updated_at","level":"建議","refsP":"docs/DATABASE-SCHEMA.md:19","refsU":"database-standards.ai.yaml:207","note":"UDS 寫在速查且用 Always，不在 rules 清單"},{"id":"k9s10ss","title":"時間戳型別與時區","category":"資料庫","type":"已裁決","project":"datetime，存應用程式當地時間（非 UTC）","uds":"時間戳用 TIMESTAMPTZ（含時區）","level":"建議","refsP":"docs/DATABASE-SCHEMA.md:29","refsU":"database-standards.ai.yaml:54","note":""},{"id":"k2ssnvn","title":"資料表命名","category":"資料庫","type":"已裁決","project":"PascalCase 單數；系統表加 Sys 前綴，業務表不加；C# 類別不帶 Sys","uds":"snake_case、單數","level":"建議","refsP":"docs/DATABASE-SCHEMA.md:163","refsU":"database-standards.ai.yaml:31","note":""},{"id":"k153iduk","title":"欄位命名","category":"資料庫","type":"已裁決","project":"PascalCase（如 CreateDate、ModifyUser）","uds":"snake_case；時間戳 _at 結尾","level":"建議","refsP":"docs/DATABASE-SCHEMA.md:21","refsU":"database-standards.ai.yaml:32","note":""},{"id":"kvaqc1r","title":"外鍵命名與型別","category":"資料庫","type":"已裁決","project":"\u003c被參照實體>Id，型別用 Vogen 強類型 ID；多次參照加角色前綴","uds":"外鍵命名 \u003creferenced_table>_id","level":"建議","refsP":"docs/DATABASE-SCHEMA.md:93","refsU":"database-standards.ai.yaml:34","note":""},{"id":"kmolbem","title":"索引與約束命名","category":"資料庫","type":"已裁決","project":"沿用 EF 預設 IX_／FK_／PK_ + 表名","uds":"idx_\u003ctable>_\u003ccolumns>、uq_\u003ctable>_\u003ccolumns>","level":"建議","refsP":"docs/DATABASE-SCHEMA.md:175","refsU":"database-standards.ai.yaml:37","note":""},{"id":"kr1y0cl","title":"停機部署，不強制 expand-contract","category":"資料庫","type":"已裁決","project":"停機部署，同一個 migration 完成，不強制 expand-contract；停機部署，schema 變更可放同一 migration","uds":"零停機 schema 變更用 expand-contract（DB-MIGRATION-002）；不得在停止寫入的同一次部署刪欄位","level":"必要","refsP":"docs/DATABASE-SCHEMA.md:186","refsU":"database-standards.ai.yaml:193、database-standards.ai.yaml:97","note":"docs 明文寫不強制；未列入 AGENTS.md 裁決表；[推斷] UDS 鍵名為 critical_rule 才算必要；停機時風險小"},{"id":"k16onz0j","title":"秘密儲存與輪替","category":"安全","type":"已裁決","project":"不強制輪替週期與 Vault；由部署端管理","uds":"用 Vault、Key Vault；最長 90 天輪替","level":"建議","refsP":"docs/SECURE-CODING.md:85","refsU":"security-standards.ai.yaml:91-92","note":"docs §10 明文不採用，AGENTS 裁決表未列"},{"id":"k9aqc5z","title":"開發環境 HTTPS 例外","category":"安全","type":"已裁決","project":"HTTPS 重導只在本機 Aspire DCP proxy 例外，不適用正式環境","uds":"所有端點都要 HTTPS","level":"必要","refsP":"docs/SECURE-CODING.md:41","refsU":"api-design-standards.ai.yaml:192-194","note":"docs 明文例外；AGENTS 環境分支（:43）未列 HTTPS"},{"id":"k9fu21w","title":"SHA-256 密碼例外","category":"安全","type":"已裁決","project":"SPEC-004 依使用者要求用加鹽 SHA-256，列為已接受風險","uds":"雜湊限 Argon2id、bcrypt、scrypt","level":"必要","refsP":"docs/SECURE-CODING.md:44","refsU":"security-standards.ai.yaml:47","note":"DEF-008；UDS 只禁未加鹽版本"},{"id":"k3769f3","title":"MFA","category":"安全","type":"已裁決","project":"不提供 MFA（舊系統沒有；內部後台）","uds":"管理員、敏感操作、帳號復原須 MFA；部署前要有 MFA","level":"必要","refsP":"docs/SECURE-CODING.md:81","refsU":"security-standards.ai.yaml:49-51","note":"清單 :117；AGENTS.md:37"},{"id":"k1eyik87","title":"Session 逾時","category":"安全","type":"已裁決","project":"SameSite=Lax、8 小時滑動逾時","uds":"閒置 15～30 分、絕對 8～24 小時；Cookie 用 SameSite=Strict","level":"建議","refsP":"docs/SECURE-CODING.md:83","refsU":"security-standards.ai.yaml:52-56","note":"AGENTS.md:44；UDS 這段沒有 priority"},{"id":"k1376h0j","title":"API 速率限制","category":"安全","type":"已裁決","project":"只有登入失敗鎖定，不做 IP 層節流","uds":"依使用者或角色限制請求速率","level":"建議","refsP":"docs/SECURE-CODING.md:82","refsU":"security-standards.ai.yaml:68","note":"docs §10 明文；AGENTS 只列標頭"},{"id":"kyjk0tj","title":"DAST","category":"安全","type":"已裁決","project":"DAST 暫不執行（尚無 staging）","uds":"部署到 staging 時跑 DAST 基線掃描，看過結果才上正式","level":"必要","refsP":"docs/SECURE-CODING.md:84","refsU":"security-testing.ai.yaml:159-162","note":"docs §10 明文；AGENTS 裁決表未列"},{"id":"k1uab7vw","title":"生產日誌格式與欄位","category":"日誌","type":"已裁決","project":"生產維持文字格式（outputTemplate＋{TraceId}），不改用 JSON；不強制 service/environment 等 snake_case 欄位","uds":"生產環境用 JSON；必帶 timestamp/level/message/service/environment；欄位 snake_case","level":"必要","refsP":"docs/LOGGING.md:31","refsU":"logging.ai.yaml:68、logging.ai.yaml:55","note":"docs 明文不採用，但未列入 AGENTS.md 裁決表"},{"id":"khzlg5w","title":"測試層級劃分","category":"測試","type":"已裁決","project":"單元、整合、功能三層＋BDD 驗收情境","uds":"分 UT/IT/ST/E2E 四層，層名為組織分類","level":"建議","refsP":"docs/TESTING.md:27-34","refsU":"testing.ai.yaml:41-57","note":"AGENTS.md 裁決表：三層＋BDD、不設 E2E"},{"id":"kom76oj","title":"不設 E2E 層","category":"測試","type":"已裁決","project":"不設 E2E 層，驗收以 BDD 情境＋功能測試表達；不設 E2E（瀏覽器）層；不設 E2E 層","uds":"所有 AC 須有 E2E 覆蓋，不只 happy path；E2E 保持最少、聚焦旅程、用 data-testid、處理 flaky；發版完成準則：完整 E2E 套件須通過；使用者指南步驟的 T-NNN 須等於真實旅程/E2E 測試 id","level":"必要","refsP":"docs/TESTING.md:38","refsU":"testing.ai.yaml:57、options/e2e-testing.ai.yaml:17-42、test-governance.ai.yaml:137-139、acceptance-criteria-traceability.ai.yaml:260-263；forward-derivation-standards.ai.yaml:215-217","note":"UDS 該句位於已棄用的金字塔段（:38-40），非 priority 規則；manifest.json test_levels 未含 e2e-testing；無 E2E 與使用者指南，不適用"},{"id":"ke5ctup","title":"系統測試層","category":"測試","type":"已裁決","project":"功能測試為 WebApplicationFactory 皮下測試","uds":"系統測試用近似正式環境、關鍵流程、穩定資料、正確等待","level":"必要","refsP":"docs/TESTING.md:33","refsU":"options/system-testing.ai.yaml:16-35","note":"裁決表只有三層；manifest 卻選了 system-testing [推斷]"},{"id":"kk2z1b5","title":"ATDD 工作坊與簽核","category":"測試","type":"已裁決","project":"不採 ATDD 工作坊與 PO 簽核","uds":"寫碼前與 PO 開工作坊、PO 簽核、Demo 正式驗收","level":"必要","refsP":"docs/TESTING.md:173","refsU":"acceptance-test-driven-development.ai.yaml:244-247,264-267,279-282","note":"僅 docs 明文，AGENTS.md 裁決表未列"},{"id":"k19f1tuu","title":"@ac 標記","category":"測試","type":"已裁決","project":"不採 @ac，統一用 // @SPEC-NNN @AC-N","uds":"每測試以 @ac AC-ID 或 @ac UNTRACED 標註","level":"建議","refsP":"docs/TESTING.md:173","refsU":"full-coverage-testing.ai.yaml:59-65","note":""},{"id":"kk63uin","title":"三路徑覆蓋","category":"測試","type":"已裁決","project":"不採「每個 public 方法三條路徑」","uds":"每個 public 函式至少 happy/edge/error 三測試","level":"必要","refsP":"docs/TESTING.md:173","refsU":"full-coverage-testing.ai.yaml:50-57；testing.ai.yaml:91-94","note":"僅 docs 明文，AGENTS.md 裁決表未列"},{"id":"k1mb8uac","title":"共享狀態流程測試","category":"測試","type":"已裁決","project":"不採跨測試共享狀態的流程測試","uds":"流程測試步驟間共用 ctx，不得重置","level":"必要","refsP":"docs/TESTING.md:173","refsU":"flow-based-testing.ai.yaml:184-187；user-journey-testing.ai.yaml:84-87","note":"僅 docs 明文，AGENTS.md 裁決表未列"},{"id":"kglclss","title":"TESTPLAN 使用者旅程","category":"測試","type":"已裁決","project":"不採 TESTPLAN 使用者旅程","uds":"每專案須有 TESTPLAN，含 persona、相依鏈，環境不在時略過","level":"必要","refsP":"docs/TESTING.md:173","refsU":"user-journey-testing.ai.yaml:16,74-77,89-107","note":"僅 docs 明文；與 E2E 裁決同源 [推斷]"},{"id":"kjsxd2y","title":"變異分數門檻","category":"測試","type":"已裁決","project":"變異測試 SHOULD；break 維持 0 僅信號，不採 50% 硬門檻","uds":"發版前整體 ≥60%；關鍵模組 ≥80%；AI 測試 \u003c50% 退回","level":"必要","refsP":"docs/TESTING.md:95-106","refsU":"mutation-testing.ai.yaml:223-238","note":"僅 docs 明文，AGENTS.md 裁決表未列"},{"id":"k1j74sdk","title":"環境專屬程式路徑","category":"基礎設施與建置","type":"已裁決","project":"允許只在開發環境開放的分支（Swagger、CORS、種子、HTTPS 重導）","uds":"不要有環境專屬程式路徑（key_rules，無 priority）","level":"建議","refsP":"docs/INFRASTRUCTURE.md:60-71","refsU":"deployment-standards.ai.yaml:94","note":"AGENTS.md:43"},{"id":"kmjcecb","title":"AI 共同作者尾行","category":"Git 與提交","type":"已裁決","project":"不加 Co-Authored-By","uds":"squash 訊息範本含 Co-authored-by（只是範例）","level":"建議","refsP":".github/COMMIT_CONVENTION.md:28","refsU":"options/squash-merge.ai.yaml:56","note":"AGENTS.md:52"},{"id":"k1lqwgap","title":"規格格式與位置","category":"規格與 ADR","type":"已裁決","project":"選單分層資料夾內的 spec.md，SPEC-ID 寫在標頭","uds":"流程產物為 proposal.md；手動時用 specs/SPEC-XXX.md（非規則）","level":"建議","refsP":"specs/README.md:346-351","refsU":"spec-driven-development.ai.yaml:17-19","note":"AGENTS.md:41"},{"id":"kbvuqqu","title":"ADR 位置與命名","category":"規格與 ADR","type":"已裁決","project":"ADR-NNN-短描述.md 放對應規格資料夾或 specs/其他/架構決策/；索引在 specs/README","uds":"放 docs/adr/（無 priority）；檔名須符合 NNN-title.md（必要）","level":"必要","refsP":"specs/README.md:312-315","refsU":"documentation-structure.ai.yaml:164-168","note":"AGENTS.md:40；adr-standards.ai.yaml:48-51"},{"id":"k14uecs5","title":"文件與註解語言","category":"文件","type":"已裁決","project":"註解、API metadata、commit 一律繁中；識別符維持英文；規格、計畫、使用者文件一律繁中","uds":"文件品質標準寫語言為 English（非規則）","level":"建議","refsP":"docs/COMMENTS.md:6-10、docs/CONSTITUTION.md:127-131","refsU":"documentation-writing-standards.ai.yaml:236","note":"AGENTS.md:39"},{"id":"k1bhmg1z","title":"docs 檔名","category":"文件","type":"已裁決","project":"docs/ 檔名維持大寫","uds":"docs/ 檔名用小寫 kebab-case","level":"必要","refsP":"AGENTS.md:39","refsU":"documentation-structure.ai.yaml:140-144","note":""},{"id":"k1v5xwke","title":"LICENSE","category":"文件","type":"已裁決","project":"不維護 LICENSE","uds":"根目錄 LICENSE 必備（required: true）","level":"必要","refsP":"AGENTS.md:42","refsU":"documentation-structure.ai.yaml:43-45","note":""},{"id":"k1mhsqg7","title":"CHANGELOG","category":"文件","type":"已裁決","project":"不維護 CHANGELOG，進度以 specs/README 為準","uds":"開發時更新 [Unreleased]；發版時移入版本段落並遵循 SemVer","level":"必要","refsP":"docs/INFRASTRUCTURE.md:110","refsU":"changelog.ai.yaml:86-107","note":"AGENTS.md:42"},{"id":"k14oc750","title":"文件版本標頭","category":"文件","type":"已裁決","project":"不維護文件版本標頭，靠 git 歷史","uds":"文件頂端標示版本與更新日期","level":"必要","refsP":"AGENTS.md:42","refsU":"documentation-writing-standards.ai.yaml:219-222","note":""},{"id":"k1gvndes","title":"SemVer 版本號","category":"版本與部署","type":"已裁決","project":"版本號暫不導入（舊系統沒有）","uds":"發版時嚴格遵循 SemVer","level":"必要","refsP":"docs/INFRASTRUCTURE.md:99","refsU":"versioning.ai.yaml:129-132","note":"發版時才會觸發"},{"id":"kng9qml","title":"建置身分端點","category":"版本與部署","type":"已裁決","project":"/version 端點暫不導入，列為待決","uds":"部署的服務要公開 version＋sha＋建置時間，發版後驗證 sha","level":"必要","refsP":"docs/INFRASTRUCTURE.md:99","refsU":"versioning.ai.yaml:161-173","note":"AGENTS.md:53"},{"id":"k10oeddv","title":"AI 自動 commit","category":"AI 行為","type":"已裁決","project":"階段完成、建置成功且全綠後自動 commit","uds":"AI 不得自行 git add／commit／push，須等使用者明確同意","level":"必要","refsP":"AGENTS.md:49","refsU":"checkin-standards.ai.yaml:145-148","note":"2026-10-06 使用者決定"}];
+(function () {
+  var KEY = 'standards-decisions-v1';
+  var LABEL = { project: '照專案', uds: '改採 UDS', discuss: '待討論' };
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { saved = {}; }
+  var filter = { q: '', type: '', state: '' };
+
+  function defaultOf(it) { return it.type === '已裁決' ? 'project' : ''; }
+  function choiceOf(it) { var s = saved[it.id]; return s && s.c != null ? s.c : defaultOf(it); }
+  function noteOf(it) { var s = saved[it.id]; return (s && s.n) || ''; }
+  function baseline(it) { return it.type === '已裁決' ? 'project' : (it.rec || ''); }
+  function isChanged(it) { var c = choiceOf(it); return !!c && c !== baseline(it); }
+  function persist() { try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) { /* 無法保存時仍可在本頁操作 */ } }
+  function setChoice(it, c) { saved[it.id] = saved[it.id] || {}; saved[it.id].c = c; persist(); }
+  function setNote(it, n) { saved[it.id] = saved[it.id] || {}; saved[it.id].n = n; persist(); }
+
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  function visible(it) {
+    if (filter.type && it.type !== filter.type) return false;
+    var c = choiceOf(it);
+    if (filter.state === 'unset' && c) return false;
+    if (filter.state === 'uds' && c !== 'uds') return false;
+    if (filter.state === 'discuss' && c !== 'discuss') return false;
+    if (filter.state === 'changed' && !isChanged(it)) return false;
+    if (filter.q) {
+      var hay = [it.title, it.category, it.project, it.uds, it.note, it.recWhy].join(' ').toLowerCase();
+      var words = filter.q.toLowerCase().split(/\s+/).filter(Boolean);
+      for (var i = 0; i < words.length; i++) if (hay.indexOf(words[i]) < 0) return false;
+    }
+    return true;
+  }
+
+  function option(it, value, no) {
+    var lab = el('label', 'opt');
+    var input = el('input');
+    input.type = 'radio';
+    input.name = it.id;
+    input.value = value;
+    input.checked = choiceOf(it) === value;
+    lab.appendChild(input);
+    var body = el('span');
+    var lbl = el('span', 'lbl', LABEL[value]);
+    if (value === 'project' && it.type === '已裁決') lbl.appendChild(el('span', 'tag cur-tag', '目前裁決'));
+    if (it.rec === value) lbl.appendChild(el('span', 'tag rec-tag', '推薦'));
+    if (value === 'uds' && it.level && it.level !== '無') { var lv = el('span', 'lv ' + it.level, 'UDS ' + it.level); lv.style.marginLeft = '6px'; lbl.appendChild(lv); }
+    body.appendChild(lbl);
+    if (value === 'project') {
+      body.appendChild(el('span', 'txt', it.project || '（專案未明文規定，維持現況）'));
+      if (it.refsP) body.appendChild(el('span', 'ref', it.refsP));
+    } else if (value === 'uds') {
+      body.appendChild(el('span', 'txt', it.uds));
+      if (it.refsU) body.appendChild(el('span', 'ref', it.refsU));
+    } else {
+      body.appendChild(el('span', 'txt', '先不決定，之後再討論'));
+    }
+    lab.appendChild(body);
+    input.addEventListener('change', function () { setChoice(it, value); refresh(no); });
+    return lab;
+  }
+
+  function card(it, no) {
+    var box = el('article', 'q');
+    box.id = it.id;
+    var head = el('div', 'q-head');
+    head.appendChild(el('span', 'no', '#' + no));
+    head.appendChild(el('h3', null, it.title));
+    head.appendChild(el('span', 'tag t-' + it.type, it.type));
+    head.appendChild(el('span', 'tag t-cat', it.category));
+    box.appendChild(head);
+    var opts = el('div', 'opts');
+    ['project', 'uds', 'discuss'].forEach(function (v) { opts.appendChild(option(it, v, no)); });
+    box.appendChild(opts);
+    if (it.recWhy) {
+      var why = el('div', 'why');
+      why.appendChild(el('b', null, '推薦' + LABEL[it.rec] + '：'));
+      why.appendChild(document.createTextNode(it.recWhy));
+      box.appendChild(why);
+    }
+    if (it.note) box.appendChild(el('div', 'extra', '補充：' + it.note));
+    var note = el('input', 'note');
+    note.type = 'text';
+    note.placeholder = '備註（選填）';
+    note.value = noteOf(it);
+    note.addEventListener('input', function () { setNote(it, note.value); });
+    box.appendChild(note);
+    return box;
+  }
+
+  function paintCard(it) {
+    var box = document.getElementById(it.id);
+    if (!box) return;
+    var c = choiceOf(it);
+    box.classList.toggle('unset', !c);
+    box.querySelectorAll('.opt').forEach(function (o) { o.classList.toggle('sel', o.querySelector('input').value === c); });
+  }
+
+  function tally() {
+    var n = { project: 0, uds: 0, discuss: 0, unset: 0, changed: 0 };
+    ITEMS.forEach(function (it) { var c = choiceOf(it); if (c) n[c]++; else n.unset++; if (isChanged(it)) n.changed++; });
+    var done = ITEMS.length - n.unset;
+    document.getElementById('nDone').textContent = done;
+    document.getElementById('nAll').textContent = ITEMS.length;
+    document.getElementById('nProject').textContent = n.project;
+    document.getElementById('nUds').textContent = n.uds;
+    document.getElementById('nDiscuss').textContent = n.discuss;
+    document.getElementById('nUnset').textContent = n.unset;
+    document.getElementById('nChanged').textContent = n.changed;
+    document.getElementById('prog').style.width = (ITEMS.length ? done / ITEMS.length * 100 : 0) + '%';
+  }
+
+  function refresh() { ITEMS.forEach(paintCard); tally(); }
+
+  function render() {
+    var list = document.getElementById('list');
+    list.textContent = '';
+    var lastType = null, shown = 0;
+    ITEMS.forEach(function (it, i) {
+      if (!visible(it)) return;
+      if (it.type !== lastType) {
+        list.appendChild(el('h2', null, it.type === '未記錄' ? '未記錄差異（請逐題決定）' : '已裁決不同（已預選目前裁決）'));
+        lastType = it.type;
+      }
+      list.appendChild(card(it, i + 1));
+      shown++;
+    });
+    if (!shown) list.appendChild(el('div', 'empty card', '沒有符合條件的題目'));
+    refresh();
+  }
+
+  function line(it, i) {
+    var s = '- #' + (i + 1) + ' [' + it.type + '] ' + it.title + '（' + it.category + '）';
+    if (isChanged(it)) s += ' ← 與' + (it.type === '已裁決' ? '目前裁決' : '推薦') + '不同';
+    var n = noteOf(it);
+    if (n) s += ' 備註：' + n;
+    return s;
+  }
+  function buildResult() {
+    var groups = { uds: [], discuss: [], project: [], unset: [] };
+    ITEMS.forEach(function (it, i) { groups[choiceOf(it) || 'unset'].push(line(it, i)); });
+    var today = new Date();
+    var d = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+    var out = ['# 開發規範裁決結果（' + d + '）',
+      '共 ' + ITEMS.length + ' 題：照專案 ' + groups.project.length + '、改採 UDS ' + groups.uds.length + '、待討論 ' + groups.discuss.length + '、未選 ' + groups.unset.length, ''];
+    [['uds', '改採 UDS（要修改專案規範）'], ['discuss', '待討論'], ['project', '照專案（維持現行，補進已裁決表）'], ['unset', '未選']].forEach(function (g) {
+      if (!groups[g[0]].length) return;
+      out.push('## ' + g[1]);
+      out = out.concat(groups[g[0]]);
+      out.push('');
+    });
+    return out.join('\n');
+  }
+
+  document.getElementById('total').textContent = ITEMS.length;
+  document.getElementById('q').addEventListener('input', function (e) { filter.q = e.target.value.trim(); render(); });
+  document.getElementById('fType').addEventListener('change', function (e) { filter.type = e.target.value; render(); });
+  document.getElementById('fState').addEventListener('change', function (e) { filter.state = e.target.value; render(); });
+  document.getElementById('applyRec').addEventListener('click', function () {
+    var n = 0;
+    ITEMS.forEach(function (it) { if (!choiceOf(it) && it.rec) { setChoice(it, it.rec); n++; } });
+    render();
+    alert('已套用 ' + n + ' 題的推薦，請再逐題確認。');
+  });
+  document.getElementById('resetAll').addEventListener('click', function () {
+    if (!confirm('清除所有勾選與備註，回到預設？')) return;
+    saved = {};
+    persist();
+    render();
+  });
+  document.getElementById('genBtn').addEventListener('click', function () {
+    var sec = document.getElementById('result');
+    document.getElementById('resultText').value = buildResult();
+    document.getElementById('copyStatus').textContent = '';
+    sec.hidden = false;
+    sec.scrollIntoView();
+  });
+  document.getElementById('copyBtn').addEventListener('click', function () {
+    var ta = document.getElementById('resultText');
+    var status = document.getElementById('copyStatus');
+    var fallback = function () { ta.focus(); ta.select(); status.textContent = '已選取，請按 Ctrl+C 複製'; };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(ta.value).then(function () { status.textContent = '已複製'; }, fallback);
+    } else { fallback(); }
+  });
+  render();
+
+  var root = document.documentElement;
+  try { var th = localStorage.getItem('standards-theme'); if (th) root.setAttribute('data-theme', th); } catch (e) { /* 沿用系統設定 */ }
+  document.getElementById('themeToggle').addEventListener('click', function () {
+    var cur = root.getAttribute('data-theme');
+    var isDark = cur ? cur === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var next = isDark ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('standards-theme', next); } catch (e) { /* 不保存也能正常顯示 */ }
+  });
+})();
+</script>
+</body>
+</html>

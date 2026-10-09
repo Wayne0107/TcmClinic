@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TcmClinic.Api 開發流程</title>
+<meta name="description" content="TcmClinic.Api 採 UDS 流程，各開發情境要下的指令、停止點與產出（憲章 2.1.0）">
+<style>
+:root {
+  --bg: #f7f7f5;
+  --surface: #ffffff;
+  --surface-2: #f0efeb;
+  --text: #1d1d1b;
+  --muted: #5f5e59;
+  --border: #dddcd6;
+  --accent: #2f5d8a;
+  --accent-soft: #e3ecf5;
+  --stop: #a3471b;
+  --stop-soft: #f8e7dd;
+  --ok: #2d6a3e;
+  --ok-soft: #e1f0e4;
+  --opt: #6b5b95;
+  --opt-soft: #ece8f5;
+  --code-bg: #1f2328;
+  --code-text: #e6e6e1;
+  --radius: 10px;
+  --shadow: 0 1px 2px rgba(0,0,0,.05), 0 2px 8px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --surface: #1f1f1d;
+    --surface-2: #272725;
+    --text: #ecebe6;
+    --muted: #a9a8a1;
+    --border: #3a3936;
+    --accent: #8db8e3;
+    --accent-soft: #233243;
+    --stop: #f0a07a;
+    --stop-soft: #3d2619;
+    --ok: #8fd19f;
+    --ok-soft: #1e3324;
+    --opt: #b9a8e6;
+    --opt-soft: #2c2640;
+    --code-bg: #0f1113;
+    --code-text: #e6e6e1;
+    --shadow: none;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161615; --surface: #1f1f1d; --surface-2: #272725; --text: #ecebe6; --muted: #a9a8a1;
+  --border: #3a3936; --accent: #8db8e3; --accent-soft: #233243; --stop: #f0a07a; --stop-soft: #3d2619;
+  --ok: #8fd19f; --ok-soft: #1e3324; --opt: #b9a8e6; --opt-soft: #2c2640; --code-bg: #0f1113; --shadow: none;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 16px/1.65 "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+}
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 16px 64px; }
+header.top { padding: 40px 0 16px; }
+h1 { font-size: 1.9rem; margin: 0 0 6px; letter-spacing: .01em; }
+h2 { font-size: 1.4rem; margin: 48px 0 12px; padding-top: 8px; }
+h3 { font-size: 1.1rem; margin: 24px 0 8px; }
+p { margin: 8px 0; }
+.lead { color: var(--muted); margin: 0; }
+.meta { color: var(--muted); font-size: .9rem; margin-top: 6px; }
+a { color: var(--accent); }
+code { font-family: "Cascadia Code", Consolas, monospace; font-size: .9em; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+nav.chips { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 10px 0; border-bottom: 1px solid var(--border); display: flex; gap: 8px; overflow-x: auto; }
+nav.chips a { flex: none; text-decoration: none; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; font-size: .9rem; white-space: nowrap; }
+nav.chips a:hover { border-color: var(--accent); color: var(--accent); }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 12px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); }
+.card h3 { margin-top: 0; }
+.card a.go { display: inline-block; margin-top: 6px; font-size: .9rem; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; font-size: .85rem; }
+.tag { display: inline-block; border-radius: 6px; padding: 1px 8px; font-size: .8rem; font-weight: 600; vertical-align: middle; }
+.tag.stop { background: var(--stop-soft); color: var(--stop); }
+.tag.ai { background: var(--accent-soft); color: var(--accent); }
+.tag.opt { background: var(--opt-soft); color: var(--opt); }
+.tag.git { background: var(--ok-soft); color: var(--ok); }
+ol.steps { list-style: none; padding: 0; margin: 12px 0 0; counter-reset: s; }
+ol.steps > li { position: relative; padding: 0 0 18px 48px; counter-increment: s; }
+ol.steps > li::before {
+  content: counter(s); position: absolute; left: 0; top: 0; width: 32px; height: 32px; border-radius: 50%;
+  background: var(--accent); color: var(--surface); display: grid; place-items: center; font-weight: 700; font-size: .9rem;
+}
+ol.steps > li::after { content: ""; position: absolute; left: 15px; top: 34px; bottom: 2px; width: 2px; background: var(--border); }
+ol.steps > li:last-child::after { display: none; }
+.step-title { font-weight: 700; }
+.step-body { color: var(--text); }
+.step-body .muted { color: var(--muted); font-size: .92rem; }
+.cmd { position: relative; margin: 6px 0; }
+.cmd pre { margin: 0; background: var(--code-bg); color: var(--code-text); border-radius: 8px; padding: 10px 52px 10px 12px; overflow-x: auto; font: .88rem/1.5 "Cascadia Code", Consolas, monospace; white-space: pre-wrap; word-break: break-word; }
+.cmd button { position: absolute; top: 6px; right: 6px; border: 1px solid #44484f; background: #2b3036; color: #e6e6e1; border-radius: 6px; font-size: .75rem; padding: 3px 8px; cursor: pointer; }
+.cmd button:hover { background: #3a4048; }
+.reply { margin: 4px 0; font-size: .92rem; }
+.reply b { color: var(--stop); }
+table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: .93rem; background: var(--surface); border-radius: var(--radius); overflow: hidden; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { background: var(--surface-2); font-weight: 600; }
+.table-scroll { overflow-x: auto; }
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 10px 0; }
+.flow span { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 4px 10px; font-weight: 600; font-size: .9rem; }
+.flow i { color: var(--muted); font-style: normal; }
+.note { border-left: 4px solid var(--accent); background: var(--accent-soft); padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 12px 0; }
+.note.warn { border-color: var(--stop); background: var(--stop-soft); }
+section.scenario { scroll-margin-top: 64px; }
+footer { margin-top: 56px; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--border); padding-top: 12px; }
+.theme-toggle { float: right; border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 8px; padding: 4px 10px; cursor: pointer; font-size: .85rem; }
+@media (max-width: 560px) {
+  h1 { font-size: 1.5rem; }
+  ol.steps > li { padding-left: 42px; }
+  ol.steps > li::before { width: 28px; height: 28px; }
+  ol.steps > li::after { left: 13px; top: 30px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <button class="theme-toggle" type="button" id="themeToggle">切換深淺色</button>
+  <h1>TcmClinic.Api 開發流程</h1>
+  <p class="lead">採 UDS 流程，每種開發情境要下哪些指令、在哪裡停下來等你、會產出什麼。</p>
+  <p class="meta">依據：憲章 2.1.0、AGENTS.md「已裁決的衝突」、.project-context/uds-workflow-adoption.md（PRJ-2026-0001）｜2026-10-06</p>
+</header>
+
+<nav class="chips" aria-label="情境導覽">
+  <a href="#basics">先看這裡</a>
+  <a href="#s1">① 新功能</a>
+  <a href="#s2">② 修 bug</a>
+  <a href="#s3">③ 修改既有規格</a>
+  <a href="#s4">④ 重構</a>
+  <a href="#s5">⑤ 決策與記憶</a>
+  <a href="#states">規格狀態</a>
+  <a href="#cheat">指令速查</a>
+  <a href="#diff">與原版 UDS 的差異</a>
+</nav>
+
+<section id="pick">
+  <h2>你現在要做哪一種？</h2>
+  <div class="grid">
+    <div class="card"><h3>① 新功能 → 新規格</h3><p>從需求到規格、實作、合併。最常見的情境。</p><a class="go" href="#s1">看流程 →</a></div>
+    <div class="card"><h3>② 修 bug</h3><p>既有功能行為錯誤，先寫重現問題的測試再修。</p><a class="go" href="#s2">看流程 →</a></div>
+    <div class="card"><h3>③ 修改既有規格</h3><p>需求變更：已完成的功能要改規則或加欄位。</p><a class="go" href="#s3">看流程 →</a></div>
+    <div class="card"><h3>④ 重構／技術債</h3><p>不改行為，只改程式結構、升級套件。</p><a class="go" href="#s4">看流程 →</a></div>
+    <div class="card"><h3>⑤ 決策與記憶</h3><p>什麼時候寫 ADR、什麼時候記到 .project-context／.memory。</p><a class="go" href="#s5">看流程 →</a></div>
+  </div>
+</section>
+
+<section id="basics">
+  <h2>先看這裡：共通規則</h2>
+  <div class="legend">
+    <span><span class="tag stop">停止點</span> 我會停下來等你回覆</span>
+    <span><span class="tag ai">AI 執行</span> 我自動做完</span>
+    <span><span class="tag opt">選用</span> 可略過</span>
+    <span><span class="tag git">Git</span> commit／push／PR</span>
+  </div>
+  <div class="table-scroll">
+  <table>
+    <tr><th>項目</th><th>規則</th></tr>
+    <tr><td>指令名稱</td><td>一律打全名 <code>/universal-dev-standards:xxx</code>。這個環境不認短名 <code>/sdd</code>。</td></tr>
+    <tr><td>分支</td><td>規格工作 <code>feature/NNN-短名</code>（小寫英文，例：<code>feature/058-account-maintenance</code>）；修 bug <code>fix/NNN-短名</code>；非規格工作 <code>feature/&lt;短名&gt;</code>。</td></tr>
+    <tr><td>commit</td><td>每個階段做完、建置與測試全綠後我<strong>直接 commit</strong> 並回報訊息（2026-10-06 起）。每個 commit 都必須建置成功、測試全綠。</td></tr>
+    <tr><td>commit 格式</td><td>繁中類型：<code>新增</code> <code>修正</code> <code>文件</code> <code>測試</code> <code>重構</code> <code>維護</code> <code>效能</code> <code>樣式</code> <code>建置</code> <code>整合</code> <code>回退</code> <code>安全</code>。例：<code>新增(058): 帳號維護端點</code>，實作類加頁腳 <code>Refs: SPEC-058</code>。</td></tr>
+    <tr><td>TDD 紅燈</td><td>紅燈只在本機跑、不提交；把「哪個測試、為什麼失敗、日期」記在規格的「實作紀錄」。</td></tr>
+    <tr><td>合併</td><td>分支 push 到 GitHub 開 PR → <code>code-review</code> → <code>checkin</code> → squash 合併。合併後刪除分支。<strong>沒有 BLOCKING 時我自動完成整個流程，不再先問</strong>（2026-10-08 起）。</td></tr>
+    <tr><td>測試執行</td><td><code>dotnet run --project backend/tests/&lt;測試專案&gt;</code>（<code>dotnet test</code> 會失敗）；整合、功能、驗收測試需要 Docker，依序執行。</td></tr>
+  </table>
+  </div>
+</section>
+
+<section class="scenario" id="s1">
+  <h2>① 新功能 → 新規格</h2>
+  <p>新增一個功能（通常對應一個選單）。規格寫在 <code>specs/&lt;業務&gt;/&lt;作業&gt;/&lt;功能&gt;/spec.md</code>；已有空殼（如範本內建的帳號維護）就沿用標頭的 SPEC-ID。</p>
+  <div class="note warn">專案約定「不擅自新增規格沒有要求的功能」。UDS 檢查清單建議的額外功能（MFA 等）我會先列為待決事項，<strong>由你決定要做</strong>才納入規格。</div>
+  <ol class="steps">
+    <li>
+      <div class="step-title">發想與釐清需求 <span class="tag opt">選用</span> <span class="tag stop">停止點</span></div>
+      <div class="cmd"><pre>/universal-dev-standards:brainstorm &lt;功能構想&gt;
+/universal-dev-standards:requirement</pre><button type="button">複製</button></div>
+      <p class="step-body muted">需求還模糊時先發想，再依 INVEST 原則寫使用者故事與驗收條件；需求已明確可略過。</p>
+      <p class="reply">你回覆：<b>確認需求</b>，或補充要釐清的地方。</p>
+    </li>
+    <li>
+      <div class="step-title">決定規格位置</div>
+      <p class="step-body muted">有選單的功能放進對應的 <code>specs/&lt;業務&gt;/&lt;作業&gt;/&lt;功能&gt;/</code>（新選單要一起加進選單種子 <code>MenuSeedData.cs</code>）；跨選單的基礎能力放 <code>specs/其他/&lt;名稱&gt;/</code>。SPEC-ID 取下一個未用的編號（見 <code>specs/README.md</code>）。</p>
+    </li>
+    <li>
+      <div class="step-title">討論灰色地帶 <span class="tag stop">停止點</span></div>
+      <div class="cmd"><pre>/universal-dev-standards:sdd discuss</pre><button type="button">複製</button></div>
+      <p class="step-body muted">我會先查其他規格的 Clarifications 與 <code>.project-context/</code> 是否已拍板，再用選單一次問 3～4 題；標「(建議)」的是我推薦的選項。</p>
+      <p class="reply">你回覆：<b>選擇答案</b>，看完 Discuss Summary 後回「確認」。</p>
+    </li>
+    <li>
+      <div class="step-title">撰寫規格 <span class="tag ai">AI 執行</span> <span class="tag stop">停止點</span></div>
+      <div class="cmd"><pre>/universal-dev-standards:sdd create</pre><button type="button">複製</button></div>
+      <p class="step-body muted">寫進 <code>specs/&lt;業務&gt;/&lt;作業&gt;/&lt;功能&gt;/spec.md</code>；重要決策另寫 <code>ADR-NNN-短描述.md</code> 放同一個資料夾；同步更新 <code>specs/README.md</code>（狀態、DEF、ADR 索引）。</p>
+      <p class="reply">你回覆：<b>確認</b>（或要改的地方）。之後我提示 commit：<code>文件(NNN): 撰寫&lt;功能&gt;規格</code>。</p>
+    </li>
+    <li>
+      <div class="step-title">審查規格 <span class="tag stop">停止點</span></div>
+      <div class="cmd"><pre>/universal-dev-standards:sdd review</pre><button type="button">複製</button></div>
+      <p class="step-body muted">逐項檢查需求、驗收條件、技術設計、測試計畫；列出建議修改。看規格時有疑問直接問（例：「資料表欄位有哪些？」）。</p>
+      <p class="reply">你回覆：<b>「好，現在改」</b>或「直接進 approve」。</p>
+    </li>
+    <li>
+      <div class="step-title">核准 <span class="tag stop">停止點</span></div>
+      <div class="cmd"><pre>/universal-dev-standards:sdd approve</pre><button type="button">複製</button></div>
+      <p class="reply">你回覆：<b>「核准」</b>。規格狀態改 Approved。</p>
+    </li>
+    <li>
+      <div class="step-title">推演 BDD 情境 <span class="tag ai">AI 執行</span> <span class="tag stop">停止點</span></div>
+      <div class="cmd"><pre>/universal-dev-standards:derive-bdd</pre><button type="button">複製</button></div>
+      <p class="step-body muted">把驗收條件轉成驗收測試專案的 <code>.feature</code>：<code>backend/tests/TcmClinic.Api.AcceptanceTests/&lt;選單路徑&gt;/&lt;選單名&gt;.feature</code>（選單路徑與 <code>specs/</code> 相同，一個選單一個資料夾），每個 Scenario 標 <code>@SPEC-NNN @AC-N</code>。查詢次數、契約快照這類不適合 Gherkin 的驗收條件，照舊用功能或整合測試。Reqnroll 已在範本中引進。</p>
+      <p class="reply">你回覆：<b>確認寫入</b>。</p>
+    </li>
+    <li>
+      <div class="step-title">實作（TDD） <span class="tag ai">AI 執行</span> <span class="tag stop">停止點</span> <span class="tag git">Git</span></div>
+      <div class="cmd"><pre>/universal-dev-standards:sdd implement</pre><button type="button">複製</button></div>
+      <p class="step-body muted">先開分支 <code>feature/NNN-短名</code>、跑四層測試（單元、整合、功能、驗收）當基線，產出實作計畫。之後依層實作：領域模型 → 資料庫與種子 → 用例 → 端點／BDD 步驟。每層先在本機跑紅燈並記到實作紀錄，再實作到全綠，然後提示 commit。</p>
+      <p class="reply">你回覆：<b>「確認 A」</b>（每階段停）或<b>「確認 B」</b>（一路做完）；每次提示 commit 時回「好」。</p>
+    </li>
+    <li>
+      <div class="step-title">驗證 <span class="tag ai">AI 執行</span> <span class="tag stop">停止點</span></div>
+      <div class="cmd"><pre>/universal-dev-standards:sdd verify</pre><button type="button">複製</button></div>
+      <p class="step-body muted">重跑四層測試，逐條驗收條件列出程式碼與測試位置，產出驗證報告；通過後狀態改 Implemented。</p>
+    </li>
+    <li>
+      <div class="step-title">需求追溯檢查 <span class="tag opt">選用</span></div>
+      <div class="cmd"><pre>/universal-dev-standards:ac-coverage</pre><button type="button">複製</button></div>
+      <p class="step-body muted">比對規格驗收表與測試標記，確認每條驗收條件都有測試。</p>
+    </li>
+    <li>
+      <div class="step-title">程式碼審查與提交前檢查 <span class="tag stop">停止點</span></div>
+      <div class="cmd"><pre>/universal-dev-standards:code-review
+/universal-dev-standards:checkin</pre><button type="button">複製</button></div>
+      <p class="reply">有問題就先修，修完再跑一次。</p>
+    </li>
+    <li>
+      <div class="step-title">push、開 PR、squash 合併 <span class="tag git">Git</span> </div>
+      <div class="cmd"><pre>push 並開 PR</pre><button type="button">複製</button></div>
+      <p class="step-body muted">我自動 push 並開 PR（<code>/universal-dev-standards:pr</code>），審查沒有 BLOCKING 就合併並刪除分支。PR 合併採 squash，合併訊息例：<code>新增(058): 帳號維護 (#12)</code>。</p>
+    </li>
+    <li>
+      <div class="step-title">歸檔 <span class="tag ai">AI 執行</span></div>
+      <div class="cmd"><pre>/universal-dev-standards:sdd archive</pre><button type="button">複製</button></div>
+      <p class="step-body muted">實作紀錄補上合併 commit 與 PR 編號，規格狀態改 Archived，<code>specs/README.md</code> 該列改 ✅。</p>
+    </li>
+  </ol>
+</section>
+
+<section class="scenario" id="s2">
+  <h2>② 修 bug</h2>
+  <ol class="steps">
+    <li>
+      <div class="step-title">開分支 <span class="tag git">Git</span></div>
+      <p class="step-body muted"><code>fix/NNN-短名</code>（NNN 是出問題的規格編號）。</p>
+    </li>
+    <li>
+      <div class="step-title">寫重現問題的測試（紅燈） <span class="tag ai">AI 執行</span></div>
+      <div class="cmd"><pre>/universal-dev-standards:tdd &lt;問題描述，例：停用帳號後仍可登入&gt;</pre><button type="button">複製</button></div>
+      <p class="step-body muted">先寫一個會失敗的回歸測試，確認是因為這個 bug 而失敗；紅燈結果記在該規格的實作紀錄。</p>
+    </li>
+    <li>
+      <div class="step-title">修正到全綠 <span class="tag ai">AI 執行</span> <span class="tag git">Git</span></div>
+      <p class="step-body muted">最小修正讓測試轉綠，四層測試全過後提示 commit：<code>修正(NNN): …</code>。</p>
+    </li>
+    <li>
+      <div class="step-title">規格要不要改？</div>
+      <p class="step-body muted">bug 是因為規格沒寫清楚時，在規格的 Clarifications 補一筆；行為和規格不同時照情境 ③ 處理。</p>
+    </li>
+    <li>
+      <div class="step-title">審查與合併 <span class="tag git">Git</span> <span class="tag stop">停止點</span></div>
+      <div class="cmd"><pre>/universal-dev-standards:code-review
+/universal-dev-standards:checkin</pre><button type="button">複製</button></div>
+      <p class="step-body muted">之後自動 push、開 PR、squash 合併並刪除分支。</p>
+    </li>
+  </ol>
+</section>
+
+<section class="scenario" id="s3">
+  <h2>③ 修改既有規格（需求變更）</h2>
+  <ol class="steps">
+    <li>
+      <div class="step-title">討論變更 <span class="tag stop">停止點</span></div>
+      <div class="cmd"><pre>/universal-dev-standards:sdd discuss &lt;規格路徑&gt; 要把……改成……</pre><button type="button">複製</button></div>
+    </li>
+    <li>
+      <div class="step-title">寫變更（delta） <span class="tag ai">AI 執行</span> <span class="tag stop">停止點</span></div>
+      <p class="step-body muted">在規格加 ADDED／MODIFIED／REMOVED Requirements；變更影響到其他規格時，舊規格標頭與索引註明「⚠️ 部分被 SPEC-NNN 修改」。改了原本的決策就另開新 ADR 取代舊的。</p>
+    </li>
+    <li>
+      <div class="step-title">審查、核准</div>
+      <div class="cmd"><pre>/universal-dev-standards:sdd review
+/universal-dev-standards:sdd approve</pre><button type="button">複製</button></div>
+    </li>
+    <li>
+      <div class="step-title">補 BDD 情境、實作、驗證</div>
+      <div class="cmd"><pre>/universal-dev-standards:derive-bdd
+/universal-dev-standards:sdd implement
+/universal-dev-standards:sdd verify</pre><button type="button">複製</button></div>
+      <p class="step-body muted">只推演有變動的驗收條件。</p>
+    </li>
+    <li>
+      <div class="step-title">審查、合併、歸檔 <span class="tag git">Git</span></div>
+      <p class="step-body muted">code-review → checkin → PR（squash）→ sdd archive。</p>
+    </li>
+  </ol>
+</section>
+
+<section class="scenario" id="s4">
+  <h2>④ 重構／技術債</h2>
+  <ol class="steps">
+    <li>
+      <div class="step-title">評估做法 <span class="tag stop">停止點</span></div>
+      <div class="cmd"><pre>/universal-dev-standards:refactor &lt;要重構的範圍&gt;</pre><button type="button">複製</button></div>
+      <p class="step-body muted">不改行為就不寫規格；升級套件依 DEPENDENCIES.md（同次更新 THIRD-PARTY-NOTICES.md）。</p>
+    </li>
+    <li>
+      <div class="step-title">小步重構，每步全綠 <span class="tag ai">AI 執行</span> <span class="tag git">Git</span></div>
+      <p class="step-body muted">分支 <code>feature/&lt;短名&gt;</code>；每一步測試保持全綠，提示 commit：<code>重構(模組): …</code> 或 <code>維護(deps): …</code>。覆蓋率不得下降。</p>
+    </li>
+    <li>
+      <div class="step-title">審查與合併 <span class="tag git">Git</span></div>
+      <p class="step-body muted">code-review → checkin → PR（squash）。</p>
+    </li>
+  </ol>
+</section>
+
+<section class="scenario" id="s5">
+  <h2>⑤ 決策與記憶要記在哪裡</h2>
+  <div class="table-scroll">
+  <table>
+    <tr><th>情況</th><th>記在哪裡</th><th>誰決定存</th></tr>
+    <tr><td>某條規格討論出的答案</td><td>該規格的 Clarifications</td><td>discuss 時你回答即記錄</td></tr>
+    <tr><td>重要的架構或設計決策（有替代方案、影響長遠）</td><td><code>ADR-NNN-短描述.md</code>，放對應規格的資料夾；跨選單的放 <code>specs/其他/架構決策/</code>；索引在 <code>specs/README.md</code></td><td>寫規格時我提議，你核准規格即生效；決策改變時另開新 ADR 取代</td></tr>
+    <tr><td>全專案的約定（「之後都…」「就這樣定」）</td><td><code>.project-context/&lt;主題&gt;.md</code>（PRJ-YYYY-NNNN）</td><td>我提議，<strong>你同意才存</strong></td></tr>
+    <tr><td>開發經驗（踩雷、解法、工具用法）</td><td><code>.memory/</code>（MEM-YYYY-NNNN，依類別分檔）</td><td>我提議，<strong>你同意才存</strong></td></tr>
+    <tr><td>延後、待決的事項</td><td><code>specs/README.md</code> 延後事項表（DEF-NNN）並寫回規格</td><td>規格撰寫或實作時登記</td></tr>
+  </table>
+  </div>
+</section>
+
+<section id="states">
+  <h2>規格狀態</h2>
+  <div class="flow"><span>Draft</span><i>→</i><span>Review</span><i>→</i><span>Approved</span><i>→</i><span>Implemented</span><i>→</i><span>Archived</span></div>
+  <div class="table-scroll">
+  <table>
+    <tr><th>狀態</th><th>由哪個指令改</th><th>意思</th></tr>
+    <tr><td>Draft</td><td><code>sdd create</code></td><td>規格撰寫中（選單空殼也是 Draft）</td></tr>
+    <tr><td>Review</td><td><code>sdd review</code></td><td>審查中</td></tr>
+    <tr><td>Approved</td><td><code>sdd approve</code></td><td>已核准，可以推演與實作</td></tr>
+    <tr><td>Implemented</td><td><code>sdd verify</code></td><td>實作完成並通過驗證</td></tr>
+    <tr><td>Archived</td><td><code>sdd archive</code></td><td>已合併並歸檔</td></tr>
+  </table>
+  </div>
+</section>
+
+<section id="cheat">
+  <h2>指令速查</h2>
+  <div class="table-scroll">
+  <table>
+    <tr><th>指令（前面加 <code>/universal-dev-standards:</code>）</th><th>用途</th><th>情境</th></tr>
+    <tr><td><code>brainstorm</code>、<code>requirement</code></td><td>新功能發想、寫使用者故事</td><td>①</td></tr>
+    <tr><td><code>sdd discuss</code>／<code>create</code>／<code>review</code>／<code>approve</code></td><td>規格四步</td><td>①③</td></tr>
+    <tr><td><code>derive-bdd</code></td><td>驗收條件 → Gherkin <code>.feature</code></td><td>①③</td></tr>
+    <tr><td><code>sdd implement</code>、<code>tdd</code></td><td>實作（TDD）</td><td>①～③</td></tr>
+    <tr><td><code>sdd verify</code>、<code>ac-coverage</code>、<code>coverage</code></td><td>驗證、需求追溯、覆蓋率</td><td>①③</td></tr>
+    <tr><td><code>code-review</code>、<code>checkin</code></td><td>合併前審查與提交前檢查</td><td>全部</td></tr>
+    <tr><td><code>commit</code>、<code>pr</code></td><td>產生 commit 訊息、開 PR</td><td>全部</td></tr>
+    <tr><td><code>sdd archive</code></td><td>歸檔（Archived）</td><td>①③</td></tr>
+    <tr><td><code>refactor</code></td><td>重構策略</td><td>④</td></tr>
+    <tr><td><code>discover</code></td><td>專案健康評估（需要時才跑）</td><td>—</td></tr>
+  </table>
+  </div>
+</section>
+
+<section id="diff">
+  <h2>與原版 UDS 仍不同的地方</h2>
+  <p>開發流程大多已照原版 UDS。下面幾項維持專案做法，完整清單見 AGENTS.md「已裁決的衝突」。</p>
+  <div class="table-scroll">
+  <table>
+    <tr><th>項目</th><th>本專案</th><th>原版 UDS</th><th>原因</th></tr>
+    <tr><td>規格位置</td><td>選單分層資料夾的 <code>spec.md</code></td><td><code>specs/SPEC-XXX.md</code></td><td>一個選單一份規格，依選單分層好找</td></tr>
+    <tr><td>ADR 位置</td><td>放在對應規格的資料夾</td><td><code>docs/adr/</code></td><td>決策與所屬規格放在一起</td></tr>
+    <tr><td>E2E 測試</td><td>不設</td><td>每條驗收條件要 E2E</td><td>本專案只涵蓋後端，前端另一團隊負責</td></tr>
+    <tr><td>CHANGELOG</td><td>不維護</td><td>開發時更新 [Unreleased]</td><td>進度記在 <code>specs/README.md</code></td></tr>
+    <tr><td><code>docs/</code> 檔名</td><td>大寫（<code>TESTING.md</code>）</td><td>小寫 kebab-case</td><td>避免大量引用改名</td></tr>
+    <tr><td>API 與資料庫慣例</td><td>PascalCase、400／409、<code>page</code>／<code>pageSize</code>…</td><td>snake_case、422、<code>limit</code>…</td><td>沿用源專案已定的契約與資料表慣例</td></tr>
+  </table>
+  </div>
+</section>
+
+<footer>
+  本頁由 AI 依專案規範產生，規則以憲章、AGENTS.md、docs/ 為準；規則改變時同步更新本頁。
+</footer>
+
+</div>
+<script>
+(function () {
+  document.querySelectorAll('.cmd button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var text = btn.parentElement.querySelector('pre').innerText;
+      var done = function () { btn.textContent = '已複製'; setTimeout(function () { btn.textContent = '複製'; }, 1500); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () { btn.textContent = '請手動複製'; });
+      } else {
+        btn.textContent = '請手動複製';
+      }
+    });
+  });
+  var root = document.documentElement;
+  try {
+    var saved = localStorage.getItem('workflow-theme');
+    if (saved) { root.setAttribute('data-theme', saved); }
+  } catch (e) { /* 無法讀取時沿用系統設定 */ }
+  document.getElementById('themeToggle').addEventListener('click', function () {
+    var current = root.getAttribute('data-theme');
+    var isDark = current ? current === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var next = isDark ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('workflow-theme', next); } catch (e) { /* 不保存也能正常顯示 */ }
+  });
+})();
+</script>
+</body>
+</html>

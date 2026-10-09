@@ -26,8 +26,7 @@ CLAUDE.md
 .gemini/
 .codex/
 
-# 專案規範文件、SDD 暫存 prompt、UDS 標準檔（本機保留，不上傳）
-/docs/
+# SDD 暫存 prompt、UDS 標準檔（本機保留，不上傳）；docs/ 規範文件進版控（前後端共用，2026-10-09）
 /sdd-prompts/
 /.standards/
 
