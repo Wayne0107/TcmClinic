@@ -1,0 +1,213 @@
+@import 'tailwindcss';
+
+/*
+ * 設計規範：柔雅粉調（沿用 prototype/blush.html）。
+ * 白底、藕粉與玫瑰啡，頁尾深石板藍。顏色一律從這裡取用，不另寫色碼。
+ * 文字色皆已核對 WCAG AA：內文 ≥ 4.5:1，大標題 ≥ 3:1。
+ */
+@theme {
+  --color-paper: #ffffff;
+  --color-blush-bg: #fef8f7; /* 淡粉區塊底 */
+  --color-stone: #f0efed; /* 暖灰區塊底（同 blush.html） */
+  --color-blush: #e29b8a; /* 裝飾線、圖示圈（不作小字） */
+  --color-blush-ink: #924d3d; /* 英文小標等小字：blush 原色 #E29B8A 對比僅約 2.2:1，同色相加深至 AA */
+  --color-petal: #f6ddd6; /* 標籤底、圖示底 */
+  --color-rose: #c8705b; /* 大標題強調（同 blush.html，只用於 ≥ 24px） */
+  --color-cocoa: #7d5b4e; /* 主按鈕、小標題、連結：blush #8C6A5D 在暖灰／淺粉底不足 4.5:1，略加深 */
+  --color-cocoa-2: #6a4c40; /* hover */
+  --color-body: #4e3b34; /* 內文 */
+  --color-muted: #7b5d52; /* 次要文字：blush #8A6B60 加深至各底色 ≥ 4.5:1 */
+  --color-line: #efe2de;
+  --color-slate: #212934; /* 頁尾 */
+  --color-on-slate: #e9e3e0;
+  --color-slate-muted: #a7a9b0;
+  --color-wa: #25d366;
+  --color-wa-ink: #0e2e1b;
+  --color-warn-bg: #fff6e8;
+  --color-warn: #8a5a12;
+
+  --font-serif: 'Noto Serif TC', 'Songti TC', 'PMingLiU', serif;
+  --font-sans:
+    'PingFang HK', 'PingFang TC', 'Microsoft JhengHei', 'Noto Sans TC', system-ui, sans-serif;
+  --font-latin:
+    'Cormorant Garamond', 'Noto Serif TC', Georgia, serif; /* 英文小標：直立字（同 blush.html） */
+
+  --shadow-soft: 0 10px 30px rgb(78 59 52 / 0.08);
+  --radius-arch: 999px 999px 0 0;
+}
+
+/* 按鈕基底：定義為 utility，才能被其他 class 以 @apply 引用 */
+@utility btn {
+  @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-7 py-3 text-[15px] tracking-[0.1em] transition-colors duration-200;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-paper font-sans text-body antialiased;
+    line-height: 1.85;
+    font-feature-settings: 'palt';
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-serif;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  [id] {
+    scroll-margin-top: 6.5rem;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-cocoa);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  /* grid 子項預設可縮小，避免表格等寬內容撐開欄位造成手機版水平捲動 */
+  .grid > * {
+    min-width: 0;
+  }
+  ::selection {
+    background: var(--color-petal);
+  }
+}
+
+@layer components {
+  .wrap {
+    @apply mx-auto w-full max-w-[1180px] px-5 md:px-8;
+  }
+  .wrap-narrow {
+    @apply mx-auto w-full max-w-[820px] px-5 md:px-8;
+  }
+  .section {
+    @apply bg-paper py-24 md:py-28; /* 同 blush.html 區塊間距；明確白底，背景色 class（bg-stone 等）可覆蓋 */
+  }
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 900px;
+  }
+  /* 錨點跳轉時整頁正常繪製（plugins/anchor-scroll.client.ts），避免落點偏移 */
+  .cv-off .cv-auto {
+    content-visibility: visible;
+  }
+
+  /* 區塊標題：英文小標 + 中文襯線標題 + 粉色短線（blush.html 的 sec-en／sec-title／sec-rule） */
+  .eyebrow {
+    @apply font-latin text-lg tracking-[0.12em] text-blush-ink;
+  }
+  .sec-head {
+    @apply flex flex-col items-center text-center;
+  }
+  .sec-title {
+    @apply mt-1 font-serif text-[1.75rem] leading-[1.4] font-bold tracking-[0.12em] text-cocoa md:text-[2.25rem];
+  }
+  .sec-rule {
+    @apply mt-5 h-px w-12 bg-blush;
+  }
+  .sec-lead {
+    @apply mt-6 max-w-2xl text-[15px] leading-8 text-muted md:text-base;
+  }
+
+  .btn-primary {
+    @apply btn bg-cocoa text-white hover:bg-cocoa-2;
+  }
+  .btn-ghost {
+    @apply btn border border-cocoa text-cocoa hover:bg-cocoa hover:text-white;
+  }
+  .btn-light {
+    @apply btn bg-white text-cocoa hover:bg-petal;
+  }
+  .btn-wa {
+    @apply btn bg-wa font-medium text-wa-ink hover:brightness-95;
+  }
+
+  .text-link {
+    @apply inline-flex items-center gap-2 border-b border-cocoa pb-0.5 text-[15px] tracking-[0.08em] text-cocoa transition-colors hover:border-blush hover:text-rose;
+  }
+  .tag {
+    @apply inline-flex items-center rounded-full bg-petal px-3 py-1 text-xs tracking-[0.08em] text-cocoa-2;
+  }
+  /* 內容區塊：方角、平面（同 blush.html，只有圓形、拱形與膠囊有圓角） */
+  .card {
+    @apply border border-line bg-white;
+  }
+  /* 相片佔位（同 blush.html 的 .ph）：醫師未提供相片時使用 */
+  .ph {
+    background:
+      radial-gradient(
+        120% 90% at 30% 20%,
+        color-mix(in srgb, var(--color-petal) 90%, transparent),
+        transparent 70%
+      ),
+      repeating-linear-gradient(
+        135deg,
+        transparent 0 13px,
+        color-mix(in srgb, var(--color-line) 85%, transparent) 13px 14px
+      ),
+      var(--color-blush-bg);
+  }
+  .arch {
+    border-radius: var(--radius-arch);
+  }
+
+  /* 長文內容（服務頁區塊、醫師專欄） */
+  .prose-tcm {
+    @apply text-[15.5px] leading-[1.95] text-body md:text-base;
+  }
+  .prose-tcm > * + * {
+    @apply mt-5;
+  }
+  .prose-tcm h2 {
+    @apply mt-12 font-serif text-2xl font-bold tracking-[0.06em] text-cocoa;
+  }
+  .prose-tcm h3 {
+    @apply mt-9 font-serif text-xl font-bold tracking-[0.04em] text-cocoa;
+  }
+  .prose-tcm a {
+    @apply text-cocoa underline decoration-blush underline-offset-4 hover:text-rose;
+  }
+  .prose-tcm strong {
+    @apply font-semibold text-cocoa-2;
+  }
+  .prose-tcm ul {
+    @apply list-disc space-y-2 pl-6 marker:text-blush;
+  }
+  .prose-tcm ol {
+    @apply list-decimal space-y-2 pl-6 marker:text-blush-ink;
+  }
+
+  .table-tcm {
+    @apply w-full min-w-[560px] border-collapse text-left text-[14.5px] leading-7;
+  }
+  .table-tcm th {
+    @apply border-b-2 border-blush bg-blush-bg px-4 py-3 font-semibold tracking-[0.06em] text-cocoa-2;
+  }
+  .table-tcm td {
+    @apply border-b border-line px-4 py-3 align-top;
+  }
+  .table-tcm tbody tr:hover td {
+    @apply bg-blush-bg/60;
+  }
+  .table-tcm td:first-child {
+    @apply font-medium whitespace-nowrap text-cocoa-2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

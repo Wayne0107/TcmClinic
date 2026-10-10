@@ -1,0 +1,132 @@
+{
+  "clinic-corridor": {
+    "widths": [400, 452],
+    "width": 452,
+    "height": 302
+  },
+  "clinic-reception-a": {
+    "widths": [400, 452],
+    "width": 452,
+    "height": 302
+  },
+  "clinic-reception-b": {
+    "widths": [400, 452],
+    "width": 452,
+    "height": 302
+  },
+  "clinic-treatment-beds": {
+    "widths": [400, 452],
+    "width": 452,
+    "height": 302
+  },
+  "clinic-waiting": {
+    "widths": [400, 452],
+    "width": 452,
+    "height": 302
+  },
+  "consult-room": {
+    "widths": [400, 800, 1200, 1536],
+    "width": 1536,
+    "height": 2048
+  },
+  "doctor-pan-forum": {
+    "widths": [400, 800, 1200, 1368],
+    "width": 1368,
+    "height": 912
+  },
+  "doctor-pan": {
+    "widths": [400, 667],
+    "width": 667,
+    "height": 1000
+  },
+  "entrance-door-1": {
+    "widths": [400, 800, 1200, 1536],
+    "width": 1536,
+    "height": 2048
+  },
+  "entrance-door-2": {
+    "widths": [400, 800, 1200],
+    "width": 1200,
+    "height": 1600
+  },
+  "entrance-door-3": {
+    "widths": [400, 800, 1200],
+    "width": 1200,
+    "height": 1600
+  },
+  "herb-wall-wide": {
+    "widths": [400, 800, 1200, 1600],
+    "width": 1600,
+    "height": 1200
+  },
+  "logo": {
+    "widths": [301],
+    "width": 301,
+    "height": 300
+  },
+  "notice-board": {
+    "widths": [400, 800, 1200],
+    "width": 1200,
+    "height": 1600
+  },
+  "reception-herb-wall": {
+    "widths": [400, 800, 1200],
+    "width": 1200,
+    "height": 1600
+  },
+  "reception": {
+    "widths": [400, 800, 1200],
+    "width": 1200,
+    "height": 1600
+  },
+  "storefront-sign-1": {
+    "widths": [400, 800, 1200, 1536],
+    "width": 1536,
+    "height": 2048
+  },
+  "storefront-sign-2": {
+    "widths": [400, 800, 1200],
+    "width": 1200,
+    "height": 1600
+  },
+  "storefront-sign-3": {
+    "widths": [400, 800, 1200],
+    "width": 1200,
+    "height": 1600
+  },
+  "storefront-sign-wide": {
+    "widths": [400, 800, 1200, 1600],
+    "width": 1600,
+    "height": 1200
+  },
+  "svc-beauty-glow": {
+    "widths": [400, 800, 1200, 1500],
+    "width": 1500,
+    "height": 900
+  },
+  "svc-beauty-hero": {
+    "widths": [400, 800, 1200, 1600, 2000],
+    "width": 2000,
+    "height": 1143
+  },
+  "svc-beauty-roller": {
+    "widths": [400, 800, 1200, 1500],
+    "width": 1500,
+    "height": 900
+  },
+  "svc-general": {
+    "widths": [400, 800, 1200, 1500],
+    "width": 1500,
+    "height": 900
+  },
+  "svc-gynecology": {
+    "widths": [400, 800, 1200, 1500],
+    "width": 1500,
+    "height": 900
+  },
+  "svc-slim": {
+    "widths": [400, 800, 1200, 1500],
+    "width": 1500,
+    "height": 900
+  }
+}

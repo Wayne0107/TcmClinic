@@ -49,6 +49,10 @@ Manifest 對照：
 | pinia | frontend/admin | 狀態管理 | MIT | https://github.com/vuejs/pinia |
 | vuetify | frontend/admin | 後台 UI 元件 | MIT | https://github.com/vuetifyjs/vuetify |
 | @mdi/js | frontend/admin | Material Design 圖示（SVG） | Apache-2.0 | https://github.com/Templarian/MaterialDesign-JS |
+| isomorphic-dompurify | frontend/site | 醫師專欄文章 HTML 消毒（SSR 與瀏覽器共用） | MIT | https://github.com/kkomelin/isomorphic-dompurify |
+| dompurify（經 isomorphic-dompurify） | frontend/site | HTML 消毒核心（雙授權，採用 Apache-2.0） | Apache-2.0 OR MPL-2.0 | https://github.com/cure53/DOMPurify |
+| jsdom（經 isomorphic-dompurify） | frontend/site | 伺服器端 DOM 實作，供 SSR 消毒 | MIT | https://github.com/jsdom/jsdom |
+| Cormorant Garamond 字型（經 @nuxt/fonts 自行託管） | frontend/site | 英文小標字型，隨前台輸出 | OFL-1.1 | https://github.com/CatharsisFonts/Cormorant |
 
 ## Dev / Test / Build-only（不隨產物出貨）
 
@@ -93,6 +97,9 @@ Manifest 對照：
 | happy-dom | frontend/site、frontend/admin | 測試用 DOM 環境 | MIT | https://github.com/capricorn86/happy-dom |
 | eslint | frontend/shared、site、admin | 程式碼品質檢查 | MIT | https://github.com/eslint/eslint |
 | @nuxt/eslint | frontend/site | Nuxt 的 ESLint 設定產生 | MIT | https://github.com/nuxt/eslint |
+| tailwindcss | frontend/site | 建置時產生 CSS（輸出含 Tailwind preflight，MIT） | MIT | https://github.com/tailwindlabs/tailwindcss |
+| @tailwindcss/vite | frontend/site | Tailwind 的 Vite 整合 | MIT | https://github.com/tailwindlabs/tailwindcss |
+| @nuxt/fonts | frontend/site | 建置時下載並自行託管網頁字型 | MIT | https://github.com/nuxt/fonts |
 | eslint-plugin-vue | frontend/admin | Vue 規則 | MIT | https://github.com/vuejs/eslint-plugin-vue |
 | @vue/eslint-config-typescript | frontend/admin | Vue＋TypeScript 的 ESLint 設定 | MIT | https://github.com/vuejs/eslint-config-typescript |
 | typescript-eslint | frontend/shared | TypeScript 規則 | MIT | https://github.com/typescript-eslint/typescript-eslint |

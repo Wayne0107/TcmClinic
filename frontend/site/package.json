@@ -10,10 +10,12 @@
     "lint": "eslint .",
     "typecheck": "nuxt typecheck",
     "test": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "images": "node scripts/optimize-images.mjs"
   },
   "dependencies": {
     "@tcm-clinic/shared": "workspace:*",
+    "isomorphic-dompurify": "^2.26.0",
     "nuxt": "^4.6.0",
     "openapi-fetch": "^0.17.0",
     "vue": "^3.5.43",
@@ -21,12 +23,15 @@
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.17.0",
+    "@nuxt/fonts": "^0.14.0",
     "@nuxt/test-utils": "^4.3.3",
+    "@tailwindcss/vite": "^4.3.0",
     "@vitest/coverage-v8": "^5.0.3",
     "@vue/test-utils": "^2.5.1",
     "eslint": "^10.12.0",
     "eslint-config-prettier": "^10.1.8",
     "happy-dom": "^20.14.0",
+    "tailwindcss": "^4.3.0",
     "typescript": "~6.0.2",
     "vitest": "^5.0.3",
     "vue-tsc": "^3.3.12"
