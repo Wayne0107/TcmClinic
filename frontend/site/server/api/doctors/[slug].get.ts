@@ -1,4 +1,4 @@
-import { doctors } from '../../mock/doctors'
+import { doctors } from '../../utils/mock-db'
 
 export default defineEventHandler((event) => {
   const doctor = doctors.find((d) => d.slug === getRouterParam(event, 'slug'))

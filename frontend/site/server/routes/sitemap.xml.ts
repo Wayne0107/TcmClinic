@@ -1,5 +1,4 @@
-import { doctors } from '../mock/doctors'
-import { posts } from '../utils/mock-db'
+import { doctors, posts, serviceTopics } from '../utils/mock-db'
 
 const STATIC_PAGES: [path: string, priority: number, changefreq: string][] = [
   ['/', 1.0, 'weekly'],
@@ -8,7 +7,12 @@ const STATIC_PAGES: [path: string, priority: number, changefreq: string][] = [
   ['/gynecology', 0.8, 'monthly'],
   ['/beauty', 0.8, 'monthly'],
   ['/slim', 0.8, 'monthly'],
+  ['/general', 0.8, 'monthly'],
   ['/doctors', 0.7, 'monthly'],
+  ['/visit', 0.6, 'monthly'],
+  ['/pricing', 0.6, 'monthly'],
+  ['/safety', 0.5, 'monthly'],
+  ['/faq', 0.6, 'monthly'],
   ['/offers', 0.6, 'monthly'],
   ['/contact', 0.8, 'monthly'],
   ['/booking', 0.6, 'monthly'],
@@ -25,6 +29,9 @@ export default defineEventHandler((event) => {
       changefreq,
       lastmod: path === '/blog' ? latest : undefined,
     })),
+    ...Object.values(serviceTopics)
+      .flat()
+      .map((t) => ({ loc: t.path, priority: 0.7, changefreq: 'monthly' })),
     ...doctors.map((d) => ({ loc: `/doctors/${d.slug}`, priority: 0.6, changefreq: 'monthly' })),
     ...posts.map((p) => ({
       loc: `/blog/${p.slug}`,

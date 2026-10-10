@@ -1,41 +1,15 @@
 <script setup lang="ts">
-// 頂部導覽：桌面版下拉（hover 與鍵盤 focus-within 皆可展開）；手機版全螢幕選單。
+import type { NavLink } from '~/utils/nav'
+
+// 頂部導覽：桌面版下拉（hover 與鍵盤 focus-within 皆可展開），「診療服務」為四欄大型選單、列出各科主題；
+// 手機版全螢幕選單。選單結構見 app/utils/nav.ts。
 const { data: clinic } = await useClinic()
 const route = useRoute()
 const open = ref(false)
 const menuButton = useTemplateRef<HTMLButtonElement>('menuButton')
 
-// 導覽文字沿用舊站 syttcm.com；「醫師團隊」「最新優惠」為新版新增的頁面
-interface NavItem {
-  label: string
-  to: string
-  children?: { label: string; to: string }[]
-}
-const nav: NavItem[] = [
-  { label: '首頁', to: '/' },
-  { label: '關於我們', to: '/about', children: [{ label: '醫師團隊', to: '/doctors' }] },
-  {
-    label: '診療服務',
-    to: '/services',
-    children: [
-      { label: '中醫婦科', to: '/gynecology' },
-      { label: '中醫美容', to: '/beauty' },
-      { label: '減肥修身', to: '/slim' },
-    ],
-  },
-  { label: '特色優勢', to: '/#why' },
-  { label: '常見問題', to: '/#faq' },
-  { label: '中醫資訊', to: '/blog' },
-  { label: '最新優惠', to: '/offers' },
-  { label: '聯絡我們', to: '/contact' },
-]
-
-const isActive = (item: NavItem) =>
-  (!item.to.includes('#') &&
-    item.to !== '/' &&
-    (route.path === item.to || route.path.startsWith(`${item.to}/`))) ||
-  (item.to === '/' && route.path === '/' && !route.hash) ||
-  item.children?.some((c) => c.to === route.path)
+const isActive = (item: NavLink) => isNavActive(item, route.path)
+const isMega = (item: NavLink) => item.children?.some((c) => c.children?.length) ?? false
 
 watch(
   () => route.fullPath,
@@ -96,12 +70,12 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
 
       <nav aria-label="主要導覽" class="hidden xl:block">
         <ul class="flex items-center">
-          <li v-for="item in nav" :key="item.to" class="group relative">
+          <li v-for="item in mainNav" :key="item.to" class="group relative">
             <NuxtLink
               :to="item.to"
               class="flex items-center gap-1 rounded-full px-3 py-2 text-[15px] tracking-[0.08em] whitespace-nowrap transition-colors hover:text-rose 2xl:px-4 2xl:tracking-[0.12em]"
               :class="isActive(item) ? 'text-rose' : 'text-slate'"
-              :aria-current="route.path === item.to && !item.to.includes('#') ? 'page' : undefined"
+              :aria-current="route.path === item.to ? 'page' : undefined"
             >
               {{ item.label }}
               <svg
@@ -118,17 +92,30 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
             </NuxtLink>
             <div
               v-if="item.children"
-              class="invisible absolute top-full left-1/2 w-48 -translate-x-1/2 pt-3 opacity-0 transition-opacity duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100"
+              class="invisible absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 transition-opacity duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100"
+              :class="isMega(item) ? 'w-[800px]' : 'w-48'"
             >
               <ul
-                class="border border-line border-t-2 border-t-blush bg-white p-2 shadow-[var(--shadow-soft)]"
+                class="border border-line border-t-2 border-t-blush bg-white shadow-[var(--shadow-soft)]"
+                :class="isMega(item) ? 'grid grid-cols-4 gap-2 p-4' : 'p-2'"
               >
                 <li v-for="c in item.children" :key="c.to + c.label">
                   <NuxtLink :to="c.to" class="block px-4 py-3 hover:bg-blush-bg">
-                    <span class="block text-[15px] tracking-[0.08em] text-cocoa-2">{{
-                      c.label
-                    }}</span>
+                    <span
+                      class="block text-[15px] tracking-[0.08em]"
+                      :class="c.children ? 'font-semibold text-cocoa' : 'text-cocoa-2'"
+                      >{{ c.label }}</span
+                    >
                   </NuxtLink>
+                  <ul v-if="c.children" class="pb-2">
+                    <li v-for="g in c.children" :key="g.to">
+                      <NuxtLink
+                        :to="g.to"
+                        class="block px-4 py-1.5 text-[14px] text-muted hover:text-rose"
+                        >{{ g.label }}</NuxtLink
+                      >
+                    </li>
+                  </ul>
                 </li>
               </ul>
             </div>
@@ -181,7 +168,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
     >
       <nav aria-label="手機版導覽" class="wrap py-6">
         <ul class="divide-y divide-line">
-          <li v-for="item in nav" :key="item.to" class="py-4">
+          <li v-for="item in mainNav" :key="item.to" class="py-4">
             <NuxtLink :to="item.to" class="block font-serif text-lg tracking-[0.12em] text-cocoa">{{
               item.label
             }}</NuxtLink>

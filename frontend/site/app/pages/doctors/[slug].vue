@@ -72,6 +72,13 @@ useJsonLd(() => schema.physician(d, siteUrl))
         </li>
       </ul>
 
+      <ArticleSection
+        v-for="(sec, i) in doctor.sections ?? []"
+        :key="sec.id ?? sec.title"
+        :section="sec"
+        :index="i"
+      />
+
       <section v-if="doctor.schedule?.length" aria-label="應診時間">
         <DoctorSchedule :schedule="doctor.schedule" :branches="clinic.branches" />
       </section>

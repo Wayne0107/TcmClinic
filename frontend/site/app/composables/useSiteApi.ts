@@ -4,13 +4,16 @@ import type {
   AppointmentResponse,
   BookingServiceOption,
   Doctor,
+  FaqPageContent,
   HomeContent,
+  InfoPage,
   Offer,
   Paged,
   Post,
   PostSummary,
   ServiceDetail,
   ServicesOverview,
+  ServiceTopic,
 } from '#shared/types/api'
 
 /*
@@ -29,6 +32,15 @@ export function useAboutContent() {
   return useFetch<AboutContent>('/api/pages/about', { key: 'page-about' })
 }
 
+/** 資訊頁：visit、pricing、safety、doctors、contact */
+export function useInfoPage(slug: string) {
+  return useFetch<InfoPage>(`/api/pages/${encodeURIComponent(slug)}`, { key: `page-${slug}` })
+}
+
+export function useFaqPage() {
+  return useFetch<FaqPageContent>('/api/faqs', { key: 'faqs' })
+}
+
 export function useDoctors() {
   return useFetch<Doctor[]>('/api/doctors', { key: 'doctors' })
 }
@@ -45,6 +57,13 @@ export function useServiceDetail(slug: ServiceDetail['slug']) {
   return useFetch<ServiceDetail>(`/api/services/${encodeURIComponent(slug)}`, {
     key: `service-${slug}`,
   })
+}
+
+export function useServiceTopic(service: ServiceDetail['slug'], topic: string) {
+  return useFetch<ServiceTopic>(
+    `/api/services/${encodeURIComponent(service)}/${encodeURIComponent(topic)}`,
+    { key: `service-${service}-${topic}` },
+  )
 }
 
 export interface PostQuery {

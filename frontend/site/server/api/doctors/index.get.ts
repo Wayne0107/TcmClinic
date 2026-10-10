@@ -1,3 +1,3 @@
-import { doctors } from '../../mock/doctors'
+import { doctors } from '../../utils/mock-db'
 
 export default defineEventHandler(() => doctors)

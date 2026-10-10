@@ -1,6 +1,6 @@
 <script setup lang="ts">
-// 聯絡我們：文字逐字取自舊站 /contact
-const { data: clinic } = await useClinic()
+// 聯絡我們：文字逐字取自舊站 /contact；兩店介紹與交通取自舊站首頁「服務範圍」（server/mock/pages/info.ts）
+const [{ data: clinic }, { data: page }] = await Promise.all([useClinic(), useInfoPage('contact')])
 
 useSiteSeo({
   title: '聯絡我們 | 聖儀堂中醫診所｜觀塘裕民中心地址及預約',
@@ -10,13 +10,6 @@ useSiteSeo({
   path: '/contact',
   image: '/images/entrance-door-3-1200.webp',
 })
-
-const hourRows = [
-  ['星期一 至 星期六', '上午 10:30 – 13:30｜下午 14:30 – 19:30'],
-  ['中午休息', '13:30 – 14:30'],
-  ['星期日', '全日休診'],
-  ['預約電話', '5512 3132'],
-]
 </script>
 
 <template>
@@ -87,7 +80,14 @@ const hourRows = [
       </div>
     </section>
 
-    <section class="section" aria-labelledby="gallery-title">
+    <ContentSectionView
+      v-for="(sec, i) in page?.sections ?? []"
+      :key="sec.id ?? sec.title"
+      :section="sec"
+      :index="i"
+    />
+
+    <section class="section bg-stone" aria-labelledby="gallery-title">
       <div class="wrap">
         <SectionHead
           heading-id="gallery-title"
@@ -96,28 +96,6 @@ const hourRows = [
           lead="點擊相片可放大瀏覽。"
         />
         <div class="mt-12"><SectionSlotView slot-name="gallery" /></div>
-      </div>
-    </section>
-
-    <section class="section bg-stone" aria-labelledby="hours-title">
-      <div class="wrap-narrow">
-        <SectionHead
-          heading-id="hours-title"
-          en="OPENING HOURS"
-          title="營業時間"
-          lead="實際時間以各分店公布為準，公眾假期或有調整。"
-        />
-        <table class="mx-auto mt-10 w-full max-w-xl bg-white text-[15px]">
-          <tbody class="divide-y divide-line">
-            <tr v-for="[k, v] in hourRows" :key="k">
-              <th scope="row" class="px-5 py-3 text-left font-medium text-cocoa-2">{{ k }}</th>
-              <td class="px-5 py-3 text-right">{{ v }}</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="mt-4 text-center text-[13.5px] text-muted">
-          ＊歡迎預約就診，建議預約前致電 5512 3132 確認。
-        </p>
       </div>
     </section>
 
@@ -133,20 +111,6 @@ const hourRows = [
       </div>
     </section>
 
-    <section
-      id="booking"
-      class="section bg-blush-bg [content-visibility:visible]"
-      aria-labelledby="booking-title"
-    >
-      <div class="wrap-narrow">
-        <SectionHead
-          heading-id="booking-title"
-          en="APPOINTMENT"
-          title="網上預約"
-          lead="填妥下表後，診所會盡快以電話或 WhatsApp 聯絡確認預約。"
-        />
-        <div class="mt-12 bg-white p-6 md:p-10"><BookingForm source-page="contact" /></div>
-      </div>
-    </section>
+    <CtaBand v-if="page?.cta" :cta="page.cta" />
   </div>
 </template>

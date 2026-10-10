@@ -93,6 +93,8 @@ export interface Doctor {
   /** 舊站醫師介紹下的條列（原文） */
   highlights: string[]
   isLead: boolean
+  /** 個人頁的補充段落（如學術背景） */
+  sections?: ContentSection[]
   /** 應診時間：舊站沒有提供，待診所提供後才顯示 */
   schedule?: DoctorSchedule[]
 }
@@ -129,8 +131,24 @@ export interface ContentSection {
 }
 
 export interface Faq {
+  /** 全站 FAQ 的識別碼（/faq 頁的錨點） */
+  id?: string
   q: string
   a: RichText
+}
+
+/** /faq 頁的一個分類 */
+export interface FaqCategory {
+  slug: string
+  name: string
+  items: Faq[]
+}
+
+export interface FaqPageContent {
+  seo: Seo
+  banner: { en?: string; title: string; lead?: string }
+  categories: FaqCategory[]
+  note?: string
 }
 
 export interface FaqSection {
@@ -163,8 +181,18 @@ export interface ServiceSummary {
   tags: string[]
 }
 
+/** 目錄頁上的主題卡片（連到子頁；也可連到其他科的子頁，如減肥的「產後修身」） */
+export interface ServiceTopicLink {
+  slug: string
+  path: string
+  title: string
+  /** 卡片說明：該主題第一段的導言（原文） */
+  summary: RichText
+}
+
+/** 服務目錄頁（hub）：簡介、主題卡片、概覽段落 */
 export interface ServiceDetail {
-  slug: Exclude<ServiceSlug, 'general'>
+  slug: ServiceSlug
   path: string
   name: string
   seo: Seo
@@ -172,14 +200,30 @@ export interface ServiceDetail {
   hero: { en?: string; title: string; subtitle?: string; lead: RichText[]; image: ImageRef }
   /** 頁首價格（舊站原文） */
   prices: { label: string; price: string }[]
-  /** 舊站頁內導航（原文） */
-  pageNav: { label: string; id: string }[]
+  /** 主題卡片上方的導言（原文） */
+  topicsLead?: RichText
+  topics: ServiceTopicLink[]
   sections: ContentSection[]
   faq: FaqSection
-  /** 舊站頁尾關鍵字連結（原文） */
-  keywordLinks: LinkItem[]
   cta: CtaContent
   /** 預約表單預選的 service id（見 BookingServiceOption） */
+  bookingServiceId: number
+}
+
+/** 服務主題子頁，如 /gynecology/menstrual */
+export interface ServiceTopic {
+  service: ServiceSlug
+  serviceName: string
+  servicePath: string
+  slug: string
+  path: string
+  title: string
+  en?: string
+  lead?: RichText
+  seo: Seo
+  sections: ContentSection[]
+  faq: FaqSection
+  cta: CtaContent
   bookingServiceId: number
 }
 
@@ -191,12 +235,21 @@ export interface BookingServiceOption {
 export interface ServicesOverview {
   seo: Seo
   banner: { title: string; lead: string }
-  pageNav: { label: string; id: string }[]
   services: ServiceSummary[]
   sections: ContentSection[]
   faq: FaqSection
-  keywordLinks: LinkItem[]
   cta: CtaContent
+}
+
+/** 一般資訊頁：就診須知（/visit、/pricing、/safety）、醫師團隊、聯絡我們 */
+export interface InfoPage {
+  seo: Seo
+  banner: { en?: string; title: string; lead?: RichText }
+  /** 頁首下方、各段落之前的內容 */
+  intro?: ContentBlock[]
+  sections: ContentSection[]
+  faq?: FaqSection
+  cta?: CtaContent
 }
 
 // ── 頁面內容（首頁、關於我們） ─────────────────────
@@ -214,11 +267,8 @@ export interface HomeContent {
     en: string
     title: string
     lead: string
-    body: RichText
     cards: { tag: string; title: string; text: string; linkLabel: string; to: string }[]
   }
-  /** 首頁深度內容：中醫婦科、中醫美容、減肥修身（id：gyne-detail、beauty-detail、slim-detail） */
-  details: ContentSection[]
   about: { en: string; title: string; paragraphs: RichText[]; bullets: string[]; linkLabel: string }
   why: {
     en: string
@@ -226,18 +276,9 @@ export interface HomeContent {
     lead: string
     items: { icon: string; title: string; text: string }[]
   }
-  video: { en: string; title: string; lead: string; fallback: string }
-  qualifications: {
-    en: string
-    title: string
-    lead: string
-    items: { title: string; text: string; by: string }[]
-  }
-  /** 服務範圍（id：area）與中醫養生（id：wellness） */
-  area: ContentSection
-  wellness: ContentSection
   faq: FaqSection
-  booking: { en: string; title: string; lead: string }
+  /** 頁尾預約區 */
+  cta: CtaContent
 }
 
 export interface AboutContent {

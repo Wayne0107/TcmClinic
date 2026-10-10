@@ -4,19 +4,22 @@ const { data: clinic } = await useClinic()
 
 const quickLinks = [
   { label: '首頁', to: '/' },
-  { label: '關於我們・醫師資歷', to: '/about' },
+  { label: '關於我們', to: '/about' },
+  { label: '醫師團隊・資歷', to: '/doctors' },
   { label: '診療服務一覽', to: '/services' },
-  { label: '常見問題', to: '/#faq' },
+  { label: '首次就診流程', to: '/visit' },
+  { label: '收費一覽', to: '/pricing' },
+  { label: '常見問題', to: '/faq' },
   { label: '中醫健康資訊', to: '/blog' },
   { label: '聯絡我們・地址交通', to: '/contact' },
 ]
-const serviceLinks = [
+const footerServiceLinks = [
   { label: '中醫婦科・不孕不育', to: '/gynecology' },
-  { label: '懷孕安胎・產後調理', to: '/gynecology#postnatal' },
+  { label: '懷孕安胎・產後調理', to: '/gynecology/postnatal' },
   { label: '中醫美容・中藥面膜', to: '/beauty' },
-  { label: '面部經絡理療・美容針', to: '/beauty#needle' },
+  { label: '面部經絡理療・美容針', to: '/beauty/facial' },
   { label: '減肥修身・茶療減肥', to: '/slim' },
-  { label: '中醫全科・皮膚調理', to: '/services#general' },
+  { label: '中醫全科・皮膚調理', to: '/general' },
 ]
 </script>
 
@@ -43,7 +46,7 @@ const serviceLinks = [
       <nav aria-labelledby="footer-services">
         <h2 id="footer-services" class="text-sm tracking-[0.14em] text-blush">診療範疇</h2>
         <ul class="mt-4 space-y-2.5 text-[14px]">
-          <li v-for="l in serviceLinks" :key="l.to">
+          <li v-for="l in footerServiceLinks" :key="l.to">
             <NuxtLink :to="l.to" class="hover:text-blush">{{ l.label }}</NuxtLink>
           </li>
         </ul>
