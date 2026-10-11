@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { NavLink } from '~/utils/nav'
 
-// 頂部導覽：桌面版下拉（hover 與鍵盤 focus-within 皆可展開），「診療服務」為四欄大型選單、列出各科主題；
-// 手機版全螢幕選單。選單結構見 app/utils/nav.ts。
+// 頂部導覽：桌面版下拉（hover 與鍵盤 focus-visible 皆可展開），「診療服務」為四欄大型選單、列出各科主題；
+// 不用 focus-within：滑鼠點選後焦點會留在連結上，換頁後選單不收。手機版全螢幕選單。選單結構見 app/utils/nav.ts。
 const { data: clinic } = await useClinic()
 const route = useRoute()
 const open = ref(false)
@@ -92,7 +92,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
             </NuxtLink>
             <div
               v-if="item.children"
-              class="invisible absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 transition-opacity duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100"
+              class="invisible absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 transition-opacity duration-150 group-has-focus-visible:visible group-has-focus-visible:opacity-100 group-hover:visible group-hover:opacity-100"
               :class="isMega(item) ? 'w-[800px]' : 'w-48'"
             >
               <ul
