@@ -9,6 +9,7 @@ packages/
 # Node.js
 node_modules/
 dist/
+.netlify/
 build/
 
 # IDE

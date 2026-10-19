@@ -10,7 +10,7 @@ if (props.withSchema) useJsonLd(() => (props.faqs.length ? schema.faq(props.faqs
 
 <template>
   <div class="divide-y divide-line border-y border-line">
-    <details v-for="(f, i) in faqs" :key="i" class="group">
+    <details v-for="(f, i) in faqs" :id="f.id" :key="f.id ?? i" class="group scroll-mt-32">
       <summary
         class="flex cursor-pointer list-none items-start justify-between gap-6 py-5 [&::-webkit-details-marker]:hidden"
       >

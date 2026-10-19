@@ -46,7 +46,10 @@ useJsonLd(() => [
           :title="about.faq.title"
           :lead="about.faq.lead"
         />
-        <div class="mt-10"><FaqList :faqs="about.faq.items" /></div>
+        <div class="mt-10"><FaqList :faqs="about.faq.items" :with-schema="false" /></div>
+        <p class="mt-6 text-center">
+          <NuxtLink to="/faq" class="text-link">查看全部常見問題 →</NuxtLink>
+        </p>
       </div>
     </section>
 

@@ -1,22 +1,21 @@
 <script setup lang="ts">
 // 首頁：版面依 prototype/blush.html；文字逐字取自舊站首頁（資料見 server/mock/pages/home.ts）
-const [{ data: home }, { data: clinic }, { data: posts }] = await Promise.all([
+// 首頁只做導覽：服務、醫師、特色、文章、常見問題各放摘要，深入內容連到各自頁面
+const [{ data: home }, { data: posts }] = await Promise.all([
   useHomeContent(),
-  useClinic(),
   usePosts({ pageSize: 3 }),
 ])
 if (!home.value) throw createError({ statusCode: 500, message: '首頁內容載入失敗', fatal: true })
 const h = home.value
 
 useSiteSeo({ title: h.seo.title, description: h.seo.description, exact: true, path: '/' })
-useJsonLd(() => schema.faq(h.faq.items))
 
 // 服務卡的線條圖示（裝飾用，依卡片順序）
-const icons = ['sun', 'needle', 'cup', 'leaf', 'bowl', 'pin'] as const
+const icons = ['sun', 'needle', 'cup', 'leaf'] as const
 </script>
 
 <template>
-  <div v-if="home && clinic">
+  <div v-if="home">
     <!-- 主視覺：置中品牌標題 + 拱形診所實景（blush.html） -->
     <section id="top" class="bg-blush-bg" aria-labelledby="hero-title">
       <div class="wrap flex flex-col items-center pt-16 pb-14 text-center md:pt-24">
@@ -74,12 +73,7 @@ const icons = ['sun', 'needle', 'cup', 'leaf', 'bowl', 'pin'] as const
           :title="h.services.title"
           :lead="h.services.lead"
         />
-        <RichText
-          :text="h.services.body"
-          tag="p"
-          class="mx-auto mt-8 max-w-3xl text-[15.5px] leading-[1.95]"
-        />
-        <ul class="mt-14 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+        <ul class="mt-14 grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
           <li v-for="(c, i) in h.services.cards" :key="c.title">
             <NuxtLink :to="c.to" class="group flex flex-col items-center text-center">
               <span
@@ -113,18 +107,9 @@ const icons = ['sun', 'needle', 'cup', 'leaf', 'bowl', 'pin'] as const
                     <path d="M16 17h16" />
                     <path d="M6 42h36" />
                   </template>
-                  <template v-else-if="icons[i] === 'leaf'">
+                  <template v-else>
                     <path d="M12 36C12 20 22 10 38 10c0 16-10 26-26 26z" />
                     <path d="M12 36L28 20" />
-                  </template>
-                  <template v-else-if="icons[i] === 'bowl'">
-                    <path d="M8 24h32a16 14 0 0 1-32 0z" />
-                    <path d="M17 38l-2 4h18l-2-4" />
-                    <path d="M30 20c0-6 4-11 11-12-1 7-5 11-11 12z" />
-                  </template>
-                  <template v-else>
-                    <path d="M24 42s-12-12-12-22a12 12 0 0 1 24 0c0 10-12 22-12 22z" />
-                    <circle cx="24" cy="20" r="4" />
                   </template>
                 </svg>
               </span>
@@ -144,17 +129,8 @@ const icons = ['sun', 'needle', 'cup', 'leaf', 'bowl', 'pin'] as const
       </div>
     </section>
 
-    <!-- 深度內容：中醫婦科、中醫美容、減肥修身 -->
-    <LazyContentSectionView
-      v-for="(sec, i) in h.details"
-      :key="sec.id ?? sec.title"
-      hydrate-on-visible
-      :section="sec"
-      :index="i"
-    />
-
     <!-- 關於醫師 -->
-    <section id="about" class="section cv-auto bg-stone" aria-labelledby="about-title">
+    <section id="about" class="section cv-auto" aria-labelledby="about-title">
       <div class="wrap grid items-center gap-12 md:grid-cols-[0.9fr_1.1fr] md:gap-16">
         <div class="relative mx-auto w-full max-w-sm">
           <ResponsiveImage
@@ -189,7 +165,7 @@ const icons = ['sun', 'needle', 'cup', 'leaf', 'bowl', 'pin'] as const
     </section>
 
     <!-- 為何選擇聖儀堂 -->
-    <section id="why" class="section cv-auto" aria-labelledby="why-title">
+    <section id="why" class="section cv-auto bg-blush-bg" aria-labelledby="why-title">
       <div class="wrap">
         <SectionHead
           heading-id="why-title"
@@ -197,11 +173,11 @@ const icons = ['sun', 'needle', 'cup', 'leaf', 'bowl', 'pin'] as const
           :title="h.why.title"
           :lead="h.why.lead"
         />
-        <ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <li v-for="w in h.why.items" :key="w.title" class="flex flex-col bg-blush-bg p-8">
+        <ul class="mt-12 grid gap-6 md:grid-cols-3">
+          <li v-for="w in h.why.items" :key="w.title" class="flex flex-col bg-paper p-8">
             <span
               aria-hidden="true"
-              class="grid size-14 place-items-center rounded-full border border-blush bg-paper text-2xl"
+              class="grid size-14 place-items-center rounded-full border border-blush bg-blush-bg text-2xl"
               >{{ w.icon }}</span
             >
             <h3 class="mt-5 font-sans text-xl font-bold tracking-[0.1em] text-cocoa">
@@ -213,47 +189,8 @@ const icons = ['sun', 'needle', 'cup', 'leaf', 'bowl', 'pin'] as const
       </div>
     </section>
 
-    <!-- 診所環境影片 -->
-    <section class="section cv-auto bg-blush-bg" aria-labelledby="video-title">
-      <div class="wrap">
-        <SectionHead
-          heading-id="video-title"
-          :en="h.video.en"
-          :title="h.video.title"
-          :lead="h.video.lead"
-        />
-        <div class="mt-12"><ClinicVideo :fallback="h.video.fallback" /></div>
-      </div>
-    </section>
-
-    <!-- 醫師專業資歷 -->
-    <section class="section cv-auto" aria-labelledby="qual-title">
-      <div class="wrap">
-        <SectionHead
-          heading-id="qual-title"
-          :en="h.qualifications.en"
-          :title="h.qualifications.title"
-          :lead="h.qualifications.lead"
-        />
-        <ul class="mt-12 grid gap-6 md:grid-cols-3">
-          <li v-for="q in h.qualifications.items" :key="q.title" class="card p-8">
-            <span aria-hidden="true" class="text-xl text-blush">★</span>
-            <h3 class="mt-3 font-sans text-xl font-bold tracking-[0.1em] text-cocoa">
-              {{ q.title }}
-            </h3>
-            <p class="mt-3 text-[15px] leading-[1.9]">{{ q.text }}</p>
-            <p class="mt-4 text-sm text-muted">— {{ q.by }}</p>
-          </li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- 服務範圍、中醫養生 -->
-    <LazyContentSectionView :section="h.area" :index="3" hydrate-on-visible />
-    <LazyContentSectionView :section="h.wellness" :index="0" hydrate-on-visible />
-
     <!-- 中醫健康資訊（最新文章） -->
-    <section class="section cv-auto bg-stone" aria-labelledby="blog-title">
+    <section class="section cv-auto" aria-labelledby="blog-title">
       <div class="wrap">
         <SectionHead
           heading-id="blog-title"
@@ -267,72 +204,11 @@ const icons = ['sun', 'needle', 'cup', 'leaf', 'bowl', 'pin'] as const
       </div>
     </section>
 
-    <!-- 常見問題 -->
-    <section id="faq" class="section cv-auto bg-blush-bg" aria-labelledby="faq-title">
-      <div class="wrap-narrow">
-        <SectionHead
-          heading-id="faq-title"
-          :en="h.faq.en"
-          :title="h.faq.title"
-          :lead="h.faq.lead"
-        />
-        <div class="mt-10"><FaqList :faqs="h.faq.items" :with-schema="false" /></div>
-        <p v-if="h.faq.note" class="mt-6 text-[13.5px] leading-7 text-muted">{{ h.faq.note }}</p>
-      </div>
+    <!-- 常見問題（精選；全部問題在 /faq） -->
+    <section class="section cv-auto bg-stone">
+      <div class="wrap-narrow"><ArticleFaq :faq="h.faq" align="center" /></div>
     </section>
 
-    <!-- 網上預約診症 -->
-    <section
-      id="booking"
-      class="section [content-visibility:visible]"
-      aria-labelledby="booking-title"
-    >
-      <div class="wrap">
-        <SectionHead
-          heading-id="booking-title"
-          :en="h.booking.en"
-          :title="h.booking.title"
-          :lead="h.booking.lead"
-        />
-        <div class="mt-12 grid gap-8 lg:grid-cols-[320px_1fr]">
-          <aside class="h-fit bg-blush-bg p-6" aria-labelledby="clinic-info-title">
-            <h3
-              id="clinic-info-title"
-              class="font-sans text-lg font-bold tracking-[0.1em] text-cocoa"
-            >
-              診所資訊
-            </h3>
-            <ul class="mt-4 space-y-4 text-[14.5px] leading-7">
-              <li v-for="b in clinic.branches" :key="b.id" class="flex gap-3">
-                <span aria-hidden="true">📍</span>
-                <span
-                  ><strong class="block font-medium text-cocoa-2">{{ b.name }}</strong
-                  >{{ b.address === b.name ? '' : b.address }}</span
-                >
-              </li>
-              <li class="flex gap-3">
-                <span aria-hidden="true">📞</span>
-                <a :href="telUrl(clinic.phoneE164)" class="hover:text-rose">{{ clinic.phone }}</a>
-              </li>
-              <li class="flex gap-3">
-                <span aria-hidden="true">🕒</span>
-                <span>{{ clinic.hoursText }}<br />{{ clinic.closedNote }}</span>
-              </li>
-              <li class="flex gap-3">
-                <span aria-hidden="true">💬</span>
-                <a
-                  :href="whatsappUrl(clinic.whatsapp)"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-cocoa underline underline-offset-4 hover:text-rose"
-                  >WhatsApp 預約</a
-                >
-              </li>
-            </ul>
-          </aside>
-          <div class="card p-6 md:p-10"><BookingForm source-page="home" /></div>
-        </div>
-      </div>
-    </section>
+    <CtaBand :cta="h.cta" />
   </div>
 </template>
