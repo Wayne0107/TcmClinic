@@ -60,6 +60,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // SSR 直接呼叫後端（伺服器端不能用相對路徑）；正式環境以 NUXT_API_BASE 覆寫。
     apiBase: apiTarget,
+    // SSR HTML 是否由 server/plugins/compression.ts 壓縮；Netlify 的 CDN 會自行壓縮，在 Netlify 建置時關閉。
+    compressHtml: process.env.NETLIFY !== 'true',
     public: { siteUrl, useMockApi },
   },
 
