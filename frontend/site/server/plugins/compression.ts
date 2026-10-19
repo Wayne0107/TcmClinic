@@ -3,6 +3,8 @@
 import { brotliCompressSync, constants, gzipSync } from 'node:zlib'
 
 export default defineNitroPlugin((nitroApp) => {
+  // 部署平台已負責壓縮時（如 Netlify CDN）不再自行壓縮，避免重複壓縮或標頭不一致
+  if (!useRuntimeConfig().compressHtml) return
   nitroApp.hooks.hook('render:response', (response, { event }) => {
     if (typeof response.body !== 'string' || response.body.length < 1024) return
     // 錯誤頁（404 等）由 Nuxt 以內部路徑 /__nuxt_error 渲染，再由錯誤處理流程以文字寫出；

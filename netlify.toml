@@ -1,0 +1,11 @@
+# Netlify 部署設定：只部署前台（Nuxt 4，frontend/site）。
+# 前端是 pnpm workspace（frontend/），Netlify 會從 base 往上找到 workspace 根目錄安裝相依套件；
+# Nuxt 在 Netlify 建置時自動使用 netlify preset，SSR 與 server/api 輸出為 Netlify Functions。
+[build]
+  base = "frontend/site"
+  command = "pnpm run build"
+  publish = "dist"
+
+[build.environment]
+  # 與 frontend/package.json engines 一致；pnpm 版本由 packageManager 欄位經 Corepack 決定
+  NODE_VERSION = "24"

@@ -60,6 +60,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // SSR 直接呼叫後端（伺服器端不能用相對路徑）；正式環境以 NUXT_API_BASE 覆寫。
     apiBase: apiTarget,
+    // SSR HTML 是否由 server/plugins/compression.ts 壓縮；Netlify 的 CDN 會自行壓縮，在 Netlify 建置時關閉。
+    compressHtml: process.env.NETLIFY !== 'true',
     public: { siteUrl, useMockApi },
   },
 
@@ -69,11 +71,7 @@ export default defineNuxtConfig({
       headers: { 'cache-control': 'no-store' },
       ...(useMockApi ? {} : { proxy: `${apiTarget}/**` }),
     },
-    // 公開內容頁允許 CDN／反向代理短暫快取（docs/FRONTEND.md §9）。
-    // 不用 Nitro 的 swr：其快取回應會略過 server/plugins/compression.ts，HTML 變成未壓縮。
-    '/**': {
-      headers: { 'cache-control': 'public, max-age=0, s-maxage=600, stale-while-revalidate=86400' },
-    },
+    // 公開內容頁的短暫快取由 server/plugins/page-cache.ts 設定（不用 '/**'，原因見該檔）。
     '/booking': { headers: { 'cache-control': 'no-store' } },
     '/images/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
     '/media/**': { headers: { 'cache-control': 'public, max-age=2592000' } },
